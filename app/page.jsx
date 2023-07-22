@@ -7,8 +7,6 @@ import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 
 import ProductService from '@services/ProductService';
-import axios from 'axios';
-
 
 import React, { useState, useEffect, useRef } from 'react';
 import { classNames } from 'primereact/utils';
@@ -50,10 +48,6 @@ export default function ProductsDemo() {
     const toast = useRef(null);
     const dt = useRef(null);
 
-    const [urlBase, setUrlBase] = useState('');
-
-    const [imagenBase64, setImagenBase64] = useState('');
-
     const productService = new ProductService();
 
     useEffect(() => {
@@ -64,6 +58,11 @@ export default function ProductsDemo() {
     const formatCurrency = (value) => {
         return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
     };/*Formato con que se muestra el precio del producto*/
+
+    /*Exportar CSV*/
+    const exportCSV = () => {
+        dt.current.exportCSV();
+    }; /*Exportar CSV*/
 
     /*Abrir nueva ventana para crear un producto*/
     const openNew = () => {
@@ -123,7 +122,7 @@ export default function ProductsDemo() {
 
     /*Editar la informacion de un usuario existente*/
     const editProduct = (product) => {
-        setImagenBase64(product.image);
+        // setImagenBase64(product.image);
         setProduct(product);
         setProductDialog(true);
     };
@@ -136,8 +135,9 @@ export default function ProductsDemo() {
 
     /*Elimnar un producto*/
     const deleteProduct = () => {
+        let _products = products.filter((val) => val.id === product.id);
 
-        productService.delete(products[0].id).then(data => {
+        productService.delete(_products[0].id).then(data => {
             //Actualiza la lista de productos
             productService.getAll().then(data => setProducts(data));
             setDeleteProductDialog(false);
@@ -145,21 +145,17 @@ export default function ProductsDemo() {
             setProduct(emptyProduct);
             //Muestra sms de confirmacion
             toast.current.show({ severity: 'success', summary: 'Atención!', detail: "Se eliminó el producto correctamente", life: 2000 });
+        }).catch(error => {
+            toast.current.show({ severity: 'danger', summary: '!Atención', detail: 'Error al eliminar el producto', life: 2000 });
         });
     };/*Elimnar un producto*/
 
-    /*Exportar CSV*/
-    const exportCSV = () => {
-        dt.current.exportCSV();
-    }; /*Exportar CSV*/
-
-
     /*Abrir el dialog de confirmacion de eliminacion de los productos*/
     const confirmDeleteSelected = () => {
-        if (products.length > 1) {
+        if (selectedProducts.length > 1) {
             setDeleteProductsDialog(true);
         }
-        if (products.length === 1) {
+        if (selectedProducts.length === 1) {
             setDeleteProductDialog(true);
         }
 
@@ -167,27 +163,16 @@ export default function ProductsDemo() {
 
     /*Eliminar varios porductos*/
     const deleteSelectedProducts = () => {
-        let _products = products.filter((val) => !selectedProducts.includes(val));
 
-        setProducts(_products);
-        setDeleteProductsDialog(false);
-        setSelectedProducts(null);
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
+        productService.deleteAll(selectedProducts).then((data) => {
+            setProducts(data);
+            setDeleteProductsDialog(false);
+            setSelectedProducts(false);
+            toast.current.show({ severity: 'success', summary: '!Atención', detail: 'Productos eliminados correctamente', life: 2000 });
+        }).catch(error => {
+            toast.current.show({ severity: 'danger', summary: '!Atención', detail: 'Error al eliminar los productos seleccionados', life: 2000 });
+        });
     };/*Eliminar varios porductos*/
-
-    /*Crear URL base64*/
-    const createURL = (product) => {
-        let file = product.image;
-        let newImage = '';
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
-                setImagenBase64(base64String);
-            };
-            reader.readAsDataURL(file);
-        }
-    }/*Crear URL base64*/
 
     /*Modifica el valor del nombre del producto*/
     const onInputChange = (e, name) => {
@@ -395,7 +380,7 @@ export default function ProductsDemo() {
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                     {product && (
                         <span>
-                            ¿ Esta seguro que desea eliminar  el <b>{product.name}</b>?
+                            ¿ Esta seguro que desea eliminar  este producto ?
                         </span>
                     )}
                 </div>

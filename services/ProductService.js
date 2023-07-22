@@ -13,4 +13,8 @@ export default class ProductService {
     delete(id){
         return axios.delete(this.baseUrl +"delete/"+id).then(res => res.data);
     }
+
+    deleteAll(products){
+        return axios.delete(this.baseUrl +"deleteAll",{data: products}).then(res => res.data);
+    }
 }
