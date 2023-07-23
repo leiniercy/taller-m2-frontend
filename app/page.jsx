@@ -7,6 +7,7 @@ import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 
 import ProductService from '@services/ProductService';
+import axios from 'axios';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { classNames } from 'primereact/utils';
@@ -48,6 +49,11 @@ export default function ProductsDemo() {
     const toast = useRef(null);
     const dt = useRef(null);
 
+    /*Confirmacion de que imgaen mostrar*/
+    const [uploadActive, setUploadActive] = useState(false); // si esta activo ese se muesta la imagen cargada en el cliente
+    const [editActive, setEditActive] = useState(false); // si esta activo ese se muesta la imagen que proviene del servidor
+    /*Confirmacion de que imgaen mostrar*/
+
     const productService = new ProductService();
 
     useEffect(() => {
@@ -69,6 +75,8 @@ export default function ProductsDemo() {
         setProduct(emptyProduct);
         setSubmitted(false);
         setProductDialog(true);
+        setUploadActive(false);
+        setEditActive(false);
     }; /*Abrir nueva ventana para crear un producto*/
 
 
@@ -91,38 +99,98 @@ export default function ProductsDemo() {
     };/*Ocultar dialog de eliminar varios productos*/
 
 
-    /*Salvar la informacion de un nuevo porducto*/
+    /*Crear o actualizar la informacion de un porducto*/
     const saveProduct = () => {
         setSubmitted(true);
 
-        let aux = "";
         if (product.id !== null) {
-            aux = "modificó"
+            //Actualizar Producto
+
+            if (!uploadActive) {
+                // Si no se cargo ninguna nueva imagen
+                axios.get("http://localhost:8080/api/v1/product/image/emptyFile.png", { responseType: 'image/png' }).then(res => {
+
+                    const blob = new Blob([res.data], { type: 'image/png' });
+                    const file = new File([blob], 'emptyFile.png', { type: 'image/png' });
+                    let _product = product;
+                    _product[`${'image'}`] = file;
+                    setProduct(_product);
+                    // console.log(product);
+                    let formData = new FormData();
+                    formData.append('id', product.id);
+                    formData.append('name', product.name);
+                    formData.append('price', product.price);
+                    formData.append('cant', product.cant);
+                    formData.append('image', product.image);
+                    //Guardar en la BD y actualiza el estado de la informacion
+                    productService.update(formData, product.id).then(data => {
+                        setProduct(emptyProduct);
+                        //Actualiza la lista de productos
+                        productService.getAll().then(data => setProducts(data));
+                        //Muestra sms de confirmacion
+                        toast.current.show({ severity: 'success', summary: 'Atención!', detail: "Se actualizó el producto correctamente", life: 2000 });
+                        setProductDialog(false);
+                        setUploadActive(false);
+                        setEditActive(false);
+                    }).catch(error => {
+                        toast.current.show({ severity: 'danger', summary: 'Atención!', detail: "Error al actualizar el producto", life: 2000 });
+                    });
+
+                }).catch(error =>{
+                    console.log(error);
+                });
+
+
+            } else {
+                // Si  se cargo ninguna nueva imagen
+                let formData = new FormData();
+                formData.append('id', product.id);
+                formData.append('name', product.name);
+                formData.append('price', product.price);
+                formData.append('cant', product.cant);
+                formData.append('image', product.image);
+                formData.append('image', product.image);
+                //Guardar en la BD y actualiza el estado de la informacion
+                productService.update(formData, product.id).then(data => {
+                    setProduct(emptyProduct);
+                    //Actualiza la lista de productos
+                    productService.getAll().then(data => setProducts(data));
+                    //Muestra sms de confirmacion
+                    toast.current.show({ severity: 'success', summary: 'Atención!', detail: "Se actualizó el producto correctamente", life: 2000 });
+                    setProductDialog(false);
+                    setUploadActive(false);
+                    setEditActive(false);
+                }).catch(error => {
+                    toast.current.show({ severity: 'danger', summary: 'Atención!', detail: "Error al actualizar el producto", life: 2000 });
+                });
+            }
+
         } else {
-            aux = "creó"
+            //Crear Producto
+            const formData = new FormData();
+            formData.append('name', product.name);
+            formData.append('price', product.price);
+            formData.append('cant', product.cant);
+            formData.append('image', product.image);
+
+            //Guardar en la BD y actualiza el estado de la informacion
+            productService.save(formData).then(data => {
+                setProduct(emptyProduct);
+                //Actualiza la lista de productos
+                productService.getAll().then(data => setProducts(data));
+                //Muestra sms de confirmacion
+                toast.current.show({ severity: 'success', summary: 'Atención!', detail: "Se creó el producto correctamente", life: 2000 });
+                setProductDialog(false);
+                setUploadActive(false);
+                setEditActive(false);
+            });
         }
-
-        const formData = new FormData();
-        formData.append('name', product.name);
-        formData.append('price', product.price);
-        formData.append('cant', product.cant);
-        formData.append('image', product.image);
-
-        //Guardar en la BD y actualiza el estado de la informacion
-        productService.save(formData).then(data => {
-            setProduct(emptyProduct);
-            //Actualiza la lista de employees
-            productService.getAll().then(data => setProducts(data));
-            //Muestra sms de confirmacion
-            toast.current.show({ severity: 'success', summary: 'Atención!', detail: "Se " + aux + " el registro correctamente", life: 2000 });
-            setProductDialog(false);
-        });
-
-    }; /*Salvar la informacion de un nuevo porducto*/
+    }; /*Crear o actualizar la informacion de un porducto*/
 
     /*Editar la informacion de un usuario existente*/
     const editProduct = (product) => {
-        // setImagenBase64(product.image);
+        setUploadActive(false);
+        setEditActive(true);
         setProduct(product);
         setProductDialog(true);
     };
@@ -274,6 +342,19 @@ export default function ProductsDemo() {
 
     /*Drag and Drop options (image)*/
     const chooseOptions = { icon: 'pi pi-fw pi-images', iconOnly: true, className: 'custom-choose-btn p-button-rounded p-button-outlined' };
+
+    const emptyTemplate = () => {
+        return (
+            <div className="flex align-items-center flex-column">
+                <i className="pi pi-image mt-3 p-5" style={{ fontSize: '5em', borderRadius: '50%', backgroundColor: 'var(--surface-b)', color: 'var(--surface-d)' }}></i>
+                <span style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }} className="my-5">
+                    Drag and Drop Image Here
+                </span>
+            </div>
+        );
+    };
+
+
     /*Drag and Drop options (image)*/
 
     return (
@@ -293,7 +374,12 @@ export default function ProductsDemo() {
                     paginator rows={10}
                     rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" globalFilter={globalFilter} header={header}>
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+                    // scrollable
+                    // scrollHeight="400px"
+                    // virtualScrollerOptions={{ itemSize: 46 }} tableStyle={{ minWidth: '50rem' }}
+                    globalFilter={globalFilter}
+                    header={header}>
                     <Column selectionMode="multiple" exportable={false}></Column>
                     <Column field="name" header="Nombre" sortable style={{ minWidth: '16rem' }}></Column>
                     <Column field="image" header="Imagen" body={imageBodyTemplate}></Column>
@@ -306,16 +392,7 @@ export default function ProductsDemo() {
             <Dialog visible={productDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
                 <form id="product-form" onSubmit={saveProduct} >
                     <div className="card flex flex-column justify-content-center align-items-center">
-                        {/* <FileUpload mode="basic"
-                            multiple={false}
-                            customUpload={true}
-                            name="image"
-                            accept="image/*"
-                            maxFileSize={1000000}
-                            chooseOptions={chooseOptions}
-                            onSelect={(e) => onFileChange(e, 'image')}
-                        /> */}
-                        <label>Archivo:</label>
+                        <label>Imagen:</label>
                         <FileUpload
                             name="file"
                             accept="image/*"
@@ -327,16 +404,18 @@ export default function ProductsDemo() {
                             className="p-mr-2"
                             maxFileSize={1000000}
                             mode="basic"
+                            emptyTemplate={emptyTemplate}
                             onSelect={(e) => {
                                 const val = e.files[0];
                                 let _product = { ...product };
                                 _product[`${'image'}`] = val;
-                                console.log(_product.image);
                                 setProduct(_product);
+                                setUploadActive(true);
+                                setEditActive(false);
                             }}
                         />
-
-                        {/* {product.image && <img src={URL.createObjectURL(product.image)} alt={product.name} className="product-image block m-auto mt-2  h-10rem sm:h-10rem md:h-15rem lg:h-15rem xl:h-15rem { pb-3" style={{ width: '300px' }} />} */}
+                        {uploadActive && <img src={URL.createObjectURL(product.image)} alt={product.name} className="product-image block m-auto mt-2  h-10rem sm:h-10rem md:h-15rem lg:h-15rem xl:h-15rem { pb-3" style={{ width: '300px' }} />}
+                        {editActive && <img src={"http://localhost:8080/api/v1/product/image/" + product.image} alt={product.name} className="product-image block m-auto mt-2  h-10rem sm:h-10rem md:h-15rem lg:h-15rem xl:h-15rem { pb-3" style={{ width: '300px' }} />}
                         {/* {product.image && <img src={"data:image/jpeg;base64," + imagenBase64} alt={product.name} className="product-image block m-auto mt-2  h-10rem sm:h-10rem md:h-15rem lg:h-15rem xl:h-15rem { pb-3" style={{ width: '300px' }} />} */}
                     </div>
 

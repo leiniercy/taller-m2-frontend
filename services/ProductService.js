@@ -10,6 +10,10 @@ export default class ProductService {
         return axios.post(this.baseUrl +"save",formData).then(res => res.data);
     }
 
+    update(formData,id){
+        return axios.put(this.baseUrl +"update/"+id,formData).then(res => res.data);
+    }
+
     delete(id){
         return axios.delete(this.baseUrl +"delete/"+id).then(res => res.data);
     }
