@@ -10,23 +10,24 @@ import 'primeflex/primeflex.css';
 import ProductService from '@services/ProductService';
 import axios from 'axios';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { classNames } from 'primereact/utils';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Toast } from 'primereact/toast';
-import { Button } from 'primereact/button';
-import { FileUpload } from 'primereact/fileupload';
-import { Rating } from 'primereact/rating';
-import { Toolbar } from 'primereact/toolbar';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { RadioButton } from 'primereact/radiobutton';
-import { InputNumber } from 'primereact/inputnumber';
-import { Slider } from "primereact/slider";
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import { Tag } from 'primereact/tag';
-import { ProgressBar } from 'primereact/progressbar';
+import React, {useState, useEffect, useRef} from 'react';
+import {classNames} from 'primereact/utils';
+import {DataTable} from 'primereact/datatable';
+import {Column} from 'primereact/column';
+import {Toast} from 'primereact/toast';
+import {Button} from 'primereact/button';
+import {FileUpload} from 'primereact/fileupload';
+import {Rating} from 'primereact/rating';
+import {Toolbar} from 'primereact/toolbar';
+import {InputTextarea} from 'primereact/inputtextarea';
+import {RadioButton} from 'primereact/radiobutton';
+import {InputNumber} from 'primereact/inputnumber';
+import {Slider} from "primereact/slider";
+import {Dialog} from 'primereact/dialog';
+import {InputText} from 'primereact/inputtext';
+import {Tag} from 'primereact/tag';
+import {ProgressBar} from 'primereact/progressbar';
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
 
 export default function Producto() {
 
@@ -46,6 +47,7 @@ export default function Producto() {
     const [product, setProduct] = useState(emptyProduct);
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
+    const [filters, setFilters] = useState(null);
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
@@ -57,6 +59,13 @@ export default function Producto() {
 
     const productService = new ProductService();
 
+    const columns = [
+        {field: 'name', header: 'Nombre', filterPlaceholder: "Buscar por nombre"},
+        {field: 'image', header: 'Imagen'},
+        {field: 'price', header: 'Precio', filterPlaceholder: "Buscar por precio"},
+        {field: 'cant', header: 'Cantidad', filterPlaceholder: "Buscar por cantidad"}
+    ];
+
     useEffect(() => {
         productService.getAll().then((data) => setProducts(data));
     }, []);
@@ -66,10 +75,50 @@ export default function Producto() {
         return value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
     };/*Formato con que se muestra el precio del producto*/
 
-    /*Exportar CSV*/
+
+    const exportColumns = columns.map((col) => ({title: col.header, dataKey: col.field}));
+
+    /*Exportar informacion*/
+    const exportExcel = () => {
+        import('xlsx').then((xlsx) => {
+            const worksheet = xlsx.utils.json_to_sheet(products);
+            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
+            const excelBuffer = xlsx.write(workbook, {
+                bookType: 'xlsx',
+                type: 'array'
+            });
+
+            saveAsExcelFile(excelBuffer, 'productos');
+        });
+    };
+
+    const saveAsExcelFile = (buffer, fileName) => {
+        import('file-saver').then((module) => {
+            if (module && module.default) {
+                let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+                let EXCEL_EXTENSION = '.xlsx';
+                const data = new Blob([buffer], {
+                    type: EXCEL_TYPE
+                });
+
+                module.default.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+            }
+        });
+    };
+
+    const exportPdf = () => {
+        import('jspdf').then((jsPDF) => {
+            import('jspdf-autotable').then(() => {
+                const doc = new jsPDF.default(0, 0);
+                doc.autoTable(exportColumns, products);
+                doc.save('productos.pdf');
+            });
+        });
+    };
+
     const exportCSV = () => {
         dt.current.exportCSV();
-    }; /*Exportar CSV*/
+    };  /*Exportar informacion*/
 
     /*Abrir nueva ventana para crear un producto*/
     const openNew = () => {
@@ -321,7 +370,14 @@ export default function Producto() {
     };
 
     const rightToolbarTemplate = () => {
-        return <Button label="Export" icon="pi pi-upload" className="p-button-help" onClick={exportCSV}/>;
+        return <div>
+            <Button type="button" icon="pi pi-file" severity="info" rounded onClick={exportCSV} data-pr-tooltip="CSV"/>
+            <Button type="button" icon="pi pi-file-excel" severity="success" rounded onClick={exportExcel}
+                    data-pr-tooltip="XLS"/>
+            <Button type="button" icon="pi pi-file-pdf" severity="warning" rounded onClick={exportPdf}
+                    data-pr-tooltip="PDF"/>
+        </div>
+
     }; /*Barra de herramientas*/
 
 
@@ -350,16 +406,43 @@ export default function Producto() {
 
 
     /*Header de la tabla*/
-    const header = (
-        <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-            <h4 className="m-0">Manage Products</h4>
+    const renderHeader = () => {
+        return (
+            <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
+                <h4 className="m-0">Manage Products</h4>
+                <div>
             <span className="p-input-icon-left">
                 <i className="pi pi-search"/>
-                <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Search..."/>
+                <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Buscar..."/>
             </span>
-        </div>
-    ); /*Header de la tabla*/
+                    <Button type="button" icon="pi pi-filter-slash" /*label="Clear"*/ outlined onClick={clearFilter}/>
+                </div>
+            </div>
+        );
+    };/*Header de la tabla*/
 
+    /*Filtros*/
+    const initFilters = () => {
+        setFilters({
+            global: {value: null, matchMode: FilterMatchMode.CONTAINS},
+            name: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
+            price: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
+            cant: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
+        });
+    };
+    const clearFilter = () => {
+        initFilters();
+    };
+
+    const filterClearTemplate = (options) => {
+        return <Button type="button" icon="pi pi-times" onClick={options.filterClearCallback}
+                       severity="secondary"></Button>;
+    };
+
+    const filterApplyTemplate = (options) => {
+        return <Button type="button" icon="pi pi-check" onClick={options.filterApplyCallback}
+                       severity="success"></Button>;
+    };/*Filtros*/
 
     /*Footer del dialog de anadir*/
     const productDialogFooter = (
@@ -409,6 +492,7 @@ export default function Producto() {
         );
     };/*Drag and Drop options (image)*/
 
+    const header = renderHeader();
 
     return (
         <div className="sm:relative  col p-4">
@@ -425,7 +509,10 @@ export default function Producto() {
                         selection={selectedProducts}
                         onSelectionChange={(e) => setSelectedProducts(e.value)}
                         dataKey="id"
-                        paginator rows={10}
+                        removableSort
+                        filters={filters}
+                        globalFilterFields={['name', 'price', 'cant']}
+                        paginator rows={5}
                         rowsPerPageOptions={[5, 10, 25]}
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
@@ -435,11 +522,22 @@ export default function Producto() {
                         globalFilter={globalFilter}
                         header={header}>
                         <Column selectionMode="multiple" exportable={false}></Column>
-                        <Column field="name" header="Nombre" sortable style={{minWidth: '16rem'}}></Column>
+                        <Column field="name" header="Nombre" sortable filter
+                                filterPlaceholder="Bucar por nombre"
+                                filterClear={filterClearTemplate}
+                                filterApply={filterApplyTemplate} style={{minWidth: '16rem'}}></Column>
                         <Column field="image" header="Imagen" body={imageBodyTemplate}></Column>
-                        <Column field="price" header="Precio" body={priceBodyTemplate} sortable
+                        <Column field="price" header="Precio" sortable filter
+                                filterPlaceholder="Bucar por precio"
+                                filterClear={filterClearTemplate}
+                                filterApply={filterApplyTemplate}
+                                body={priceBodyTemplate}
                                 style={{minWidth: '8rem'}}></Column>
-                        <Column field="cant" header="Cantidad" sortable/>
+                        <Column field="cant" header="Cantidad" sortable filter
+                                filterPlaceholder="Bucar por cantidad"
+                                filterClear={filterClearTemplate}
+                                filterApply={filterApplyTemplate}
+                        />
                         <Column body={actionBodyTemplate} exportable={false} style={{minWidth: '12rem'}}></Column>
                     </DataTable>
                 </div>
