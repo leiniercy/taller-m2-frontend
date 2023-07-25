@@ -1,0 +1,51 @@
+:root {
+
+}
+
+.bg-gray-body {
+    background-color: #efefef !important;
+}
+
+.bg-gray-items {
+    background-color: #ffffff !important;
+}
+
+.text-color-items {
+    color: #212529 !important;
+}
+
+.topbar-items {
+    background-color: #ffffff !important;
+    border-color: #ffffff !important;
+    color: #212529 !important;
+}
+
+/*Links sidebar*/
+.link-hover:hover {
+    background-color: #0104bc;
+    color: #ffffff;
+}
+
+/*Links sidebar*/
+
+overflow-x-auto {
+    overflow-x: auto;
+}
+
+.overflow-y-auto {
+    overflow-y: auto;
+}
+/*Movile topbar*/
+.top-3rem {
+    top: 3rem !important;
+}
+@media screen and (min-width: 576px) {
+    .sm\:top-3rem {
+        top: 3rem !important;
+    }
+}
+@media screen and (min-width: 768px) {
+    .md\:top-100px {
+        top: 96px !important;
+    }
+}
