@@ -34,11 +34,12 @@ const RootLayout = ({children}) => {
 
     const topBarDesktop = (
         <div className="bg-gray-items hidden sm:hidden md:flex md:flex-row w-full fixed z-1">
-            <div className="col-fixed flex flex-row justify-content-center   align-items-center" style={{width: '240px'}}>
-                <div  className="bg-gray-items text-center border-round-sm font-bold">
+            <div className="col-fixed flex flex-row justify-content-center   align-items-center"
+                 style={{width: '240px'}}>
+                <div className="bg-gray-items text-center border-round-sm font-bold">
                     <Button className="topbar-items" icon="pi pi-bars" onClick={handleClick}/>
                 </div>
-                <div className="" style={{height:'80px', width: '80px'}}>
+                <div className="" style={{height: '80px', width: '80px'}}>
                     <Image
                         src="/assets/images/tallerM2.png" alt="Logo"
                         width={80}
@@ -56,12 +57,13 @@ const RootLayout = ({children}) => {
     );
 
     const topBarMovile = (
-        <div className="bg-primary flex sm:flex sm:flex-row md:hidden h-3rem align-items-center justify-content-between w-full fixed z-1">
+        <div
+            className="bg-primary flex sm:flex sm:flex-row md:hidden h-3rem align-items-center justify-content-between w-full fixed z-1">
             <div>
                 Logo
             </div>
             <div className="">
-                <Sidebar  visible={visible} onHide={() => setVisible(false)}>
+                <Sidebar visible={visible} onHide={() => setVisible(false)}>
                     <a href="#">link</a>
                     <a href="#">link</a>
                     <a href="#">link</a>
@@ -73,15 +75,11 @@ const RootLayout = ({children}) => {
 
     return (
         <html lang='en'>
-        <head>
-            <meta charSet="UTF-8"/>
-            <meta name="viewport" content="initial-scale=1, width=device-width"/>
-        </head>
-        <body className="bg-gray-body m-0" style={{minWidth: '100vh' , minHeight: '100vh'}}>
+        <body className="bg-gray-body ">
         {topBarDesktop}
         {topBarMovile}
-        <div className='app grid md:relative top-3rem sm:top-3rem md:top-100px' style={{minWidth: '100vh' , minHeight: '100vh'}}>
-            { appSidebarVisible && <AppSidebar/> }
+        <div className='app grid h-full w-full relative sm:relative md:relative top-3rem sm:top-3rem md:top-100px'>
+            {appSidebarVisible && <AppSidebar/>}
             {children}
         </div>
         {/*<AppFooter/>*/}
