@@ -410,6 +410,7 @@ export default function Ventas() {
         iconOnly: true,
         className: 'custom-choose-btn p-button-rounded p-button-outlined'
     };/*Drag and Drop options (image)*/
+
     const cancelOptions = {
         icon: 'pi pi-fw pi-times',
         iconOnly: true,
@@ -435,15 +436,15 @@ export default function Ventas() {
     const onTemplateRemove = (file, callback) => {
         setTotalSize(totalSize - file.size);
         //Eliminar de la lista el elemento
-
+        let objetoElimnmar = accesorio.files.find(objeto => objeto === file); //Comprobamos que el objeto existe en la lista
+        let indiceAEiminar = accesorio.files.indexOf(objetoElimnmar); //Buscamos su indice exacto
+        accesorio.files.splice(indiceAEiminar,1); //Eliminamos este objeto pasando su indice y la cant de elemntos a elimnar despues de el
         callback();
     };/*Drag and Drop options (image)*/
 
     const onTemplateClear = () => {
         setTotalSize(0);
-        let _accesorio = {...accesorio};
-        _accesorio[`${'files'}`] = null;
-        setAccesorio(_accesorio);
+        accesorio.files=[];
     };/*Drag and Drop options (image)*/
     const headerTemplate = (options) => {
         const {className, chooseButton, cancelButton} = options;
