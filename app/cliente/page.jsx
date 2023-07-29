@@ -129,7 +129,7 @@ export default function Cliente() {
 
     const dataviewGridItem = (data) => {
         return (
-            <div className="col-12 lg:col-4">
+            <div className="lcol-12 lg:co-4">
                 <div className="card m-3 border-1 surface-border p-3">
                     <div className="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
                         <div className="flex align-items-center">

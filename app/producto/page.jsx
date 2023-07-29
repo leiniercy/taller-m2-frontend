@@ -1,13 +1,12 @@
 "use client"
 
-
 //Styles primereact
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 
-import ProductService from '@services/ProductService';
+import AccesorioService from '@services/AccesorioService';
 import axios from 'axios';
 
 import React, {useState, useEffect, useRef} from 'react';
@@ -25,39 +24,45 @@ import {InputNumber} from 'primereact/inputnumber';
 import {Slider} from "primereact/slider";
 import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
-import {Tag} from 'primereact/tag';
+import {Tooltip} from 'primereact/tooltip';
 import {ProgressBar} from 'primereact/progressbar';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import {Tag} from 'primereact/tag';
+import {FilterMatchMode, FilterOperator} from 'primereact/api';
+//Components
+import Exportlayout from "@components/pages/Accesorio/Exportlayout";
 
-export default function Producto() {
 
-    let emptyProduct = {
+export default function Ventas() {
+
+    let emptyAccesorio = {
         id: null,
         name: '',
-        image: null,
-        // description: '',
+        files: null,
         price: 0,
         cant: 0,
     };
 
-    const [products, setProducts] = useState(null);
-    const [productDialog, setProductDialog] = useState(false);
-    const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-    const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-    const [product, setProduct] = useState(emptyProduct);
-    const [selectedProducts, setSelectedProducts] = useState(null);
+    const [accesorios, setAccesorios] = useState(null);
+    const accesorioService = new AccesorioService();
+
+    const [accesorioDialog, setAccesorioDialog] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [deleteAccesorioDialog, setDeleteAccesorioDialog] = useState(false);
+    const [deleteAccesoriosDialog, setDeleteAccesoriosDialog] = useState(false);
+    const [accesorio, setAccesorio] = useState(emptyAccesorio);
+    const [selectedAccesorios, setSelectedAccesorios] = useState(null);
     const [filters, setFilters] = useState(null);
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
 
+    const [totalSize, setTotalSize] = useState(0);
+    const fileUploadRef = useRef(null);
+
     /*Confirmacion de que imgaen mostrar*/
     const [uploadActive, setUploadActive] = useState(false); // si esta activo ese se muesta la imagen cargada en el cliente
     const [editActive, setEditActive] = useState(false); // si esta activo ese se muesta la imagen que proviene del servidor
     /*Confirmacion de que imgaen mostrar*/
-
-    const productService = new ProductService();
 
     const columns = [
         {field: 'name', header: 'Nombre', filterPlaceholder: "Buscar por nombre"},
@@ -67,225 +72,205 @@ export default function Producto() {
     ];
 
     useEffect(() => {
-        productService.getAll().then((data) => setProducts(data));
+        accesorioService.getAll().then((data) => {
+            setAccesorios(data);
+        });
+
     }, []);
 
-    /*Formato con que se muestra el precio del producto*/
-    const formatCurrency = (value) => {
-        return value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
-    };/*Formato con que se muestra el precio del producto*/
-
-
-    const exportColumns = columns.map((col) => ({title: col.header, dataKey: col.field}));
-
-    /*Exportar informacion*/
-    const exportExcel = () => {
-        import('xlsx').then((xlsx) => {
-            const worksheet = xlsx.utils.json_to_sheet(products);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-            const excelBuffer = xlsx.write(workbook, {
-                bookType: 'xlsx',
-                type: 'array'
-            });
-
-            saveAsExcelFile(excelBuffer, 'productos');
-        });
-    };
-
-    const saveAsExcelFile = (buffer, fileName) => {
-        import('file-saver').then((module) => {
-            if (module && module.default) {
-                let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-                let EXCEL_EXTENSION = '.xlsx';
-                const data = new Blob([buffer], {
-                    type: EXCEL_TYPE
-                });
-
-                module.default.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
-            }
-        });
-    };
-
-    const exportPdf = () => {
-        import('jspdf').then((jsPDF) => {
-            import('jspdf-autotable').then(() => {
-                const doc = new jsPDF.default(0, 0);
-                doc.autoTable(exportColumns, products);
-                doc.save('productos.pdf');
-            });
-        });
-    };
-
-    const exportCSV = () => {
-        dt.current.exportCSV();
-    };  /*Exportar informacion*/
-
-    /*Abrir nueva ventana para crear un producto*/
     const openNew = () => {
-        setProduct(emptyProduct);
+        setAccesorio(emptyAccesorio);
         setSubmitted(false);
-        setProductDialog(true);
+        setAccesorioDialog(true);
         setUploadActive(false);
         setEditActive(false);
-    }; /*Abrir nueva ventana para crear un producto*/
+    }; /*Abrir nueva ventana para crear un accesorio*/
 
-
-    /*Ocultar dialog de anadir*/
     const hideDialog = () => {
+        setAccesorioDialog(false);
         setSubmitted(false);
-        setProductDialog(false);
     }; /*Ocultar dialog de anadir*/
 
+    const hideDeleteAccesorioDialog = () => {
+        setDeleteAccesorioDialog(false);
+    };/*Ocultar dialog de eliminar un accesorio*/
 
-    /*Ocultar dialog de eliminar un producto*/
-    const hideDeleteProductDialog = () => {
-        setDeleteProductDialog(false);
-    };/*Ocultar dialog de eliminar un producto*/
+    const hideDeleteAccesoriosDialog = () => {
+        setDeleteAccesoriosDialog(false);
+    };/*Ocultar dialog de eliminar varios accesorios*/
 
+    const formatCurrency = (value) => {
+        return value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
+    };/*Formato con que se muestra el precio del accesorio*/
+    const imageBodyTemplate = (rowData) => {
+        return <img src={rowData.files[0].url} alt={rowData.name}
+                    className="shadow-2 border-round" style={{width: '64px'}}/>;
+        //return <img src={"data:image/jpeg;base64," + urlBase} alt={rowData.name} className="shadow-2 border-round" style={{ width: '64px' }} />;
+    }; /*Formato con que se muestra la imagen del accesorio en la tabla*/
+    const priceBodyTemplate = (rowData) => {
+        return formatCurrency(rowData.price);
+    }; /*Mostrar clumnas de la tabla*/
 
-    /*Ocultar dialog de eliminar varios productos*/
-    const hideDeleteProductsDialog = () => {
-        setDeleteProductsDialog(false);
-    };/*Ocultar dialog de eliminar varios productos*/
+    const leftToolbarTemplate = () => {
+        return (
+            <div className="flex sm:flex flex-wrap sm:flex-wrap gap-2 sm:gap-2">
+                <Button label="Añadir" icon="pi pi-plus" severity="success"
+                        onClick={openNew}
+                />
+                <Button label="Eliminar" icon="pi pi-trash" severity="danger"
+                        onClick={confirmDeleteSelected}
+                        disabled={!selectedAccesorios || !selectedAccesorios.length}/>
+            </div>
+        );
+    };/*Barra de herramientas*/
 
+    const rightToolbarTemplate = () => {
+        return <Exportlayout accesorios={accesorios} dt={dt}/>
+    }; /*Barra de herramientas*/
 
-    /*Crear o actualizar la informacion de un porducto*/
-    const saveProduct = () => {
+    const save = () => {
         setSubmitted(true);
 
-        if (product.id !== null) {
-            //Actualizar Producto
+        // if (product.id !== null) {
+        //     //Actualizar Producto
+        //
+        //     if (!uploadActive) {
+        //         // Si no se cargo ninguna nueva imagen
+        //         axios.get("http://localhost:8080/api/v1/product/image/emptyFile.png", {responseType: 'image/png'}).then(res => {
+        //
+        //             const blob = new Blob([res.data], {type: 'image/png'});
+        //             const file = new File([blob], 'emptyFile.png', {type: 'image/png'});
+        //             let _product = product;
+        //             _product[`${'image'}`] = file;
+        //             setProduct(_product);
+        //             // console.log(product);
+        //             let formData = new FormData();
+        //             formData.append('id', product.id);
+        //             formData.append('name', product.name);
+        //             formData.append('price', product.price);
+        //             formData.append('cant', product.cant);
+        //             formData.append('image', product.image);
+        //             //Guardar en la BD y actualiza el estado de la informacion
+        //             productService.update(formData, product.id).then(data => {
+        //                 setProduct(emptyProduct);
+        //                 //Actualiza la lista de productos
+        //                 productService.getAll().then(data => setProducts(data));
+        //                 //Muestra sms de confirmacion
+        //                 toast.current.show({
+        //                     severity: 'success',
+        //                     summary: 'Atención!',
+        //                     detail: "Se actualizó el producto correctamente",
+        //                     life: 2000
+        //                 });
+        //                 setProductDialog(false);
+        //                 setUploadActive(false);
+        //                 setEditActive(false);
+        //             }).catch(error => {
+        //                 toast.current.show({
+        //                     severity: 'danger',
+        //                     summary: 'Atención!',
+        //                     detail: "Error al actualizar el producto",
+        //                     life: 2000
+        //                 });
+        //             });
+        //
+        //         }).catch(error => {
+        //             console.log(error);
+        //         });
+        //
+        //
+        //     } else {
+        //         // Si  se cargo ninguna nueva imagen
+        //         let formData = new FormData();
+        //         formData.append('id', product.id);
+        //         formData.append('name', product.name);
+        //         formData.append('price', product.price);
+        //         formData.append('cant', product.cant);
+        //         formData.append('image', product.image);
+        //         formData.append('image', product.image);
+        //         //Guardar en la BD y actualiza el estado de la informacion
+        //         productService.update(formData, product.id).then(data => {
+        //             setProduct(emptyProduct);
+        //             //Actualiza la lista de productos
+        //             productService.getAll().then(data => setProducts(data));
+        //             //Muestra sms de confirmacion
+        //             toast.current.show({
+        //                 severity: 'success',
+        //                 summary: 'Atención!',
+        //                 detail: "Se actualizó el producto correctamente",
+        //                 life: 2000
+        //             });
+        //             setProductDialog(false);
+        //             setUploadActive(false);
+        //             setEditActive(false);
+        //         }).catch(error => {
+        //             toast.current.show({
+        //                 severity: 'danger',
+        //                 summary: 'Atención!',
+        //                 detail: "Error al actualizar el producto",
+        //                 life: 2000
+        //             });
+        //         });
+        //     }
+        //
+        // } else {
+        //Crear Producto
+        const formData = new FormData();
+        formData.append('name', accesorio.name);
+        formData.append('price', accesorio.price);
+        formData.append('cant', accesorio.cant);
+        accesorio.files.forEach((file, i) => {
+            formData.append('files', file);
+        });
 
-            if (!uploadActive) {
-                // Si no se cargo ninguna nueva imagen
-                axios.get("http://localhost:8080/api/v1/product/image/emptyFile.png", {responseType: 'image/png'}).then(res => {
-
-                    const blob = new Blob([res.data], {type: 'image/png'});
-                    const file = new File([blob], 'emptyFile.png', {type: 'image/png'});
-                    let _product = product;
-                    _product[`${'image'}`] = file;
-                    setProduct(_product);
-                    // console.log(product);
-                    let formData = new FormData();
-                    formData.append('id', product.id);
-                    formData.append('name', product.name);
-                    formData.append('price', product.price);
-                    formData.append('cant', product.cant);
-                    formData.append('image', product.image);
-                    //Guardar en la BD y actualiza el estado de la informacion
-                    productService.update(formData, product.id).then(data => {
-                        setProduct(emptyProduct);
-                        //Actualiza la lista de productos
-                        productService.getAll().then(data => setProducts(data));
-                        //Muestra sms de confirmacion
-                        toast.current.show({
-                            severity: 'success',
-                            summary: 'Atención!',
-                            detail: "Se actualizó el producto correctamente",
-                            life: 2000
-                        });
-                        setProductDialog(false);
-                        setUploadActive(false);
-                        setEditActive(false);
-                    }).catch(error => {
-                        toast.current.show({
-                            severity: 'danger',
-                            summary: 'Atención!',
-                            detail: "Error al actualizar el producto",
-                            life: 2000
-                        });
-                    });
-
-                }).catch(error => {
-                    console.log(error);
-                });
-
-
-            } else {
-                // Si  se cargo ninguna nueva imagen
-                let formData = new FormData();
-                formData.append('id', product.id);
-                formData.append('name', product.name);
-                formData.append('price', product.price);
-                formData.append('cant', product.cant);
-                formData.append('image', product.image);
-                formData.append('image', product.image);
-                //Guardar en la BD y actualiza el estado de la informacion
-                productService.update(formData, product.id).then(data => {
-                    setProduct(emptyProduct);
-                    //Actualiza la lista de productos
-                    productService.getAll().then(data => setProducts(data));
-                    //Muestra sms de confirmacion
-                    toast.current.show({
-                        severity: 'success',
-                        summary: 'Atención!',
-                        detail: "Se actualizó el producto correctamente",
-                        life: 2000
-                    });
-                    setProductDialog(false);
-                    setUploadActive(false);
-                    setEditActive(false);
-                }).catch(error => {
-                    toast.current.show({
-                        severity: 'danger',
-                        summary: 'Atención!',
-                        detail: "Error al actualizar el producto",
-                        life: 2000
-                    });
-                });
-            }
-
-        } else {
-            //Crear Producto
-            const formData = new FormData();
-            formData.append('name', product.name);
-            formData.append('price', product.price);
-            formData.append('cant', product.cant);
-            formData.append('image', product.image);
-
-            //Guardar en la BD y actualiza el estado de la informacion
-            productService.save(formData).then(data => {
-                setProduct(emptyProduct);
-                //Actualiza la lista de productos
-                productService.getAll().then(data => setProducts(data));
-                //Muestra sms de confirmacion
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Atención!',
-                    detail: "Se creó el producto correctamente",
-                    life: 2000
-                });
-                setProductDialog(false);
-                setUploadActive(false);
-                setEditActive(false);
+        //Guardar en la BD y actualiza el estado de la informacion
+        accesorioService.save(formData).then(data => {
+            setAccesorio(emptyAccesorio);
+            //Actualiza la lista de accesorios
+            accesorioService.getAll().then(data => setAccesorios(data));
+            //Muestra sms de confirmacion
+            toast.current.show({
+                severity: 'success',
+                summary: 'Atención!',
+                detail: "Se creó el producto correctamente",
+                life: 2000
             });
-        }
+            setAccesorioDialog(false);
+            setUploadActive(false);
+            setEditActive(false);
+        }).catch((error) => {
+            toast.current.show({
+                severity: 'danger',
+                summary: 'Atención!',
+                detail: "Error al guardar el producto",
+                life: 2000
+            });
+        });
+        // }
     }; /*Crear o actualizar la informacion de un porducto*/
 
-    /*Editar la informacion de un usuario existente*/
-    const editProduct = (product) => {
+    const edit = (accesorio) => {
         setUploadActive(false);
         setEditActive(true);
-        setProduct(product);
-        setProductDialog(true);
+        setAccesorio(product);
+        setAccesorioDialog(true);
+    };/*Editar la informacion de un usuario existente*/
+
+    const confirmDeleteAccesorio = (accesorio) => {
+        setAccesorio(accesorio);
+        setDeleteAccesorioDialog(true);
     };
-    /*Editar la informacion de un usuario existente*/
 
-    const confirmDeleteProduct = (product) => {
-        setProduct(product);
-        setDeleteProductDialog(true);
-    };
+    const deleteAccesorio = () => {
+        let _accesorios = accesorios.filter((val) => val.id === accesorio.id);
+        console.log(accesorio.id);
 
-    /*Elimnar un producto*/
-    const deleteProduct = () => {
-        let _products = products.filter((val) => val.id === product.id);
-
-        productService.delete(_products[0].id).then(data => {
+        accesorioService.delete(_accesorios[0].id).then(data => {
             //Actualiza la lista de productos
-            productService.getAll().then(data => setProducts(data));
-            setDeleteProductDialog(false);
-            setSelectedProducts(false);
-            setProduct(emptyProduct);
+            accesorioService.getAll().then(data => setAccesorios(data));
+            setDeleteAccesorioDialog(false);
+            setSelectedAccesorios(false);
+            setAccesorio(emptyAccesorio);
             //Muestra sms de confirmacion
             toast.current.show({
                 severity: 'success',
@@ -301,26 +286,25 @@ export default function Producto() {
                 life: 2000
             });
         });
-    };/*Elimnar un producto*/
+    };/*Elimnar un accesorio*/
 
-    /*Abrir el dialog de confirmacion de eliminacion de los productos*/
     const confirmDeleteSelected = () => {
-        if (selectedProducts.length > 1) {
-            setDeleteProductsDialog(true);
+        if (selectedAccesorios.length > 1) {
+            setDeleteAccesoriosDialog(true);
         }
-        if (selectedProducts.length === 1) {
-            setDeleteProductDialog(true);
+        if (selectedAccesorios.length === 1) {
+            setAccesorio(selectedAccesorios[0]);
+            setDeleteAccesorioDialog(true);
         }
 
-    }; /*Abrir el dialog de confirmacion de eliminacion de los productos*/
+    }; /*Abrir el dialog de confirmacion de eliminacion de los accesorios*/
 
-    /*Eliminar varios porductos*/
-    const deleteSelectedProducts = () => {
+    const deleteSelectedAccesorios = () => {
 
-        productService.deleteAll(selectedProducts).then((data) => {
-            setProducts(data);
-            setDeleteProductsDialog(false);
-            setSelectedProducts(false);
+        accesorioService.deleteAll(selectedAccesorios).then((data) => {
+            setAccesorios(data);
+            setDeleteAccesoriosDialog(false);
+            setSelectedAccesorios(false);
             toast.current.show({
                 severity: 'success',
                 summary: '!Atención',
@@ -337,79 +321,34 @@ export default function Producto() {
         });
     };/*Eliminar varios porductos*/
 
-    /*Modifica el valor del nombre del producto*/
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
-        let _product = {...product};
+        let _accesorio = {...accesorio};
+        _accesorio[`${name}`] = val;
+        setAccesorio(_accesorio);
+    };/*Modifica el valor del nombre del accesorio*/
 
-        _product[`${name}`] = val;
-
-        setProduct(_product);
-    };/*Modifica el valor del nombre del producto*/
-
-    /*Modifica el valor de un numero especificado del producto (cant y precio)*/
     const onInputNumberChange = (e, name) => {
         const val = e.value || 0;
-        let _product = {...product};
+        let _accesorio = {...accesorio};
+        _accesorio[`${name}`] = val;
+        setAccesorio(_accesorio);
+    }; /*Modifica el valor de un numero especificado del accesorio (cant y precio)*/
 
-        _product[`${name}`] = val;
-
-        setProduct(_product);
-    }; /*Modifica el valor de un numero especificado del producto (cant y precio)*/
-
-
-    /*Barra de herramientas*/
-    const leftToolbarTemplate = () => {
-        return (
-            <div className="flex flex-wrap gap-2">
-                <Button label="Añadir" icon="pi pi-plus" severity="success" onClick={openNew}/>
-                <Button label="Eliminar" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected}
-                        disabled={!selectedProducts || !selectedProducts.length}/>
-            </div>
-        );
-    };
-
-    const rightToolbarTemplate = () => {
-        return <div>
-            <Button type="button" icon="pi pi-file" severity="info" rounded onClick={exportCSV} data-pr-tooltip="CSV"/>
-            <Button type="button" icon="pi pi-file-excel" severity="success" rounded onClick={exportExcel}
-                    data-pr-tooltip="XLS"/>
-            <Button type="button" icon="pi pi-file-pdf" severity="warning" rounded onClick={exportPdf}
-                    data-pr-tooltip="PDF"/>
-        </div>
-
-    }; /*Barra de herramientas*/
-
-
-    /*Mostrar clumnas de la tabla*/
-    const imageBodyTemplate = (rowData) => {
-        return <img src={"http://localhost:8080/api/v1/product/image/" + rowData.image} alt={rowData.name}
-                    className="shadow-2 border-round" style={{width: '64px'}}/>;
-        //return <img src={"data:image/jpeg;base64," + urlBase} alt={rowData.name} className="shadow-2 border-round" style={{ width: '64px' }} />;
-    };
-
-    const priceBodyTemplate = (rowData) => {
-        return formatCurrency(rowData.price);
-    }; /*Mostrar clumnas de la tabla*/
-
-
-    /*Acciones de cada columna de la tabla Update, Delete*/
     const actionBodyTemplate = (rowData) => {
         return (
             <React.Fragment>
-                <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => editProduct(rowData)}/>
+                <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => edit(rowData)}/>
                 <Button icon="pi pi-trash" rounded outlined severity="danger"
-                        onClick={() => confirmDeleteProduct(rowData)}/>
+                        onClick={() => confirmDeleteAccesorio(rowData)}/>
             </React.Fragment>
         );
     }; /*Acciones de cada columna de la tabla Update, Delete*/
 
-
-    /*Header de la tabla*/
     const renderHeader = () => {
         return (
             <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-                <h4 className="m-0">Manage Products</h4>
+                <h4 className="m-0">Administrar Accesorios</h4>
                 <div>
             <span className="p-input-icon-left">
                 <i className="pi pi-search"/>
@@ -421,7 +360,6 @@ export default function Producto() {
         );
     };/*Header de la tabla*/
 
-    /*Filtros*/
     const initFilters = () => {
         setFilters({
             global: {value: null, matchMode: FilterMatchMode.CONTAINS},
@@ -429,52 +367,100 @@ export default function Producto() {
             price: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
             cant: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
         });
-    };
+    };/*Filtros*/
     const clearFilter = () => {
         initFilters();
-    };
+    };/*Filtros*/
 
     const filterClearTemplate = (options) => {
         return <Button type="button" icon="pi pi-times" onClick={options.filterClearCallback}
                        severity="secondary"></Button>;
-    };
+    };/*Filtros*/
 
     const filterApplyTemplate = (options) => {
         return <Button type="button" icon="pi pi-check" onClick={options.filterApplyCallback}
                        severity="success"></Button>;
     };/*Filtros*/
 
-    /*Footer del dialog de anadir*/
-    const productDialogFooter = (
+    const accesorioDialogFooter = (
         <React.Fragment>
             <Button label="Cancelar" icon="pi pi-times" outlined onClick={hideDialog}/>
-            <Button label="Añadir" icon="pi pi-check" onClick={saveProduct}/>
+            <Button label="Añadir" icon="pi pi-check" onClick={save}/>
         </React.Fragment>
-    );    /*Footer del dialog de anadir*/
+    );/*Footer del dialog de anadir*/
 
 
-    /*Footer del dialog de eliminacion*/
-    const deleteProductDialogFooter = (
+    const deleteAccesorioDialogFooter = (
         <React.Fragment>
-            <Button label="Cancelar" icon="pi pi-times" outlined onClick={hideDeleteProductDialog}/>
-            <Button label="Aceptar" icon="pi pi-check" severity="danger" onClick={deleteProduct}/>
+            <Button label="Cancelar" icon="pi pi-times" outlined onClick={hideDeleteAccesorioDialog}/>
+            <Button label="Aceptar" icon="pi pi-check" severity="danger" onClick={deleteAccesorio}/>
         </React.Fragment>
-    );
+    );/*Footer del dialog de eliminacion de un Accesorio*/
 
-    const deleteProductsDialogFooter = (
+    const deleteAccesoriosDialogFooter = (
         <React.Fragment>
-            <Button label="Cancelar" icon="pi pi-times" outlined onClick={hideDeleteProductsDialog}/>
-            <Button label="Aceptar" icon="pi pi-check" severity="danger" onClick={deleteSelectedProducts}/>
+            <Button label="Cancelar" icon="pi pi-times" outlined onClick={hideDeleteAccesoriosDialog}/>
+            <Button label="Aceptar" icon="pi pi-check" severity="danger" onClick={deleteSelectedAccesorios}/>
         </React.Fragment>
-    ); /*Footer del dialog de eliminacion*/
+    ); /*Footer del dialog de eliminacion de varios Accesorios*/
 
 
-    /*Drag and Drop options (image)*/
     const chooseOptions = {
         icon: 'pi pi-fw pi-images',
         iconOnly: true,
         className: 'custom-choose-btn p-button-rounded p-button-outlined'
-    };
+    };/*Drag and Drop options (image)*/
+    const cancelOptions = {
+        icon: 'pi pi-fw pi-times',
+        iconOnly: true,
+        className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined'
+    };/*Drag and Drop options (image)*/
+
+    const onTemplateSelect = (e) => {
+
+        let _totalSize = totalSize;
+        let files = e.files;
+        Object.keys(files).forEach((key) => {
+            _totalSize += files[key].size || 0;
+        });
+        setTotalSize(_totalSize);
+
+        const val = e.files;
+        let _accesorio = {...accesorio};
+        _accesorio[`${'files'}`] = val;
+        setAccesorio(_accesorio);
+        setUploadActive(true);
+        setEditActive(false);
+    };/*Drag and Drop options (image)*/
+    const onTemplateRemove = (file, callback) => {
+        setTotalSize(totalSize - file.size);
+        //Eliminar de la lista el elemento
+
+        callback();
+    };/*Drag and Drop options (image)*/
+
+    const onTemplateClear = () => {
+        setTotalSize(0);
+        let _accesorio = {...accesorio};
+        _accesorio[`${'files'}`] = null;
+        setAccesorio(_accesorio);
+    };/*Drag and Drop options (image)*/
+    const headerTemplate = (options) => {
+        const {className, chooseButton, cancelButton} = options;
+        const value = totalSize / 10000;
+        const formatedValue = fileUploadRef && fileUploadRef.current ? fileUploadRef.current.formatSize(totalSize) : '0 B';
+
+        return (
+            <div className={className} style={{backgroundColor: 'transparent', display: 'flex', alignItems: 'center'}}>
+                {chooseButton}
+                {cancelButton}
+                <div className="flex align-items-center gap-3 ml-auto">
+                    <span>{formatedValue} / 1 MB</span>
+                    <ProgressBar value={value} showValue={false} style={{width: '10rem', height: '12px'}}></ProgressBar>
+                </div>
+            </div>
+        );
+    };/*Drag and Drop options (image)*/
 
     const emptyTemplate = () => {
         return (
@@ -486,28 +472,46 @@ export default function Producto() {
                     color: 'var(--surface-d)'
                 }}></i>
                 <span style={{fontSize: '1.2em', color: 'var(--text-color-secondary)'}} className="my-5">
-                    Drag and Drop Image Here
+                    Arrastra y suelta las imágenes aquí
                 </span>
             </div>
         );
     };/*Drag and Drop options (image)*/
+    const itemTemplate = (file, props) => {
+        return (
+            <div className="flex align-items-center flex-wrap">
+                <div className="flex align-items-center" style={{width: '40%'}}>
+                    <img alt={file.name} role="presentation" src={file.objectURL} width={100}/>
+                    <span className="flex flex-column text-left ml-3">
+                        {file.name}
+                        <small>{new Date().toLocaleDateString()}</small>
+                <Tag value={props.formatSize} severity="warning" className="px-3 py-2" style={{width: '50%'}}/>
+                    </span>
+                </div>
+                {/*<Tag value={props.formatSize} severity="warning" className="px-3 py-2"/>*/}
+                <Button type="button" icon="pi pi-times"
+                        className="p-button-outlined p-button-rounded p-button-danger ml-auto"
+                        onClick={() => onTemplateRemove(file, props.onRemove)}/>
+            </div>
+        );
+    };
 
     const header = renderHeader();
 
+
     return (
-        <div className="sm:relative  col p-4">
-            <div className="">
-                <Toast ref={toast}/>
-                <div className="card">
-
-                    {/* Barra de herramientas (anadir, eliminar, exportar)  */}
+        <div className="sm:relative md:relative col-12 sm:col-12 md:col lg:col p-2 ml-2 sm:ml-2">
+            <Toast ref={toast}/>
+            <div className="card grid mt-2">
+                <div className="col-12">
                     <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
-
+                </div>
+                <div className="col-12">
                     <DataTable
                         ref={dt}
-                        value={products}
-                        selection={selectedProducts}
-                        onSelectionChange={(e) => setSelectedProducts(e.value)}
+                        value={accesorios}
+                        selection={selectedAccesorios}
+                        onSelectionChange={(e) => setSelectedAccesorios(e.value)}
                         dataKey="id"
                         removableSort
                         filters={filters}
@@ -515,17 +519,19 @@ export default function Producto() {
                         paginator rows={5}
                         rowsPerPageOptions={[5, 10, 25]}
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-                        // scrollable
-                        // scrollHeight="400px"
-                        // virtualScrollerOptions={{ itemSize: 46 }} tableStyle={{ minWidth: '50rem' }}
+                        currentPageReportTemplate="Muestra {first} de {last} del {totalRecords} accesorios"
+                        scrollable
+                        scrollHeight="400px"
+                        virtualScrollerOptions={{itemSize: 46}} tableStyle={{minWidth: '50rem'}}
                         globalFilter={globalFilter}
-                        header={header}>
+                        header={header}
+                    >
                         <Column selectionMode="multiple" exportable={false}></Column>
                         <Column field="name" header="Nombre" sortable filter
                                 filterPlaceholder="Bucar por nombre"
                                 filterClear={filterClearTemplate}
-                                filterApply={filterApplyTemplate} style={{minWidth: '16rem'}}></Column>
+                                filterApply={filterApplyTemplate}
+                                style={{minWidth: '16rem'}}></Column>
                         <Column field="image" header="Imagen" body={imageBodyTemplate}></Column>
                         <Column field="price" header="Precio" sortable filter
                                 filterPlaceholder="Bucar por precio"
@@ -541,111 +547,118 @@ export default function Producto() {
                         <Column body={actionBodyTemplate} exportable={false} style={{minWidth: '12rem'}}></Column>
                     </DataTable>
                 </div>
+            </div>
 
-                <Dialog visible={productDialog} style={{width: '32rem'}}
-                        breakpoints={{'960px': '75vw', '641px': '90vw'}} header="Product Details" modal
-                        className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-                    <form id="product-form" onSubmit={saveProduct}>
-                        <div className="card flex flex-column justify-content-center align-items-center">
-                            <label>Imagen:</label>
-                            <FileUpload
-                                name="file"
-                                accept="image/*"
-                                customUpload={true}
-                                chooseLabel="Seleccionar"
-                                chooseOptions={chooseOptions}
-                                uploadLabel="Subir"
-                                cancelLabel="Cancelar"
-                                className="p-mr-2"
-                                maxFileSize={1000000}
-                                mode="basic"
-                                emptyTemplate={emptyTemplate}
-                                onSelect={(e) => {
-                                    const val = e.files[0];
-                                    let _product = {...product};
-                                    _product[`${'image'}`] = val;
-                                    setProduct(_product);
-                                    setUploadActive(true);
-                                    setEditActive(false);
-                                }}
-                            />
-                            {uploadActive && <img src={URL.createObjectURL(product.image)} alt={product.name}
-                                                  className="product-image block m-auto mt-2  h-10rem sm:h-10rem md:h-15rem lg:h-15rem xl:h-15rem { pb-3"
-                                                  style={{width: '300px'}}/>}
-                            {editActive && <img src={"http://localhost:8080/api/v1/product/image/" + product.image}
-                                                alt={product.name}
-                                                className="product-image block m-auto mt-2  h-10rem sm:h-10rem md:h-15rem lg:h-15rem xl:h-15rem { pb-3"
-                                                style={{width: '300px'}}/>}
-                            {/* {product.image && <img src={"data:image/jpeg;base64," + imagenBase64} alt={product.name} className="product-image block m-auto mt-2  h-10rem sm:h-10rem md:h-15rem lg:h-15rem xl:h-15rem { pb-3" style={{ width: '300px' }} />} */}
-                        </div>
+            <Tooltip target=".custom-choose-btn" content="Elegir" position="bottom"/>
+            <Tooltip target=".custom-cancel-btn" content="Limpiar" position="bottom"/>
 
-                        <div className="field">
+            <Dialog visible={accesorioDialog}
+                    style={{width: '32rem'}}
+                    breakpoints={{'960px': '75vw', '641px': '90vw'}}
+                    modal
+                    className="p-fluid"
+                    footer={accesorioDialogFooter}
+                    onHide={hideDialog}
+            >
 
-                            <label htmlFor="name" className="font-bold">
-                                Name
+                <form id="accesorio-form" onSubmit={save}>
+                    <div className="field">
+                        <FileUpload
+                            // ref={fileUploadRef}
+                            name="files"
+                            accept="image/*"
+                            multiple
+                            customUpload={true}
+                            className="p-mr-2"
+                            maxFileSize={1000000}
+                            mode="advanced"
+                            header={headerTemplate}
+                            onSelect={onTemplateSelect}
+                            onError={onTemplateClear}
+                            onClear={onTemplateClear}
+                            headerTemplate={headerTemplate}
+                            itemTemplate={itemTemplate}
+                            emptyTemplate={emptyTemplate}
+                            chooseOptions={chooseOptions}
+                            cancelOptions={cancelOptions}
+                            onSelect={(e) => {
+
+                                let _totalSize = totalSize;
+                                let files = e.files;
+                                Object.keys(files).forEach((key) => {
+                                    _totalSize += files[key].size || 0;
+                                });
+                                setTotalSize(_totalSize);
+
+                                const val = e.files;
+                                let _accesorio = {...accesorio};
+                                _accesorio[`${'files'}`] = val;
+                                setAccesorio(_accesorio);
+                                setUploadActive(true);
+                                setEditActive(false);
+                            }}
+                        />
+                    </div>
+
+                    <div className="field">
+
+                        <label htmlFor="name" className="font-bold">
+                            Name
+                        </label>
+                        <InputText id="name" value={accesorio.name} onChange={(e) => onInputChange(e, 'name')}
+                                   required autoFocus
+                                   className={classNames({'p-invalid': submitted && !accesorio.name})}/>
+                        {submitted && !accesorio.name && <small className="p-error">Name is required.</small>}
+                    </div>
+
+                    <div className="formgrid grid">
+                        <div className="field col">
+                            <label htmlFor="price" className="font-bold">
+                                Price
                             </label>
-                            <InputText id="name" value={product.name} onChange={(e) => onInputChange(e, 'name')}
-                                       required autoFocus
-                                       className={classNames({'p-invalid': submitted && !product.name})}/>
-                            {submitted && !product.name && <small className="p-error">Name is required.</small>}
+                            <InputNumber id="price" value={accesorio.price}
+                                         onValueChange={(e) => onInputNumberChange(e, 'price')} mode="currency"
+                                         currency="USD" locale="en-US"/>
+                            <Slider value={accesorio.price} onChange={(e) => onInputNumberChange(e, 'price')}
+                                    className="w-full"/>
                         </div>
-
-                        {/*<div className="field">
-                    <label htmlFor="description" className="font-bold">
-                        Description
-                    </label>
-                    <InputTextarea id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
-                </div>  */}
-
-                        <div className="formgrid grid">
-                            <div className="field col">
-                                <label htmlFor="price" className="font-bold">
-                                    Price
-                                </label>
-                                <InputNumber id="price" value={product.price}
-                                             onValueChange={(e) => onInputNumberChange(e, 'price')} mode="currency"
-                                             currency="USD" locale="en-US"/>
-                                <Slider value={product.price} onChange={(e) => onInputNumberChange(e, 'price')}
-                                        className="w-full"/>
-                            </div>
-                            <div className="field col">
-                                <label htmlFor="cant" className="font-bold">
-                                    Cantidad
-                                </label>
-                                <InputNumber id="cant" value={product.cant}
-                                             onValueChange={(e) => onInputNumberChange(e, 'cant')}/>
-                                <Slider value={product.cant} onChange={(e) => onInputNumberChange(e, 'cant')}
-                                        className="w-full"/>
-                            </div>
+                        <div className="field col">
+                            <label htmlFor="cant" className="font-bold">
+                                Cantidad
+                            </label>
+                            <InputNumber id="cant" value={accesorio.cant}
+                                         onValueChange={(e) => onInputNumberChange(e, 'cant')}/>
+                            <Slider value={accesorio.cant} onChange={(e) => onInputNumberChange(e, 'cant')}
+                                    className="w-full"/>
                         </div>
-                    </form>
-                </Dialog>
+                    </div>
+                </form>
+            </Dialog>
 
-                <Dialog visible={deleteProductDialog} style={{width: '32rem'}}
-                        breakpoints={{'960px': '75vw', '641px': '90vw'}} header="Confirm" modal
-                        footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
-                    <div className="confirmation-content">
-                        <i className="pi pi-exclamation-triangle mr-3" style={{fontSize: '2rem'}}/>
-                        {product && (
-                            <span>
+
+            <Dialog visible={deleteAccesorioDialog} style={{width: '32rem'}}
+                    breakpoints={{'960px': '75vw', '641px': '90vw'}} header="Confirm" modal
+                    footer={deleteAccesorioDialogFooter} onHide={hideDeleteAccesorioDialog}>
+                <div className="confirmation-content">
+                    <i className="pi pi-exclamation-triangle mr-3" style={{fontSize: '2rem'}}/>
+                    {accesorio && (
+                        <span>
                             ¿ Esta seguro que desea eliminar  este producto ?
                         </span>
-                        )}
-                    </div>
-                </Dialog>
+                    )}
+                </div>
+            </Dialog>
 
-                <Dialog visible={deleteProductsDialog} style={{width: '32rem'}}
-                        breakpoints={{'960px': '75vw', '641px': '90vw'}} header="Confirm" modal
-                        footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
-                    <div className="confirmation-content">
-                        <i className="pi pi-exclamation-triangle mr-3" style={{fontSize: '2rem'}}/>
-                        {product && <span>"¿Esta seguro que desea eliminar los productos seleccionados?</span>}
-                    </div>
-                </Dialog>
-            </div>
+            <Dialog visible={deleteAccesoriosDialog} style={{width: '32rem'}}
+                    breakpoints={{'960px': '75vw', '641px': '90vw'}} header="Confirm" modal
+                    footer={deleteAccesoriosDialogFooter} onHide={hideDeleteAccesoriosDialog}>
+                <div className="confirmation-content">
+                    <i className="pi pi-exclamation-triangle mr-3" style={{fontSize: '2rem'}}/>
+                    {accesorio && <span>"¿Esta seguro que desea eliminar los productos seleccionados?</span>}
+                </div>
+            </Dialog>
+
         </div>
 
-    )
-
-
+    );
 }
