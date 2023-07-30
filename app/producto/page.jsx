@@ -60,7 +60,6 @@ export default function Ventas() {
     const fileUploadRef = useRef(null);
 
     /*Confirmacion de que imgaen mostrar*/
-    const [uploadActive, setUploadActive] = useState(false); // si esta activo ese se muesta la imagen cargada en el cliente
     const [editActive, setEditActive] = useState(false); // si esta activo ese se muesta la imagen que proviene del servidor
     /*Confirmacion de que imgaen mostrar*/
 
@@ -82,7 +81,6 @@ export default function Ventas() {
         setAccesorio(emptyAccesorio);
         setSubmitted(false);
         setAccesorioDialog(true);
-        setUploadActive(false);
         setEditActive(false);
     }; /*Abrir nueva ventana para crear un accesorio*/
 
@@ -131,128 +129,80 @@ export default function Ventas() {
     const save = () => {
         setSubmitted(true);
 
-        // if (product.id !== null) {
-        //     //Actualizar Producto
-        //
-        //     if (!uploadActive) {
-        //         // Si no se cargo ninguna nueva imagen
-        //         axios.get("http://localhost:8080/api/v1/product/image/emptyFile.png", {responseType: 'image/png'}).then(res => {
-        //
-        //             const blob = new Blob([res.data], {type: 'image/png'});
-        //             const file = new File([blob], 'emptyFile.png', {type: 'image/png'});
-        //             let _product = product;
-        //             _product[`${'image'}`] = file;
-        //             setProduct(_product);
-        //             // console.log(product);
-        //             let formData = new FormData();
-        //             formData.append('id', product.id);
-        //             formData.append('name', product.name);
-        //             formData.append('price', product.price);
-        //             formData.append('cant', product.cant);
-        //             formData.append('image', product.image);
-        //             //Guardar en la BD y actualiza el estado de la informacion
-        //             productService.update(formData, product.id).then(data => {
-        //                 setProduct(emptyProduct);
-        //                 //Actualiza la lista de productos
-        //                 productService.getAll().then(data => setProducts(data));
-        //                 //Muestra sms de confirmacion
-        //                 toast.current.show({
-        //                     severity: 'success',
-        //                     summary: 'Atención!',
-        //                     detail: "Se actualizó el producto correctamente",
-        //                     life: 2000
-        //                 });
-        //                 setProductDialog(false);
-        //                 setUploadActive(false);
-        //                 setEditActive(false);
-        //             }).catch(error => {
-        //                 toast.current.show({
-        //                     severity: 'danger',
-        //                     summary: 'Atención!',
-        //                     detail: "Error al actualizar el producto",
-        //                     life: 2000
-        //                 });
-        //             });
-        //
-        //         }).catch(error => {
-        //             console.log(error);
-        //         });
-        //
-        //
-        //     } else {
-        //         // Si  se cargo ninguna nueva imagen
-        //         let formData = new FormData();
-        //         formData.append('id', product.id);
-        //         formData.append('name', product.name);
-        //         formData.append('price', product.price);
-        //         formData.append('cant', product.cant);
-        //         formData.append('image', product.image);
-        //         formData.append('image', product.image);
-        //         //Guardar en la BD y actualiza el estado de la informacion
-        //         productService.update(formData, product.id).then(data => {
-        //             setProduct(emptyProduct);
-        //             //Actualiza la lista de productos
-        //             productService.getAll().then(data => setProducts(data));
-        //             //Muestra sms de confirmacion
-        //             toast.current.show({
-        //                 severity: 'success',
-        //                 summary: 'Atención!',
-        //                 detail: "Se actualizó el producto correctamente",
-        //                 life: 2000
-        //             });
-        //             setProductDialog(false);
-        //             setUploadActive(false);
-        //             setEditActive(false);
-        //         }).catch(error => {
-        //             toast.current.show({
-        //                 severity: 'danger',
-        //                 summary: 'Atención!',
-        //                 detail: "Error al actualizar el producto",
-        //                 life: 2000
-        //             });
-        //         });
-        //     }
-        //
-        // } else {
-        //Crear Producto
-        const formData = new FormData();
-        formData.append('name', accesorio.name);
-        formData.append('price', accesorio.price);
-        formData.append('cant', accesorio.cant);
-        accesorio.files.forEach((file, i) => {
-            formData.append('files', file);
-        });
+        if (accesorio.id !== null) {
+            //Actualizar Producto
+            const formData = new FormData();
+            formData.append('id', accesorio.id);
+            formData.append('name', accesorio.name);
+            formData.append('price', accesorio.price);
+            formData.append('cant', accesorio.cant);
+            accesorio.files.forEach((file, i) => {
+                formData.append('files', file);
+            });
 
-        //Guardar en la BD y actualiza el estado de la informacion
-        accesorioService.save(formData).then(data => {
-            setAccesorio(emptyAccesorio);
-            //Actualiza la lista de accesorios
-            accesorioService.getAll().then(data => setAccesorios(data));
-            //Muestra sms de confirmacion
-            toast.current.show({
-                severity: 'success',
-                summary: 'Atención!',
-                detail: "Se creó el producto correctamente",
-                life: 2000
+            //Guardar en la BD y actualiza el estado de la informacion
+            accesorioService.update(formData, accesorio.id).then(data => {
+                setAccesorio(emptyAccesorio);
+                //Actualiza la lista de accesorios
+                accesorioService.getAll().then(data => setAccesorios(data));
+                //Muestra sms de confirmacion
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Atención!',
+                    detail: "Se actualizó el producto correctamente",
+                    life: 2000
+                });
+                setAccesorioDialog(false);
+                setEditActive(false);
+                setSelectedAccesorios(null);
+            }).catch((error) => {
+                toast.current.show({
+                    severity: 'danger',
+                    summary: 'Atención!',
+                    detail: "Error al actualizar el producto",
+                    life: 2000
+                });
             });
-            setAccesorioDialog(false);
-            setUploadActive(false);
-            setEditActive(false);
-        }).catch((error) => {
-            toast.current.show({
-                severity: 'danger',
-                summary: 'Atención!',
-                detail: "Error al guardar el producto",
-                life: 2000
+
+        } else {
+            //Crear Producto
+            const formData = new FormData();
+            formData.append('name', accesorio.name);
+            formData.append('price', accesorio.price);
+            formData.append('cant', accesorio.cant);
+            accesorio.files.forEach((file, i) => {
+                formData.append('files', file);
             });
-        });
-        // }
+
+            //Guardar en la BD y actualiza el estado de la informacion
+            accesorioService.save(formData).then(data => {
+                setAccesorio(emptyAccesorio);
+                //Actualiza la lista de accesorios
+                accesorioService.getAll().then(data => setAccesorios(data));
+                //Muestra sms de confirmacion
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Atención!',
+                    detail: "Se creó el producto correctamente",
+                    life: 2000
+                });
+                setAccesorioDialog(false);
+                setEditActive(false);
+                setSelectedAccesorios(null);
+            }).catch((error) => {
+                toast.current.show({
+                    severity: 'danger',
+                    summary: 'Atención!',
+                    detail: "Error al guardar el producto",
+                    life: 2000
+                });
+            });
+        }
     }; /*Crear o actualizar la informacion de un porducto*/
 
     const edit = (accesorio) => {
-        setUploadActive(false);
         setEditActive(true);
-        setAccesorio(product);
+        setAccesorio(accesorio);
         setAccesorioDialog(true);
     };/*Editar la informacion de un usuario existente*/
 
@@ -263,7 +213,6 @@ export default function Ventas() {
 
     const deleteAccesorio = () => {
         let _accesorios = accesorios.filter((val) => val.id === accesorio.id);
-        console.log(accesorio.id);
 
         accesorioService.delete(_accesorios[0].id).then(data => {
             //Actualiza la lista de productos
@@ -385,7 +334,7 @@ export default function Ventas() {
     const accesorioDialogFooter = (
         <React.Fragment>
             <Button label="Cancelar" icon="pi pi-times" outlined onClick={hideDialog}/>
-            <Button label="Añadir" icon="pi pi-check" onClick={save}/>
+            <Button label={editActive ? "Actualizar" : "Añadir"} icon="pi pi-check" onClick={save}/>
         </React.Fragment>
     );/*Footer del dialog de anadir*/
 
@@ -430,7 +379,6 @@ export default function Ventas() {
         let _accesorio = {...accesorio};
         _accesorio[`${'files'}`] = val;
         setAccesorio(_accesorio);
-        setUploadActive(true);
         setEditActive(false);
     };/*Drag and Drop options (image)*/
     const onTemplateRemove = (file, callback) => {
@@ -438,13 +386,13 @@ export default function Ventas() {
         //Eliminar de la lista el elemento
         let objetoElimnmar = accesorio.files.find(objeto => objeto === file); //Comprobamos que el objeto existe en la lista
         let indiceAEiminar = accesorio.files.indexOf(objetoElimnmar); //Buscamos su indice exacto
-        accesorio.files.splice(indiceAEiminar,1); //Eliminamos este objeto pasando su indice y la cant de elemntos a elimnar despues de el
+        accesorio.files.splice(indiceAEiminar, 1); //Eliminamos este objeto pasando su indice y la cant de elemntos a elimnar despues de el
         callback();
     };/*Drag and Drop options (image)*/
 
     const onTemplateClear = () => {
         setTotalSize(0);
-        accesorio.files=[];
+        accesorio.files = [];
     };/*Drag and Drop options (image)*/
     const headerTemplate = (options) => {
         const {className, chooseButton, cancelButton} = options;
@@ -495,9 +443,9 @@ export default function Ventas() {
                         onClick={() => onTemplateRemove(file, props.onRemove)}/>
             </div>
         );
-    };
+    };/*Drag and Drop options (image)*/
 
-    const header = renderHeader();
+    const header = renderHeader();/*Header de la tabla*/
 
 
     return (
@@ -595,8 +543,6 @@ export default function Ventas() {
                                 let _accesorio = {...accesorio};
                                 _accesorio[`${'files'}`] = val;
                                 setAccesorio(_accesorio);
-                                setUploadActive(true);
-                                setEditActive(false);
                             }}
                         />
                     </div>
