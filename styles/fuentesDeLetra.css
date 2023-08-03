@@ -1,0 +1,31 @@
+@font-face {
+  font-family: rm_18-19;
+  font-weight: normal;
+  font-style: normal;
+  src: url(./fuentes_de_letra/RealMadrid18-19.woff2);
+}
+
+.font-rm_18-19{
+    font-family: rm_18-19;
+}
+
+@font-face {
+  font-family: rm_19-20;
+  font-weight: normal;
+  font-style: normal;
+  src: url(./fuentes_de_letra/RealMadrid1920Regular.woff2);
+}
+.font-rm_19-20{
+    font-family: rm_19-20;
+}
+
+@font-face {
+  font-family: rm_21-22;
+  font-weight: normal;
+  font-style: normal;
+  src: url(./fuentes_de_letra/RealMadrid2022.woff2);
+}
+
+.font-rm_21-22 {
+  font-family: rm_21-22;
+}

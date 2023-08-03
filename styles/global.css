@@ -1,8 +1,13 @@
 :root {
 
 }
-body{
-    /*height: 100vh;*/
+
+html {
+    heigth: 100%;
+}
+
+body {
+    /*min-height: 100%;*/
     /*width: 100vw;*/
     margin: 0px;
     padding: 0px
@@ -19,10 +24,13 @@ body{
 .text-color-items {
     color: #212529 !important;
 }
+
 /*items sidebar*/
-.text-color-blue{
-    color:#0103b9;
-}/*items sidebar*/
+.text-color-blue {
+    color: #0103b9;
+}
+
+/*items sidebar*/
 
 .topbar-items {
     background-color: #ffffff !important;
@@ -31,13 +39,17 @@ body{
 }
 
 /*items sidebar*/
-.text-color-blue-2m{
-    color:#0103b9;
+.text-color-blue-2m {
+    /*color: #0103b9;*/
+ color: #000;
 }
+
 .link-hover:hover {
     background-color: #0104bc;
     color: #ffffff;
-}/*items sidebar*/
+}
+
+/*items sidebar*/
 
 /*Links sidebar*/
 
@@ -48,17 +60,46 @@ overflow-x-auto {
 .overflow-y-auto {
     overflow-y: auto;
 }
+
 /*Movile topbar*/
 .top-3rem {
     top: 3rem !important;
 }
+
 @media screen and (min-width: 576px) {
     .sm\:top-3rem {
         top: 3rem !important;
     }
 }
+
 @media screen and (min-width: 768px) {
     .md\:top-100px {
         top: 96px !important;
     }
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+menu li {
+    padding: 10px;
+}
+.menu li.dropdown{
+    position: relative;
+}
+.menu li.dropdown .submenu{
+    list-style: none;
+    padding: 10px;
+    /*background-color: #0103b9;*/
+}
+
+.menu li.dropdown .submenu li:last-child{
+    margin-bottom: 0;
+}
+menu li.dropdown:hover .submenu {
+    display: block;
 }

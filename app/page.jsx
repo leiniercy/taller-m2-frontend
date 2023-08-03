@@ -1,11 +1,5 @@
 "use client"
 
-//Styles primereact
-import "primereact/resources/themes/lara-light-indigo/theme.css";
-import "primereact/resources/primereact.min.css";
-import 'primeicons/primeicons.css';
-import 'primeflex/primeflex.css';
-
 //Componentes
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Button } from 'primereact/button';
@@ -17,7 +11,7 @@ export default function Home() {
 
 
     return (
-        <div className="sm:relative sm:col-12 md:col p-4 sm:p-4 ">
+        <div className="sm:relative sm:col-12 md:col p-4 sm:p-4">
             <div className="grid">
                 <div className="col-12 lg:col-6 xl:col-3">
                     <div className="bg-gray-items card mb-0 p-3 border-round">
