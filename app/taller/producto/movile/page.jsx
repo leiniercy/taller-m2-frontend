@@ -2,7 +2,6 @@
 
 import React, {useState, useEffect, useRef} from 'react';
 
-
 //Components
 import MovileService from "@services/MovileServie";
 import Tools from "@components/pages/Product/Tools";
@@ -12,12 +11,11 @@ import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
 
 //primereact
-import {InputText} from "primereact/inputtext";
+import {Fieldset} from 'primereact/fieldset';
 import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
 import {Tag} from "primereact/tag";
-
 
 
 export default function Movile(props) {
@@ -103,11 +101,11 @@ export default function Movile(props) {
 
     const confirmDeleteSelected = () => {
         if (selectedMoviles.length > 1) {
-                setDeleteMovilesDialog(true);
+            setDeleteMovilesDialog(true);
         }
         if (selectedMoviles.length === 1) {
             setMovile(selectedMoviles[0]);
-             setDeleteMovileDialog(true);
+            setDeleteMovileDialog(true);
         }
     }; /*Abrir el dialog de confirmacion de eliminacion de los objetos*/
 
@@ -119,10 +117,10 @@ export default function Movile(props) {
         return (
             <React.Fragment>
                 <Button icon="pi pi-pencil" rounded outlined className="mr-2"
-                    onClick={() => edit(rowData)}
+                        onClick={() => edit(rowData)}
                 />
                 <Button icon="pi pi-trash" rounded outlined severity="danger"
-                     onClick={() => confirmDeleteMovile(rowData)}
+                        onClick={() => confirmDeleteMovile(rowData)}
                 />
             </React.Fragment>
         );
@@ -366,34 +364,43 @@ export default function Movile(props) {
         });
     };/*Eliminar varios objetos*/
 
+    const legendTemplate = (<div className="flex align-items-center ">
+        <span className="pi pi-user mr-2"></span>
+        <span className="font-bold text-lg">Dispositivos moviles</span>
+    </div>);
 
     return (
         <div className="sm:relative md:relative col-12 sm:col-12 md:col lg:col p-2 ml-2 sm:ml-2">
             <Toast ref={toast}/>
             <div className="card grid mt-2">
-                <div className="col-12">
-                    <Tools
-                        openNew={openNew}
-                        confirmDeleteSelected={confirmDeleteSelected}
-                        selectedObjects={selectedMoviles}
-                        objects={moviles}
-                        columns={columns}
-                        dt={dt}
-                        fileName={'movile'}
-                    /> {/*barra de herramientas*/}
-                </div>
-                <div className="col-12">
-                    <Table
-                        headerLabel={'moviles'}
-                        dt={dt}
-                        objects={moviles}
-                        selectedObjects={selectedMoviles}
-                        setSelectedObject={onSelectionChangeSelectedObjects}
-                        emptyFilters={emptyFilters}
-                        globalFilterFields={globalFilterFields}
-                        actionBodyTemplate={actionBodyTemplate}
-                    />
-                </div>
+                <Fieldset legend={legendTemplate} className="col-12">
+                    <div className="col-12">
+                        <Tools
+                            openNew={openNew}
+                            confirmDeleteSelected={confirmDeleteSelected}
+                            selectedObjects={selectedMoviles}
+                            objects={moviles}
+                            columns={columns}
+                            dt={dt}
+                            fileName={'movile'}
+                        /> {/*barra de herramientas*/}
+                    </div>
+                    <div className="col-12">
+
+                        <Table
+                            headerLabel={'moviles'}
+                            dt={dt}
+                            objects={moviles}
+                            selectedObjects={selectedMoviles}
+                            setSelectedObject={onSelectionChangeSelectedObjects}
+                            emptyFilters={emptyFilters}
+                            globalFilterFields={globalFilterFields}
+                            actionBodyTemplate={actionBodyTemplate}
+                        />
+
+                    </div>
+                </Fieldset>
+
                 <DialogForm
                     visible={movileDialog}
                     submitted={submitted}
@@ -420,10 +427,10 @@ export default function Movile(props) {
                 />
 
                 <DeleteProductsDialog
-                 visible={deleteMovilesDialog}
-                 hideDialog={hideDeleteMovilesDialog}
-                 delete={deleteSelectedMoviles}
-                 object={movile}
+                    visible={deleteMovilesDialog}
+                    hideDialog={hideDeleteMovilesDialog}
+                    delete={deleteSelectedMoviles}
+                    object={movile}
                 />
 
             </div>
