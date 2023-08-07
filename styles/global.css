@@ -78,6 +78,17 @@ overflow-x-auto {
     }
 }
 
+@media screen and (min-width: 992px) {
+    /*lg\:h-300px{*/
+
+    /*}*/
+
+}
+
+@media screen and (min-width: 1200px) {
+    /*xl*/
+}
+
 .menu {
     display: flex;
     flex-direction: column;
@@ -85,12 +96,15 @@ overflow-x-auto {
     padding: 0;
     margin: 0;
 }
+
 menu li {
     padding: 10px;
 }
+
 .menu li.dropdown{
     position: relative;
 }
+
 .menu li.dropdown .submenu{
     list-style: none;
     padding: 10px;
@@ -100,6 +114,7 @@ menu li {
 .menu li.dropdown .submenu li:last-child{
     margin-bottom: 0;
 }
+
 menu li.dropdown:hover .submenu {
     display: block;
 }

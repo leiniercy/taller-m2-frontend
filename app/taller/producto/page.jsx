@@ -32,7 +32,7 @@ import {FilterMatchMode, FilterOperator} from 'primereact/api';
 import Exportlayout from "@components/pages/Accesorio/Exportlayout";
 
 
-export default function Ventas() {
+export default function Producto() {
 
     let emptyAccesorio = {
         id: null,

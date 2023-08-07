@@ -21,7 +21,7 @@ const AppMenu = () => {
         <ul className="menu">
             <li className="mt-2">
                 <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                   href="/"><i
+                   href="/taller"><i
                     className="pi pi-home"></i> Inicio</a>
             </li>
 
@@ -71,7 +71,7 @@ const AppMenu = () => {
             </li>
             <li>
                 <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                   href="/cliente"><i
+                   href="/taller/cliente"><i
                     className="pi pi-user"></i> Clientes</a>
             </li>
         </ul>
