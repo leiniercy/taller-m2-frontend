@@ -16,6 +16,7 @@ import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
 import {Tag} from "primereact/tag";
+import FieldsMovile from "@components/pages/Product/Movile/FieldsMovile";
 
 
 export default function Movile(props) {
@@ -364,6 +365,16 @@ export default function Movile(props) {
         });
     };/*Eliminar varios objetos*/
 
+    const formFields = (
+        <FieldsMovile
+            submitted={submitted}
+            object={movile}
+            onInputTextChange={onInputTextChange}
+            onInputNumberChange={onInputNumberChange}
+            onCheckBoxChange={onCheckBoxChange}
+        />
+    );//Campos especificos del formulario
+
     const legendTemplate = (<div className="flex align-items-center ">
         <span className="pi pi-user mr-2"></span>
         <span className="font-bold text-lg">Dispositivos moviles</span>
@@ -416,7 +427,7 @@ export default function Movile(props) {
                     itemTemplate={itemTemplate}
                     onInputTextChange={onInputTextChange}
                     onInputNumberChange={onInputNumberChange}
-                    onCheckBoxChange={onCheckBoxChange}
+                    otherfields={formFields}
                 />
 
                 <DeleteProductDialog

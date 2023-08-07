@@ -16,6 +16,7 @@ import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
 import {Tag} from "primereact/tag";
+import FieldsCharjer from "@components/pages/Product/Charger/FieldsCharjer";
 
 
 export default function Charger(props) {
@@ -118,16 +119,8 @@ export default function Charger(props) {
             formData.append('name', charger.name);
             formData.append('price', charger.price);
             formData.append('cant', charger.cant);
-            formData.append('sizeStorage', charger.sizeStorage);
-            formData.append('ram', charger.ram);
-            formData.append('camaraTrasera', charger.camaraTrasera);
-            formData.append('camaraFrontal', charger.camaraFrontal);
-            formData.append('banda2G', charger.banda2G);
-            formData.append('banda3G', charger.banda3G);
-            formData.append('banda4G', charger.banda4G);
-            formData.append('banda5G', charger.banda5G);
-            formData.append('bateria', charger.bateria);
-
+            formData.append('connectorType', charger.connectorType);
+            formData.append('compatibleDevice', charger.compatibleDevice);
             charger.files.forEach((file, i) => {
                 formData.append('files', file);
             });
@@ -162,15 +155,8 @@ export default function Charger(props) {
             formData.append('name', charger.name);
             formData.append('price', charger.price);
             formData.append('cant', charger.cant);
-            formData.append('sizeStorage', charger.sizeStorage);
-            formData.append('ram', charger.ram);
-            formData.append('camaraTrasera', charger.camaraTrasera);
-            formData.append('camaraFrontal', charger.camaraFrontal);
-            formData.append('banda2G', charger.banda2G);
-            formData.append('banda3G', charger.banda3G);
-            formData.append('banda4G', charger.banda4G);
-            formData.append('banda5G', charger.banda5G);
-            formData.append('bateria', charger.bateria);
+            formData.append('connectorType', charger.connectorType);
+            formData.append('compatibleDevice', charger.compatibleDevice);
             charger.files.forEach((file, i) => {
                 formData.append('files', file);
             });
@@ -209,9 +195,9 @@ export default function Charger(props) {
 
     const onTemplateSelect = (e) => {
         const val = e.files;
-        let charger = {...charger};
-        charger[`${'files'}`] = val;
-        setCharger(charger);
+        let _charger = {...charger};
+        _charger[`${'files'}`] = val;
+        setCharger(_charger);
     };/*Drag and Drop options (image)*/
     const onTemplateRemove = (file, callback) => {
         //Eliminar de la lista el elemento
@@ -342,6 +328,14 @@ export default function Charger(props) {
         });
     };/*Eliminar varios objetos*/
 
+    const formFields = (
+        <FieldsCharjer
+            submitted={submitted}
+            object={charger}
+            onInputTextChange={onInputTextChange}
+        />
+    );//Campos especificos del formulario
+
     const legendTemplate = (<div className="flex align-items-center ">
         <span className="pi pi-user mr-2"></span>
         <span className="font-bold text-lg">Dispositivos de carga</span>
@@ -394,7 +388,7 @@ export default function Charger(props) {
                     itemTemplate={itemTemplate}
                     onInputTextChange={onInputTextChange}
                     onInputNumberChange={onInputNumberChange}
-                    onCheckBoxChange={onCheckBoxChange}
+                    otherfields={formFields}
                 />
 
                 <DeleteProductDialog

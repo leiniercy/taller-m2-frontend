@@ -101,11 +101,9 @@ export default function DialogForm(props) {
                                 className="w-full"/>
                     </div>
                 </div>
-                <FieldsMovile
-                    object={props.object}
-                    onInputNumberChange={props.onInputNumberChange}
-                    onCheckBoxChange={props.onCheckBoxChange}
-                />
+
+                {props.otherfields}
+
             </form>
         </Dialog>
     );

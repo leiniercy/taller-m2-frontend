@@ -106,7 +106,7 @@ export default function FieldsMovile(props) {
                 <label htmlFor="bateria" className="font-bold">
                     Batería
                 </label>
-                <InputNumber id="ram"
+                <InputNumber id="bateria"
                              suffix=" días"
                              min={0} max={100}
                              value={props.object.bateria}

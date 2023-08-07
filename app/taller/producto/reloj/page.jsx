@@ -16,6 +16,7 @@ import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
 import {Tag} from "primereact/tag";
+import FieldsReloj from "@components/pages/Product/Reloj/FieldsReloj";
 
 
 export default function Reloj(props) {
@@ -122,16 +123,9 @@ export default function Reloj(props) {
             formData.append('name', reloj.name);
             formData.append('price', reloj.price);
             formData.append('cant', reloj.cant);
-            formData.append('sizeStorage', reloj.sizeStorage);
-            formData.append('ram', reloj.ram);
-            formData.append('camaraTrasera', reloj.camaraTrasera);
-            formData.append('camaraFrontal', reloj.camaraFrontal);
-            formData.append('banda2G', reloj.banda2G);
-            formData.append('banda3G', reloj.banda3G);
-            formData.append('banda4G', reloj.banda4G);
-            formData.append('banda5G', reloj.banda5G);
-            formData.append('bateria', reloj.bateria);
-
+            formData.append('specialFeature', reloj.specialFeature);
+            formData.append('compatibleDevice', reloj.compatibleDevice);
+            formData.append('bateryLife', reloj.bateryLife);
             reloj.files.forEach((file, i) => {
                 formData.append('files', file);
             });
@@ -166,15 +160,9 @@ export default function Reloj(props) {
             formData.append('name', reloj.name);
             formData.append('price', reloj.price);
             formData.append('cant', reloj.cant);
-            formData.append('sizeStorage', reloj.sizeStorage);
-            formData.append('ram', reloj.ram);
-            formData.append('camaraTrasera', reloj.camaraTrasera);
-            formData.append('camaraFrontal', reloj.camaraFrontal);
-            formData.append('banda2G', reloj.banda2G);
-            formData.append('banda3G', reloj.banda3G);
-            formData.append('banda4G', reloj.banda4G);
-            formData.append('banda5G', reloj.banda5G);
-            formData.append('bateria', reloj.bateria);
+            formData.append('specialFeature', reloj.specialFeature);
+            formData.append('compatibleDevice', reloj.compatibleDevice);
+            formData.append('bateryLife', reloj.bateryLife);
             reloj.files.forEach((file, i) => {
                 formData.append('files', file);
             });
@@ -213,9 +201,9 @@ export default function Reloj(props) {
 
     const onTemplateSelect = (e) => {
         const val = e.files;
-        let reloj = {...reloj};
-        reloj[`${'files'}`] = val;
-        setReloj(reloj);
+        let _reloj = {...reloj};
+        _reloj[`${'files'}`] = val;
+        setReloj(_reloj);
     };/*Drag and Drop options (image)*/
     const onTemplateRemove = (file, callback) => {
         //Eliminar de la lista el elemento
@@ -346,6 +334,15 @@ export default function Reloj(props) {
         });
     };/*Eliminar varios objetos*/
 
+    const formFields = (
+        <FieldsReloj
+            submitted={submitted}
+            object={reloj}
+            onInputTextChange={onInputTextChange}
+            onInputNumberChange={onInputNumberChange}
+        />
+    );//Campos especificos del formulario
+
     const legendTemplate = (<div className="flex align-items-center ">
         <span className="pi pi-user mr-2"></span>
         <span className="font-bold text-lg">Relojes inteligentes</span>
@@ -398,7 +395,7 @@ export default function Reloj(props) {
                     itemTemplate={itemTemplate}
                     onInputTextChange={onInputTextChange}
                     onInputNumberChange={onInputNumberChange}
-                    onCheckBoxChange={onCheckBoxChange}
+                    otherfields={formFields}
                 />
 
                 <DeleteProductDialog
