@@ -6,6 +6,10 @@ export default class ProductService {
         return axios.get(this.baseUrl+"all").then(res => res.data);
     }
 
+    getAllProducts(){
+        return axios.get(this.baseUrl+"allProducts").then(res => res.data);
+    }
+
     save(formData){
         return axios.post(this.baseUrl +"save",formData).then(res => res.data);
     }

@@ -34,7 +34,7 @@ const AppMenu = () => {
                     <ul className="submenu">
                         <li className="">
                             <a className="block no-underline text-xl pl-3 py-3 pr-2  border-round link-hover text-color-blue-2m"
-                               href="/taller/producto"><i
+                               href="/taller/producto/accesorio"><i
                                 className="pi pi-amazon"></i> Accesorios</a>
                         </li>
                         <li className="">
