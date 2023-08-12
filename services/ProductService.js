@@ -5,9 +5,11 @@ export default class ProductService {
     getAll(){
         return axios.get(this.baseUrl+"all").then(res => res.data);
     }
-
     getAllProducts(){
         return axios.get(this.baseUrl+"allProducts").then(res => res.data);
+    }
+    getAllProductsCantThanCero(){
+        return axios.get(this.baseUrl+"allProduct-cant").then(res => res.data);
     }
     getCant() {
         return axios.get(this.baseUrl + "getCant").then(res => res.data);

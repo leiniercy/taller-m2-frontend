@@ -38,7 +38,8 @@ export default function Ventas() {
     const toast = useRef(null);
     const [customer, setCustomer] = useState(emptyCustomer);
 
-    const [products, setProducts] = useState(null);
+    const [productsForm, setProductsForm] = useState(null);
+    const [productsTable, setProductsTable] = useState(null);
     const [customers, setCustomers] = useState(null);
 
     const [date, setDate] = useState(null);
@@ -53,8 +54,6 @@ export default function Ventas() {
     const [submittedSale, setSubmittedSale] = useState(false);
     const [saleDialog, setSaleDialog] = useState(false);
     const [customerDialog, setCustomerDialog] = useState(false)
-    const [errorSaveSell, setErrorSaveSell] = useState(false);
-
 
     const productService = new ProductService();
     const customerService = new CustomerService();
@@ -62,19 +61,19 @@ export default function Ventas() {
 
 
     useEffect(() => {
-        productService.getAll().then((data) => setProducts(data));
+        productService.getAll().then((data) => setProductsTable(data));
+        productService.getAllProductsCantThanCero().then((data) => setProductsForm(data));
         customerService.getAll().then((data) => setCustomers(data));
     });
     const openNewDialogSale = () => {
         setSubmittedSale(false);
-        setErrorSaveSell(false);
+        setDescriptions(null);
+        setPrices(null);
         setSelectedTaller(null);
         setDate(null);
         setSelectedCustomer(null);
         setSelectedProducts(null);
         setQuantities(null);
-        setDescriptions(null);
-        setPrices(null);
         setSaleDialog(true);
     }; //Abrir nueva ventana para crear un objeto
     const openNewDialogCustomer = () => {
@@ -85,7 +84,6 @@ export default function Ventas() {
     const hideDialogSale = (e) => {
         setSaleDialog(false);
         setSubmittedSale(false);
-        setErrorSaveSell(false);
         setSelectedTaller(null);
         setDate(null);
         setSelectedCustomer(null);
@@ -165,45 +163,45 @@ export default function Ventas() {
     const saveSale = () => {
         setSubmittedSale(true);
 
-        for(let i=0; i < selectedProducts.length && !errorSaveSell; i++){
-            for(let j=0; j < quantities[i] && !errorSaveSell; j++){
-                let sell = {
-                    id: Math.floor(Math.random() * 100),
-                    description: descriptions[i],
-                    salePrice: prices[i],
-                    tallerName: selectedTaller.name,
-                    sellDate: date,
-                    customer: selectedCustomer,
-                    product: selectedProducts[i]
-                }
-                // console.log(sell);
-                sellService.save(sell).catch((error) => {
-                    setErrorSaveSell(true);
-                    toast.current.show({
-                        severity: 'danger',
-                        summary: 'Atención!',
-                        detail: "Error al registrar la venta",
-                        life: 2000
-                    });
-                });
-            }
-        }
+        let sellRequest = {
+            descriptions: descriptions,
+            prices: prices,
+            customer: selectedCustomer,
+            tallerName: selectedTaller.name,
+            date: date,
+            products: selectedProducts,
+            quantities: quantities
+        };
 
+        console.log(sellRequest);
 
+        sellService.save(sellRequest).then(data => {
             setSaleDialog(false);
             setSubmittedSale(false);
+            setDescriptions(null);
+            setPrices(null);
             setSelectedTaller(null);
             setDate(null);
             setSelectedCustomer(null);
             setSelectedProducts(null);
-
-        {!errorSaveSell && toast.current.show({
+            setQuantities(null);
+            toast.current.show({
                 severity: 'success',
                 summary: 'Atención!',
                 detail: "Se registró la venta correctamente",
                 life: 2000
             });
-        }
+            productService.getAllProductsCantThanCero().then((data) => setProductsForm(data));
+
+
+        }).catch((error) => {
+            toast.current.show({
+                severity: 'danger',
+                summary: 'Atención!',
+                detail: "Error al registrar la venta",
+                life: 2000
+            });
+        });
 
     }//Guarda toda la informaciond de una venta
 
@@ -226,7 +224,7 @@ export default function Ventas() {
                     <TableVentas
                         headerLabel={'ventas'}
                         // dt={dt}
-                        objects={products}
+                        objects={productsTable}
                         // selectedObjects={selecteProducts}
                         // setSelectedObject={onSelectionChangeSelectedObjects}
                         emptyFilters={emptyFilters}
@@ -248,7 +246,7 @@ export default function Ventas() {
                     customers={customers}
                     selectedCustomer={selectedCustomer}
                     onChangeSelectedBoxCustomer={onChangeSelectedBoxCustomer}
-                    products={products}
+                    products={productsForm}
                     selectedProducts={selectedProducts}
                     quantities={quantities}
                     prices={prices}

@@ -54,7 +54,7 @@ export default function TableVentas(props) {
     }; /*Mostrar clumnas de la tabla*/
 
     const salePriceBodyTemplate = (rowData) => {
-        return formatCurrency(rowData.salePrice);
+        return <div className="flex flex-row align-items-center justify-content-around"> <span className="">{formatCurrency(rowData.salePrice)}</span> <span className="ml-1 bg-cyan-500 p-2 border-round font-rm_19-20" style={{color: '#fff'}}> +{rowData.cantProduct}</span> </div>;
     }; /*Mostrar clumnas de la tabla*/
     const formatCurrency = (value) => {
         return value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
