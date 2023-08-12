@@ -72,6 +72,9 @@ export default function Ventas() {
         setDate(null);
         setSelectedCustomer(null);
         setSelectedProducts(null);
+        setQuantities(null);
+        setDescriptions(null);
+        setPrices(null);
         setSaleDialog(true);
     }; //Abrir nueva ventana para crear un objeto
     const openNewDialogCustomer = () => {
@@ -104,7 +107,7 @@ export default function Ventas() {
     const onChangeSelectedBoxProducts = (e) => {
         setSelectedProducts(e.value);
         setQuantities(new Array(e.value.length).fill(1));
-        setPrices(new Array(e.value.length).fill(0));
+        setPrices(e.value.map(product => product.price));
         setDescriptions(new Array(e.value.length).fill(""));
     } //Modifica el estado de seleccion del selectbox de los productos
     const handleQuantityChange = (index, value) => {
@@ -113,8 +116,10 @@ export default function Ventas() {
         setQuantities(newQuantities);
     }; //Modifica el estado de una cantidad, indicando el indice del producto correspondiente
     const handlePriceChange = (index, value) => {
+        const minPrice = selectedProducts[index].price;
+        const newPrice = Math.max(minPrice, value);
         const newPrices = [...prices];
-        newPrices[index] = value;
+        newPrices[index] = newPrice;
         setPrices(newPrices);
     };//Modifica el estado de una precio, indicando el indice del producto correspondiente
     const handleDescriptionChange = (index, value) => {

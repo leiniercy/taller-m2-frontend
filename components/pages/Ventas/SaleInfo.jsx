@@ -40,13 +40,13 @@ export default function SaleInfo(props) {
                             </label>
                             <InputNumber id={'price' - {index}}
                                          value={props.prices[index]}
-                                         min={product.price} max={1000}
+                                         max={1000}
                                          onValueChange={(e) => props.handlePriceChange(index, e.value)}
                                          mode="currency" currency="USD" locale="en-US"/>
                             <Slider
                                 value={props.prices[index]}
+                                max={1000}
                                 onChange={(e) => props.handlePriceChange(index, e.value)}
-                                min={product.price} max={1000}
                                 className="w-full"/>
                         </div>
                     </div>
@@ -54,7 +54,7 @@ export default function SaleInfo(props) {
                         <label htmlFor="description" className="font-bold">
                             Descripción
                         </label>
-                        <InputTextarea value={props.descriptions}
+                        <InputTextarea value={props.descriptions[index]}
                                        onChange={(e) => props.handleDescriptionChange(index, e.target.value)}
                                        rows={5} cols={30} />
                     </div>

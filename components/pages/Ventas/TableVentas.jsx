@@ -80,7 +80,6 @@ export default function TableVentas(props) {
                     <Column field="sellDate" header="Fecha de venta" sortable></Column>
                     <Column field="salePrice" header="Precio de venta" sortable body={salePriceBodyTemplate}></Column>
 
-                    {/*    /!*<Column field="amount" header="Amount" body={amountBodyTemplate} sortable></Column>*!/*/}
                     {/*    /!*<Column headerStyle={{ width: '4rem' }} body={searchBodyTemplate}></Column>*!/*/}
                 </DataTable>
             </div>
