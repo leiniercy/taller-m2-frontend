@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-export default class MovileService {
-    baseUrl = "http://localhost:8080/api/v1/movile/";
+export default class CustomerService {
+    baseUrl = "http://localhost:8080/api/v1/customer/";
 
     getAll() {
         return axios.get(this.baseUrl + "all").then(res => res.data);
@@ -11,12 +11,8 @@ export default class MovileService {
         return axios.get(this.baseUrl + "get/"+id).then(res => res.data);
     }
 
-    getCant() {
-        return axios.get(this.baseUrl + "getCant").then(res => res.data);
-    }
-
-    save(formData) {
-        return axios.post(this.baseUrl + "save", formData).then(res => res.data);
+    save(customer) {
+        return axios.post(this.baseUrl + "save", customer).then(res => res.data);
     }
 
     update(formData, id) {
@@ -27,8 +23,8 @@ export default class MovileService {
         return axios.delete(this.baseUrl + "delete/" + id).then(res => res.data);
     }
 
-    deleteAll(moviles) {
-        return axios.delete(this.baseUrl + "deleteAll", {data: moviles}).then(res => res.data);
+    deleteAll(customers) {
+        return axios.delete(this.baseUrl + "deleteAll", {data: customers}).then(res => res.data);
     }
 
 }

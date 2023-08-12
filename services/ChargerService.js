@@ -11,6 +11,10 @@ export default class ChargerService {
         return axios.get(this.baseUrl + "get/"+id).then(res => res.data);
     }
 
+    getCant() {
+        return axios.get(this.baseUrl + "getCant").then(res => res.data);
+    }
+
     save(formData) {
         return axios.post(this.baseUrl + "save", formData).then(res => res.data);
     }

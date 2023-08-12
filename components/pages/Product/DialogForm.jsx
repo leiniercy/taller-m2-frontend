@@ -63,7 +63,6 @@ export default function DialogForm(props) {
                 </div>
 
                 <div className="field">
-
                     <label htmlFor="name" className="font-bold">
                         Nombre
                     </label>

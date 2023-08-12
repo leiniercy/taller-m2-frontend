@@ -66,7 +66,7 @@ const AppMenu = () => {
             {/*</li>*/}
             <li className="">
                 <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                   href="/ventas"><i
+                   href="/taller/ventas"><i
                     className="pi pi-shopping-cart"></i> Ventas</a>
             </li>
             <li>
