@@ -16,6 +16,7 @@ export default function SaleCalendar(props) {
         clear: 'Limpiar'
     });
 
+    const minDate = new Date(); // fecha actual
 
     return (
         <div className="card w-full">
@@ -25,6 +26,8 @@ export default function SaleCalendar(props) {
                       locale="es"
                       showIcon
                       showButtonBar
+                      minDate={minDate}
+                      placeholder="Seleccione una fecha"
             />
         </div>
     )

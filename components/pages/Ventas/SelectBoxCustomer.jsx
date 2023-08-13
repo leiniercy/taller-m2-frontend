@@ -24,7 +24,7 @@ export default function SelectBoxCustomer(props) {
             value={props.selectedCustomer}
             onChange={(e) => props.onChangeSelectedBoxCustomer(e)}
             options={props.customers}
-            optionLabel="name"
+            optionLabel="customerName"
             placeholder="Seleccione un cliente"
             filter
             valueTemplate={selectedCustomerTemplate}

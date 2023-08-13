@@ -183,7 +183,7 @@ export default function Ventas() {
             toast.current.show({
                 severity: 'danger',
                 summary: 'Atención!',
-                detail: "Error al actualizar el producto",
+                detail: "Error al crear el cliente",
                 life: 2000
             });
         });
