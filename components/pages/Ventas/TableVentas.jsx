@@ -64,22 +64,36 @@ export default function TableVentas(props) {
         return rowData.sales.length > 0;
         // return true;
     }
+    const actionBodyTemplate = (rowData) => {
+        return (
+            <React.Fragment>
+                <Button icon="pi pi-trash" rounded outlined severity="danger"
+                        onClick={() => props.confirmDeleteSell(rowData)}
+                />
+            </React.Fragment>
+        );
+    }; /*Acciones de cada columna de la tabla Update, Delete*/
 
     const rowExpansionTemplate = (rowData) => {
         return (
             <div className="p-3">
                 <h5>Ventas de {rowData.name}</h5>
                 <DataTable
+                    dataKey="id"
                     value={rowData.sales}
+                    selection={props.selectedObjects}
+                    onSelectionChange={props.setSelectedObject}
                     removableSort
                 >
+                    <Column selectionMode="multiple" exportable={false}></Column>
                     <Column field="customer.customerName" header="Nombre del cliente" sortable></Column>
                     <Column field="customer.customerMovile" header="Teléfono del cliente" sortable></Column>
                     <Column field="description" header="Descripción" sortable></Column>
                     <Column field="tallerName" header="Taller" sortable></Column>
                     <Column field="sellDate" header="Fecha de venta" sortable></Column>
                     <Column field="salePrice" header="Precio de venta" sortable body={salePriceBodyTemplate}></Column>
-
+                    <Column
+                        body={actionBodyTemplate}  exportable={false} style={{minWidth: '8rem'}}></Column>
                     {/*    /!*<Column headerStyle={{ width: '4rem' }} body={searchBodyTemplate}></Column>*!/*/}
                 </DataTable>
             </div>

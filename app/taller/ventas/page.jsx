@@ -9,6 +9,8 @@ import TableVentas from "@components/pages/Ventas/TableVentas";
 import ToolsBarSales from "@components/pages/Ventas/ToolsBarSales";
 import DialogFormSale from "@components/pages/Ventas/DialogFormSale";
 import DialogFormCustomer from "@components/pages/Ventas/DialogFormCustomer";
+import DeleteSellDialog from "@components/pages/Ventas/DeleteSellDialog";
+import DeleteSalesDialog from "@components/pages/Ventas/DeleteSalesDialog";
 
 //Service
 import CustomerService from "@services/CustomerService";
@@ -24,6 +26,17 @@ export default function Ventas() {
         customerMovile: '',
     }
 
+    let emtpySell = {
+        id: null,
+        description: '',
+        salePrice: 0,
+        tallerName: '',
+        sellDate: null,
+        customer: null,
+        product: null,
+        cantProduct: 0
+    }
+
     const emptyFilters = {
         global: {value: null, matchMode: FilterMatchMode.CONTAINS},
         name: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
@@ -36,8 +49,10 @@ export default function Ventas() {
     ];
 
     const toast = useRef(null);
-    const [customer, setCustomer] = useState(emptyCustomer);
 
+    const [sell, setSell] = useState(emtpySell);
+    const [sales, setSales] = useState(null);
+    const [customer, setCustomer] = useState(emptyCustomer);
     const [productsForm, setProductsForm] = useState(null);
     const [productsTable, setProductsTable] = useState(null);
     const [customers, setCustomers] = useState(null);
@@ -48,12 +63,15 @@ export default function Ventas() {
     const [selectedTaller, setSelectedTaller] = useState(null);
     const [quantities, setQuantities] = useState(null);
     const [descriptions, setDescriptions] = useState(null);
-    const [prices, setPrices] = useState(null);
+    const [prices, setPrices] = useState(null)
+    const [selectedSales, setSelectedSales] = useState(null);
 
     const [submittedCustomer, setSubmittedCustomer] = useState(false);
     const [submittedSale, setSubmittedSale] = useState(false);
     const [saleDialog, setSaleDialog] = useState(false);
     const [customerDialog, setCustomerDialog] = useState(false)
+    const [deleteSellDialog, setDeleteSellDialog] = useState(false);
+    const [deleteSalesDialog, setDeleteSalesDialog] = useState(false);
 
     const productService = new ProductService();
     const customerService = new CustomerService();
@@ -64,6 +82,7 @@ export default function Ventas() {
         productService.getAll().then((data) => setProductsTable(data));
         productService.getAllProductsCantThanCero().then((data) => setProductsForm(data));
         customerService.getAll().then((data) => setCustomers(data));
+        sellService.getAll().then(data => setSales(data));
     });
     const openNewDialogSale = () => {
         setSubmittedSale(false);
@@ -93,6 +112,9 @@ export default function Ventas() {
         setCustomerDialog(false);
         setSubmittedCustomer(false);
     }//Ocultar dialog de anadir cliente
+    const onSelectionChangeSelectedObjects = (e) => {
+        setSelectedSales(e.value);
+    } /*Se encarga de obtener la informacion de los objetos seleccionados*/
     const onChangeCalendar = (e) => {
         setDate(e.value);
     } //Modifica el estado de seleccion del selectbox del calendario
@@ -204,6 +226,76 @@ export default function Ventas() {
         });
 
     }//Guarda toda la informaciond de una venta
+    const confirmDeleteSell = (sell) => {
+        setSell(sell);
+        setDeleteSellDialog(true);
+    };
+    const confirmDeleteSelected = () => {
+        if (selectedSales.length > 1) {
+            setDeleteSalesDialog(true);
+        }
+        if (selectedSales.length === 1) {
+            setSell(selectedSales[0]);
+            setDeleteSellDialog(true);
+        }
+    }; /*Abrir el dialog de confirmacion de eliminacion de los objetos*/
+    const hideDeleteSellDialog = () => {
+        setDeleteSellDialog(false);
+    };/*Ocultar dialog de eliminar un objeto*/
+    const hideDeleteSalesDialog = () => {
+        setDeleteSalesDialog(false);
+    };/*Ocultar dialog de eliminar varios objetos*/
+    const deleteSell = () => {
+        let _sales = sales.filter((val) => val.id === sell.id);
+
+        sellService.delete(_sales[0].id).then(data => {
+                //Actualiza la lista de ventas
+                productService.getAllProductsCantThanCero().then((data) => setProductsForm(data));
+                productService.getAll().then((data) => setProductsTable(data));
+                setDeleteSellDialog(false);
+                setSelectedSales(false);
+                setSell(emtpySell);
+                //Muestra sms de confirmacion
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Atención!',
+                    detail: "Se eliminó la venta correctamente",
+                    life: 2000
+                });
+            }
+        ).catch(error => {
+            toast.current.show({
+                severity: 'danger',
+                summary: '!Atención',
+                detail: 'Error al eliminar la venta',
+                life: 2000
+            });
+        });
+    };/*Elimnar un Objeto*/
+    const deleteSelectedSales = () => {
+
+        sellService.deleteAll(selectedSales).then((data) => {
+            productService.getAllProductsCantThanCero().then((data) => setProductsForm(data));
+            productService.getAll().then((data) => setProductsTable(data));
+            setSales(data);
+            setDeleteSalesDialog(false);
+            setSelectedSales(false);
+            toast.current.show({
+                severity: 'success',
+                summary: '!Atención',
+                detail: 'Ventas eliminadas correctamente',
+                life: 2000
+            });
+        }).catch(error => {
+            toast.current.show({
+                severity: 'danger',
+                summary: '!Atención',
+                detail: 'Error al eliminar las ventas seleccionados',
+                life: 2000
+            });
+        });
+    };/*Eliminar varios objetos*/
+
 
     return (
         <div className="sm:relative md:relative col-12 sm:col-12 md:col lg:col p-2 ml-2 sm:ml-2">
@@ -212,8 +304,8 @@ export default function Ventas() {
                     <ToolsBarSales
                         openNewDialogSale={openNewDialogSale}
                         openNewDialogCustomer={openNewDialogCustomer}
-                        // confirmDeleteSelected={confirmDeleteSelected}
-                        // selectedObjects={selecteProducts}
+                        confirmDeleteSelected={confirmDeleteSelected}
+                        selectedObjects={selectedSales}
                         // objects={products}
                         // columns={columns}
                         // dt={dt}
@@ -225,11 +317,11 @@ export default function Ventas() {
                         headerLabel={'ventas'}
                         // dt={dt}
                         objects={productsTable}
-                        // selectedObjects={selecteProducts}
-                        // setSelectedObject={onSelectionChangeSelectedObjects}
+                        selectedObjects={selectedSales}
+                        setSelectedObject={onSelectionChangeSelectedObjects}
                         emptyFilters={emptyFilters}
                         globalFilterFields={globalFilterFields}
-                        // actionBodyTemplate={actionBodyTemplate}
+                        confirmDeleteSell={confirmDeleteSell}
                     />
                 </div>
                 <Toast ref={toast}/>
@@ -266,6 +358,20 @@ export default function Ventas() {
                     object={customer}
                     onInputTextChange={onInputTextChange}
                     onInputNumberChange={onInputNumberChange}
+                />
+
+                <DeleteSellDialog
+                    visible={deleteSellDialog}
+                    hideDialog={hideDeleteSellDialog}
+                    object={sell}
+                    delete={deleteSell}
+                />
+
+                <DeleteSalesDialog
+                    visible={deleteSalesDialog}
+                    hideDialog={hideDeleteSalesDialog}
+                    delete={deleteSelectedSales}
+                    object={sell}
                 />
 
             </div>

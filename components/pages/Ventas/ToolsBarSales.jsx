@@ -18,10 +18,10 @@ export default function ToolsBarSales(props) {
                 <Button label="Añadir" icon="pi pi-plus" severity="success"
                         onClick={props.openNewDialogSale}
                 />
-                {/*<Button label="Eliminar" icon="pi pi-trash" severity="danger"*/}
-                {/*        onClick={props.confirmDeleteSelected}*/}
-                {/*        disabled={!props.selectedObjects || !props.selectedObjects.length}*/}
-                {/*/>*/}
+                <Button label="Eliminar" icon="pi pi-trash" severity="danger"
+                        onClick={props.confirmDeleteSelected}
+                        disabled={!props.selectedObjects || !props.selectedObjects.length}
+                />
             </div>
         );
     };/*Barra de herramientas*/
