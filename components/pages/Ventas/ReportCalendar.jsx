@@ -1,11 +1,8 @@
 
 
 import { Calendar } from 'primereact/calendar';
-import {useState} from "react";
 import { addLocale } from 'primereact/api';
-export default function Calendario() {
-
-    const [date, setDate] = useState(null);
+export default function ReportCalendar(props) {
 
     addLocale('es', {
         firstDayOfWeek: 1,
@@ -20,10 +17,13 @@ export default function Calendario() {
 
     return (
             <Calendar
-                value={date}
-                onChange={(e) => setDate(e.value)}
+                value={props.date}
+                onChange={(e) => props.onChangeCalendar(e)}
                 dateFormat="dd/mm/yy"
                 locale="es"
-                showIcon/>
+                showButtonBar
+                showIcon
+                placeholder="Selecione una fecha"
+            />
     );
 }

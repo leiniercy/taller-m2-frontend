@@ -2,13 +2,10 @@
 
 //Componentes
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Button} from 'primereact/button';
-import {Menu} from 'primereact/menu';
 
 import DoughnutChart from "@components/pages/Home/DoughnutChart";
 import HorizontalBar from "@components/pages/Home/HorizontalBarChart";
 import StackedBarChart from "@components/pages/Home/StackedBarChart";
-import Calendario from "@components/pages/Home/Calendario";
 import BasicChart from "@components/pages/Home/BasicChart";
 
 import ChargerService from "@services/ChargerService";
@@ -40,18 +37,6 @@ export default function Home() {
     return (
         <div className="sm:relative sm:col-12 md:col p-4 sm:p-4">
             <div className="grid">
-                <div className="col-12">
-                    <div className="card bg-gray-items card mb-0 p-3 border-round">
-                        <div className="card flex justify-content-end">
-
-                            <Calendario/>
-                            <a className="p-button p-button-raised no-underline ml-2"
-                                href="http://localhost:8080/api/v1/home/pdf">
-                                <i className="pi pi-download"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
                 <div className="col-12 lg:col-6 xl:col-3">
                     <div className="bg-gray-items card mb-0 p-3 border-round">
                         <div className="flex justify-content-between mb-3">

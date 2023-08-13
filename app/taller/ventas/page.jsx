@@ -65,6 +65,7 @@ export default function Ventas() {
     const [descriptions, setDescriptions] = useState(null);
     const [prices, setPrices] = useState(null)
     const [selectedSales, setSelectedSales] = useState(null);
+    const [selectedReportDate, setSelectedReportDate] = useState(null)
 
     const [submittedCustomer, setSubmittedCustomer] = useState(false);
     const [submittedSale, setSubmittedSale] = useState(false);
@@ -115,9 +116,14 @@ export default function Ventas() {
     const onSelectionChangeSelectedObjects = (e) => {
         setSelectedSales(e.value);
     } /*Se encarga de obtener la informacion de los objetos seleccionados*/
+    const onChangeReportCalendar = (e) => {
+        setSelectedReportDate(e.value);
+    } //Modifica el estado de seleccion del selectbox del calendario de reporte
+
     const onChangeCalendar = (e) => {
         setDate(e.value);
     } //Modifica el estado de seleccion del selectbox del calendario
+
     const onChangeSelectedBoxTaller = (e) => {
         setSelectedTaller(e.value);
     } //Modifica el estado de seleccion del selectbox del taller
@@ -302,20 +308,18 @@ export default function Ventas() {
             <div className="card grid mt-2">
                 <div className="col-12">
                     <ToolsBarSales
+                        toast={toast}
                         openNewDialogSale={openNewDialogSale}
                         openNewDialogCustomer={openNewDialogCustomer}
                         confirmDeleteSelected={confirmDeleteSelected}
                         selectedObjects={selectedSales}
-                        // objects={products}
-                        // columns={columns}
-                        // dt={dt}
-                        // fileName={'products'}
+                        selectedReportDate={selectedReportDate}
+                        onChangeReportCalendar={onChangeReportCalendar}
                     /> {/*barra de herramientas*/}
                 </div>
                 <div className="col-12">
                     <TableVentas
                         headerLabel={'ventas'}
-                        // dt={dt}
                         objects={productsTable}
                         selectedObjects={selectedSales}
                         setSelectedObject={onSelectionChangeSelectedObjects}

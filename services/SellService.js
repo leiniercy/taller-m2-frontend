@@ -7,8 +7,15 @@ export default class SellService {
         return axios.get(this.baseUrl + "all").then(res => res.data);
     }
 
+    getByDate(fecha) {
+        return axios.get(this.baseUrl + "all/date/"+fecha).then(res => res.data);
+    }
+
     getById(id) {
         return axios.get(this.baseUrl + "get/"+id).then(res => res.data);
+    }
+    getPDF(ventas){
+        return axios.post(this.baseUrl + "pdf", ventas, { responseType: 'arraybuffer' }).then(res => res.data);
     }
 
     save(sell) {
