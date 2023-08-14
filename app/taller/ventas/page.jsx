@@ -201,8 +201,6 @@ export default function Ventas() {
             quantities: quantities
         };
 
-        console.log(sellRequest);
-
         sellService.save(sellRequest).then(data => {
             setSaleDialog(false);
             setSubmittedSale(false);
@@ -221,6 +219,17 @@ export default function Ventas() {
             });
             productService.getAllProductsCantThanCero().then((data) => setProductsForm(data));
 
+            console.log(data);
+
+            sellService.getPDFVenta(data).then(d => {
+                // Descargar el archivo PDF generado
+                const url = window.URL.createObjectURL(new Blob([d]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'venta.pdf');
+                document.body.appendChild(link);
+                link.click();
+            });
 
         }).catch((error) => {
             toast.current.show({

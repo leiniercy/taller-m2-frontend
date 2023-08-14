@@ -37,7 +37,7 @@ export default function ToolsBarSales(props) {
                     life: 2000
                 });
             } else {
-                sellService.getPDF(data).then(d => {
+                sellService.getPDFDiario(data).then(d => {
                     // Descargar el archivo PDF generado
                     const url = window.URL.createObjectURL(new Blob([d]));
                     const link = document.createElement('a');

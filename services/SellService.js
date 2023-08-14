@@ -14,8 +14,12 @@ export default class SellService {
     getById(id) {
         return axios.get(this.baseUrl + "get/"+id).then(res => res.data);
     }
-    getPDF(ventas){
-        return axios.post(this.baseUrl + "pdf", ventas, { responseType: 'arraybuffer' }).then(res => res.data);
+    getPDFDiario(ventas){
+        return axios.post(this.baseUrl + "pdf/diario", ventas, { responseType: 'arraybuffer' }).then(res => res.data);
+    }
+
+    getPDFVenta(ventas){
+        return axios.post(this.baseUrl + "pdf/venta", ventas, { responseType: 'arraybuffer' }).then(res => res.data);
     }
 
     save(sell) {
