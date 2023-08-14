@@ -8,12 +8,11 @@ import DataViewGridItem from "@components/pages/Client/DataViewGridItem";
 import DataViewListItem from "@components/pages/Client/DataViewListItem";
 
 
-export default function DataViewMovile(props) {
+export default function DataViewProduct(props) {
 
     const [dataViewValue, setDataViewValue] = useState(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filteredValue, setFilteredValue] = useState(null);
-    const [layout, setLayout] = useState('grid');
     const [sortKey, setSortKey] = useState(null);
     const [sortOrder, setSortOrder] = useState(null);
     const [sortField, setSortField] = useState(null);
@@ -25,20 +24,15 @@ export default function DataViewMovile(props) {
 
     /*Disponibilidad de los objetos*/
     const getValue = (data) => {
-        if (data.cant > 10) {
-            return 'INSTOCK';
-        } else if (data.cant <= 10 && data.cant > 0) {
-            return 'LOWSTOCK';
+        if (data.cant > 0) {
+            return 'DISPONIBLE';
         }
-        return 'OUTOFSTOCK';
+        return 'NO DISPONIBLE';
     }
     const getSeverity = (data) => {
-        if (data.cant > 10) {
+        if (data.cant > 0) {
             // 'INSTOCK'
             return 'success';
-        } else if (data.cant <= 10 && data.cant > 0) {
-            // 'LOWSTOCK'
-            return 'warning';
         }
         //OUTOFSTOCK
         return 'danger';
@@ -83,18 +77,7 @@ export default function DataViewMovile(props) {
                 <i className="pi pi-search"/>
                 <InputText value={globalFilterValue} onChange={onFilter} placeholder="Buscar por nombre"/>
             </span>
-        <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)}/>
     </div>);
-
-    const dataviewListItem = (data) => {
-        return (
-           <DataViewListItem
-               data={data}
-               getSeverity={getSeverity}
-               getValue={getValue}
-           />
-        );
-    };
 
     const dataviewGridItem = (data) => {
         return (
@@ -102,28 +85,18 @@ export default function DataViewMovile(props) {
               data={data}
               getSeverity={getSeverity}
               getValue={getValue}
+              path={props.path}
             />
         );
     };
 
-    const itemTemplate = (data, layout) => {
-        if (!data) {
-            return;
-        }
-
-        if (layout === 'list') {
-            return dataviewListItem(data);
-        } else if (layout === 'grid') {
-            return dataviewGridItem(data);
-        }
-    };
 
     return (<>
         <DataView value={filteredValue || dataViewValue}
-                  layout={layout} paginator rows={9}
+                  paginator rows={9}
                   sortOrder={sortOrder}
                   sortField={sortField}
-                  itemTemplate={itemTemplate}
+                  itemTemplate={dataviewGridItem}
                   header={dataViewHeader}></DataView>
     </>);
 
