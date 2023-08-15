@@ -31,22 +31,26 @@ export default function Login() {
 
     const handleSubmit = () => {
         setSubmitted(true);
-
-        loginService.login(signInResponse).then((data) => {
-            localStorage.setItem("token", data.token);
-            setloginFailed(false);
-            const res = signIn("credentials", {
-                username: signInResponse.username,
-                password: signInResponse.password,
-                redirect: true,
-                callbackUrl: "/taller",
-            })
-
-            //    router.push("/home");
-        }).catch( error =>{
-            //Muestra sms de error
-            setloginFailed(true);
-        });
+        const res = signIn("credentials", {
+            username: signInResponse.username,
+            password: signInResponse.password,
+            redirect: true,
+            callbackUrl: "/taller",
+        })
+        // loginService.login(signInResponse).then((data) => {
+        //     localStorage.setItem("token", data.token);
+        //     setloginFailed(false);
+        //     const res = signIn("credentials", {
+        //         username: signInResponse.username,
+        //         password: signInResponse.password,
+        //         redirect: true,
+        //         callbackUrl: "/taller",
+        //     })
+        //     //    router.push("/home");
+        // }).catch( error =>{
+        //     //Muestra sms de error
+        //     setloginFailed(true);
+        // });
 
     }
 

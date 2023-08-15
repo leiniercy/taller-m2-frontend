@@ -4,15 +4,21 @@ import React, {useEffect, useState} from "react";
 
 import AppSidebar from "@components/layout/AppSidebar";
 import AppTopbarDesktop from "@components/layout/AppTopbarDesktop";
+import {useSession} from "next-auth/react";
 
 
 const HomeLayout = ({children}) => {
 
     const [appSidebarVisible, setAppSidebarVisible] = useState(true);
+    const { data: session } = useSession();
 
     const handleClick = () => {
         setAppSidebarVisible(!appSidebarVisible);
     }
+
+    useEffect(()=>{
+        console.log(session?.user.name)
+    });
 
     return (
         <div className='h-full w-full relative'>

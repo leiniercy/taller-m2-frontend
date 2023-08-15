@@ -1,5 +1,4 @@
 import NextAuth from "next-auth"
-import axios from 'axios';
 import jwt from "jsonwebtoken";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -15,32 +14,59 @@ export const authOptions = {
             },
             async authorize(credentials) {
 
-                const user = { id: 1, name: 'J Smith', email: 'jsmith@example.com' };
-                // console.log(credentials);
-                // const res = await fetch("http://localhost:8080/api/v1/auth/signin", {
-                //     method: "POST",
-                //     headers: {
-                //         "Content-Type": "application/json",
-                //     },
-                //     body: JSON.stringify({
-                //         username: credentials?.username,
-                //         password: credentials?.password,
-                //     }),
-                // })
-                // const user = await res.json();
-                if (user) {
-                    return user;
-                } else {
+
+                const res = await fetch("http://localhost:8080/api/v1/auth/signin", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        username: credentials?.username,
+                        password: credentials?.password,
+                    }),
+                })
+
+                const user = await res.json();
+
+                //If no error and we have user data, return it
+                if (res.ok && user) {
+
+                     const tokenDecode = jwt.decode(user.token);
+                    //Utilizar tokenExpirationDate para cerrar la cession
+                    const tokenExpirationDate = tokenDecode.exp;
+                    const tokenUser = tokenDecode.user;
+                    return {
+                        id: tokenUser.id,
+                        name: tokenUser.name,
+                        email: tokenUser.email,
+                        taller: tokenUser.taller,
+                        rol: tokenUser.roles[0]
+                    }
+
+                }else{
+                    //Return null if user data could not be retrieved
+                    throw new Error("Incorrect_credentials");
                     return null;
                 }
+
             }
         }),
         // ...add more providers here
     ],
+    callbacks: {
+        async jwt({token, user}) {
+            return ({...token, ...user});
+        },
+        async session({session, token, user}) {
+            session.user = token;
+            return session;
+        }
+    },
     pages: {
         signIn: "/",
-         // error: '/auth/error',
+        error: '/',
         signOut: '/'
     },
+
 };
 export default NextAuth(authOptions);
