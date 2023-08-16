@@ -58,6 +58,12 @@ const AppMenu = () => {
                     className="pi pi-home"></i> Inicio</a>
             </li>
 
+            <li>
+                <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                   href="/taller/cliente"><i
+                    className="pi pi-user"></i> Clientes</a>
+            </li>
+
             <li className="dropdown">
                 <div className="w-full flex flex-row justify-content-between" onClick={() => handleMenuClick(0)}>
                     <span className="text-xl pl-3 py-1">Productos</span>
@@ -101,11 +107,6 @@ const AppMenu = () => {
                 <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
                    href="/taller/ventas"><i
                     className="pi pi-shopping-cart"></i> Ventas</a>
-            </li>
-            <li>
-                <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                   href="/taller/cliente"><i
-                    className="pi pi-user"></i> Clientes</a>
             </li>
         </ul>
     );

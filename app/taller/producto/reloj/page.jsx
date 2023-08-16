@@ -11,9 +11,7 @@ import Table from "@components/pages/Product/Table";
 import DialogForm from "@components/pages/Product/DialogForm";
 import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
-import FieldsCharjer from "@components/pages/Product/Charger/FieldsCharjer";
 import RenderLayout from "@components/layout/RenderLayout";
-import AccessDeniedPage from "@components/pages/Error/AccessDeniedPage";
 
 
 //primereact
@@ -27,31 +25,14 @@ import FieldsReloj from "@components/pages/Product/Reloj/FieldsReloj";
 
 export default function Reloj(props) {
 
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            redirect('/')
-        }
-    });
-
-    if(session?.user.rol !=='ROLE_ADMIN'){
-        return (
-            <RenderLayout>
-                <AccessDeniedPage/>
-            </RenderLayout>
-        );
-    }
-
-
-
     let emptyReloj = {
         id: null,
         name: '',
         files: null,
         price: 0,
         cant: 0,
-        specialFeature:'',
-        compatibleDevice:'',
+        specialFeature: '',
+        compatibleDevice: '',
         bateryLife: 0
     };
 
@@ -60,13 +41,19 @@ export default function Reloj(props) {
         name: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
         price: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
         cant: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
-        specialFeature: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
-        compatibleDevice: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
+        specialFeature: {
+            operator: FilterOperator.AND,
+            constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]
+        },
+        compatibleDevice: {
+            operator: FilterOperator.AND,
+            constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]
+        },
         bateryLife: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
     };/*Mis filtros*/
 
     const globalFilterFields = [
-        'name', 'price', 'cant','specialFeature','compatibleDevice','bateryLife'
+        'name', 'price', 'cant', 'specialFeature', 'compatibleDevice', 'bateryLife'
     ];
 
     const columns = [
@@ -372,71 +359,70 @@ export default function Reloj(props) {
     </div>);
 
     return (
-        <div className="sm:relative md:relative col-12 sm:col-12 md:col lg:col p-2 ml-2 sm:ml-2">
+        <RenderLayout>
             <Toast ref={toast}/>
-            <div className="card grid mt-2">
-                <Fieldset legend={legendTemplate} className="col-12">
-                    <div className="col-12">
-                        <Tools
-                            openNew={openNew}
-                            confirmDeleteSelected={confirmDeleteSelected}
-                            selectedObjects={selectedRelojes}
-                            objects={relojes}
-                            columns={columns}
-                            dt={dt}
-                            fileName={'reloj'}
-                        /> {/*barra de herramientas*/}
-                    </div>
-                    <div className="col-12">
 
-                        <Table
-                            headerLabel={'cargadores'}
-                            dt={dt}
-                            objects={relojes}
-                            selectedObjects={selectedRelojes}
-                            setSelectedObject={onSelectionChangeSelectedObjects}
-                            emptyFilters={emptyFilters}
-                            globalFilterFields={globalFilterFields}
-                            actionBodyTemplate={actionBodyTemplate}
-                        />
+            <Fieldset legend={legendTemplate} className="col-12">
+                <div className="col-12">
+                    <Tools
+                        openNew={openNew}
+                        confirmDeleteSelected={confirmDeleteSelected}
+                        selectedObjects={selectedRelojes}
+                        objects={relojes}
+                        columns={columns}
+                        dt={dt}
+                        fileName={'reloj'}
+                    /> {/*barra de herramientas*/}
+                </div>
+                <div className="col-12">
 
-                    </div>
-                </Fieldset>
+                    <Table
+                        headerLabel={'cargadores'}
+                        dt={dt}
+                        objects={relojes}
+                        selectedObjects={selectedRelojes}
+                        setSelectedObject={onSelectionChangeSelectedObjects}
+                        emptyFilters={emptyFilters}
+                        globalFilterFields={globalFilterFields}
+                        actionBodyTemplate={actionBodyTemplate}
+                    />
 
-                <DialogForm
-                    visible={relojDialog}
-                    submitted={submitted}
-                    object={reloj}
-                    editActive={editActive}
-                    hideDialog={hideDialog}
-                    save={save}
-                    headerTemplate={headerTemplate}
-                    onTemplateSelect={onTemplateSelect}
-                    onTemplateRemove={onTemplateRemove}
-                    onTemplateClear={onTemplateClear}
-                    emptyTemplate={emptyTemplate}
-                    itemTemplate={itemTemplate}
-                    onInputTextChange={onInputTextChange}
-                    onInputNumberChange={onInputNumberChange}
-                    otherfields={formFields}
-                />
+                </div>
+            </Fieldset>
 
-                <DeleteProductDialog
-                    visible={deleteRelojDialog}
-                    hideDialog={hideDeleteRelojDialog}
-                    object={reloj}
-                    delete={deleteReloj}
-                />
+            <DialogForm
+                visible={relojDialog}
+                submitted={submitted}
+                object={reloj}
+                editActive={editActive}
+                hideDialog={hideDialog}
+                save={save}
+                headerTemplate={headerTemplate}
+                onTemplateSelect={onTemplateSelect}
+                onTemplateRemove={onTemplateRemove}
+                onTemplateClear={onTemplateClear}
+                emptyTemplate={emptyTemplate}
+                itemTemplate={itemTemplate}
+                onInputTextChange={onInputTextChange}
+                onInputNumberChange={onInputNumberChange}
+                otherfields={formFields}
+            />
 
-                <DeleteProductsDialog
-                    visible={deleteRelojesDialog}
-                    hideDialog={hideDeleteRelojesDialog}
-                    delete={deleteSelectedRelojes}
-                    object={reloj}
-                />
+            <DeleteProductDialog
+                visible={deleteRelojDialog}
+                hideDialog={hideDeleteRelojDialog}
+                object={reloj}
+                delete={deleteReloj}
+            />
 
-            </div>
-        </div>
+            <DeleteProductsDialog
+                visible={deleteRelojesDialog}
+                hideDialog={hideDeleteRelojesDialog}
+                delete={deleteSelectedRelojes}
+                object={reloj}
+            />
+
+        </RenderLayout>
     );
 
 }

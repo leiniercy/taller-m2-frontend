@@ -11,7 +11,6 @@ import DialogForm from "@components/pages/Product/DialogForm";
 import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
 import RenderLayout from "@components/layout/RenderLayout";
-import AccessDeniedPage from "@components/pages/Error/AccessDeniedPage";
 
 //primereact
 import {Fieldset} from 'primereact/fieldset';
@@ -22,15 +21,7 @@ import {Tag} from "primereact/tag";
 
 
 
-
 export default function Accesorio(props) {
-
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            redirect('/')
-        }
-    });
 
     let emptyProduct = {
         id: null,
@@ -333,14 +324,6 @@ export default function Accesorio(props) {
         <span className="pi pi-user mr-2"></span>
         <span className="font-bold text-lg">Accesorios</span>
     </div>);
-
-    if(session?.user.rol !=='ROLE_ADMIN'){
-        return (
-            <RenderLayout>
-                <AccessDeniedPage/>
-            </RenderLayout>
-        );
-    }
 
     return (
         <RenderLayout>

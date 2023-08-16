@@ -1,12 +1,16 @@
 "use client"
 
 import React, {useEffect, useState} from "react";
-
 import AppSidebar from "@components/layout/AppSidebar";
 import AppTopbarDesktop from "@components/layout/AppTopbarDesktop";
+import {useSession} from "next-auth/react";
+import {setCookie} from "cookies-next";
 
 
 const HomeLayout = ({children}) => {
+
+    const { data: session } = useSession();
+    setCookie('rol', session?.user.rol);
 
     const [appSidebarVisible, setAppSidebarVisible] = useState(true);
 

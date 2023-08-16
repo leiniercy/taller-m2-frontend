@@ -13,7 +13,6 @@ import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
 import FieldsMovile from "@components/pages/Product/Movile/FieldsMovile";
 import RenderLayout from "@components/layout/RenderLayout";
-import AccessDeniedPage from "@components/pages/Error/AccessDeniedPage";
 
 
 //primereact
@@ -26,20 +25,6 @@ import {Tag} from "primereact/tag";
 
 export default function Movile(props) {
 
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            redirect('/')
-        }
-    });
-
-    if(session?.user.rol !=='ROLE_ADMIN'){
-        return (
-            <RenderLayout>
-                <AccessDeniedPage/>
-            </RenderLayout>
-        );
-    }
 
     let emptyMovile = {
         id: null,
@@ -401,71 +386,69 @@ export default function Movile(props) {
     </div>);
 
     return (
-        <div className="sm:relative md:relative col-12 sm:col-12 md:col lg:col p-2 ml-2 sm:ml-2">
+        <RenderLayout>
             <Toast ref={toast}/>
-            <div className="card grid mt-2">
-                <Fieldset legend={legendTemplate} className="col-12">
-                    <div className="col-12">
-                        <Tools
-                            openNew={openNew}
-                            confirmDeleteSelected={confirmDeleteSelected}
-                            selectedObjects={selectedMoviles}
-                            objects={moviles}
-                            columns={columns}
-                            dt={dt}
-                            fileName={'movile'}
-                        /> {/*barra de herramientas*/}
-                    </div>
-                    <div className="col-12">
+            <Fieldset legend={legendTemplate} className="col-12">
+                <div className="col-12">
+                    <Tools
+                        openNew={openNew}
+                        confirmDeleteSelected={confirmDeleteSelected}
+                        selectedObjects={selectedMoviles}
+                        objects={moviles}
+                        columns={columns}
+                        dt={dt}
+                        fileName={'movile'}
+                    /> {/*barra de herramientas*/}
+                </div>
+                <div className="col-12">
 
-                        <Table
-                            headerLabel={'moviles'}
-                            dt={dt}
-                            objects={moviles}
-                            selectedObjects={selectedMoviles}
-                            setSelectedObject={onSelectionChangeSelectedObjects}
-                            emptyFilters={emptyFilters}
-                            globalFilterFields={globalFilterFields}
-                            actionBodyTemplate={actionBodyTemplate}
-                        />
+                    <Table
+                        headerLabel={'moviles'}
+                        dt={dt}
+                        objects={moviles}
+                        selectedObjects={selectedMoviles}
+                        setSelectedObject={onSelectionChangeSelectedObjects}
+                        emptyFilters={emptyFilters}
+                        globalFilterFields={globalFilterFields}
+                        actionBodyTemplate={actionBodyTemplate}
+                    />
 
-                    </div>
-                </Fieldset>
+                </div>
+            </Fieldset>
 
-                <DialogForm
-                    visible={movileDialog}
-                    submitted={submitted}
-                    object={movile}
-                    editActive={editActive}
-                    hideDialog={hideDialog}
-                    save={save}
-                    headerTemplate={headerTemplate}
-                    onTemplateSelect={onTemplateSelect}
-                    onTemplateRemove={onTemplateRemove}
-                    onTemplateClear={onTemplateClear}
-                    emptyTemplate={emptyTemplate}
-                    itemTemplate={itemTemplate}
-                    onInputTextChange={onInputTextChange}
-                    onInputNumberChange={onInputNumberChange}
-                    otherfields={formFields}
-                />
+            <DialogForm
+                visible={movileDialog}
+                submitted={submitted}
+                object={movile}
+                editActive={editActive}
+                hideDialog={hideDialog}
+                save={save}
+                headerTemplate={headerTemplate}
+                onTemplateSelect={onTemplateSelect}
+                onTemplateRemove={onTemplateRemove}
+                onTemplateClear={onTemplateClear}
+                emptyTemplate={emptyTemplate}
+                itemTemplate={itemTemplate}
+                onInputTextChange={onInputTextChange}
+                onInputNumberChange={onInputNumberChange}
+                otherfields={formFields}
+            />
 
-                <DeleteProductDialog
-                    visible={deleteMovilDialog}
-                    hideDialog={hideDeleteMovileDialog}
-                    object={movile}
-                    delete={deleteMovile}
-                />
+            <DeleteProductDialog
+                visible={deleteMovilDialog}
+                hideDialog={hideDeleteMovileDialog}
+                object={movile}
+                delete={deleteMovile}
+            />
 
-                <DeleteProductsDialog
-                    visible={deleteMovilesDialog}
-                    hideDialog={hideDeleteMovilesDialog}
-                    delete={deleteSelectedMoviles}
-                    object={movile}
-                />
+            <DeleteProductsDialog
+                visible={deleteMovilesDialog}
+                hideDialog={hideDeleteMovilesDialog}
+                delete={deleteSelectedMoviles}
+                object={movile}
+            />
 
-            </div>
-        </div>
+        </RenderLayout>
     );
 
 }

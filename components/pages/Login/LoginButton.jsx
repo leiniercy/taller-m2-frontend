@@ -2,18 +2,17 @@
 
 import { useRef } from 'react';
 import { signIn, signOut, useSession } from "next-auth/react";
+import { deleteCookie } from 'cookies-next';
+
 import { Avatar } from 'primereact/avatar';
 import { Menu } from 'primereact/menu';
 import { Button } from 'primereact/button';
 
-import {useRouter} from "next/navigation";
-import { deleteCookie } from 'cookies-next';
+
 
 const LoginButton = () => {
 
     const { data: session } = useSession();
-
-    // const router = useRouter();
 
     const menu = useRef(null);
 
@@ -29,6 +28,7 @@ const LoginButton = () => {
             icon: 'pi pi-fw pi-power-off',
             command: () => {
                 deleteCookie('logged');
+                deleteCookie('rol');
                 signOut({
                     redirect: true,
                     callbackUrl: "/"

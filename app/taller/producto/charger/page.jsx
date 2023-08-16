@@ -12,7 +12,6 @@ import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
 import FieldsCharjer from "@components/pages/Product/Charger/FieldsCharjer";
 import RenderLayout from "@components/layout/RenderLayout";
-import AccessDeniedPage from "@components/pages/Error/AccessDeniedPage";
 
 
 //primereact
@@ -26,29 +25,14 @@ import {Tag} from "primereact/tag";
 export default function Charger(props) {
 
 
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            redirect('/')
-        }
-    });
-
-    if(session?.user.rol !=='ROLE_ADMIN'){
-        return (
-            <RenderLayout>
-                <AccessDeniedPage/>
-            </RenderLayout>
-        );
-    }
-
     let emptyCharger = {
         id: null,
         name: '',
         files: null,
         price: 0,
         cant: 0,
-        connectorType:'',
-        compatibleDevice:''
+        connectorType: '',
+        compatibleDevice: ''
     };
 
     const emptyFilters = {
@@ -56,13 +40,19 @@ export default function Charger(props) {
         name: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
         price: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
         cant: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
-        connectorType: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
-        compatibleDevice: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
+        connectorType: {
+            operator: FilterOperator.AND,
+            constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]
+        },
+        compatibleDevice: {
+            operator: FilterOperator.AND,
+            constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]
+        },
     };/*Mis filtros*/
 
     const globalFilterFields = [
-        'name', 'price', 'cant','connectorType','compatibleDevice'
-        ];
+        'name', 'price', 'cant', 'connectorType', 'compatibleDevice'
+    ];
 
     const columns = [
         {field: 'name', header: 'Nombre'},
@@ -362,71 +352,69 @@ export default function Charger(props) {
     </div>);
 
     return (
-        <div className="sm:relative md:relative col-12 sm:col-12 md:col lg:col p-2 ml-2 sm:ml-2">
+        <RenderLayout>
             <Toast ref={toast}/>
-            <div className="card grid mt-2">
-                <Fieldset legend={legendTemplate} className="col-12">
-                    <div className="col-12">
-                        <Tools
-                            openNew={openNew}
-                            confirmDeleteSelected={confirmDeleteSelected}
-                            selectedObjects={selectedChargers}
-                            objects={chargers}
-                            columns={columns}
-                            dt={dt}
-                            fileName={'charger'}
-                        /> {/*barra de herramientas*/}
-                    </div>
-                    <div className="col-12">
+            <Fieldset legend={legendTemplate} className="col-12">
+                <div className="col-12">
+                    <Tools
+                        openNew={openNew}
+                        confirmDeleteSelected={confirmDeleteSelected}
+                        selectedObjects={selectedChargers}
+                        objects={chargers}
+                        columns={columns}
+                        dt={dt}
+                        fileName={'charger'}
+                    /> {/*barra de herramientas*/}
+                </div>
+                <div className="col-12">
 
-                        <Table
-                            headerLabel={'cargadores'}
-                            dt={dt}
-                            objects={chargers}
-                            selectedObjects={selectedChargers}
-                            setSelectedObject={onSelectionChangeSelectedObjects}
-                            emptyFilters={emptyFilters}
-                            globalFilterFields={globalFilterFields}
-                            actionBodyTemplate={actionBodyTemplate}
-                        />
+                    <Table
+                        headerLabel={'cargadores'}
+                        dt={dt}
+                        objects={chargers}
+                        selectedObjects={selectedChargers}
+                        setSelectedObject={onSelectionChangeSelectedObjects}
+                        emptyFilters={emptyFilters}
+                        globalFilterFields={globalFilterFields}
+                        actionBodyTemplate={actionBodyTemplate}
+                    />
 
-                    </div>
-                </Fieldset>
+                </div>
+            </Fieldset>
 
-                <DialogForm
-                    visible={chargerDialog}
-                    submitted={submitted}
-                    object={charger}
-                    editActive={editActive}
-                    hideDialog={hideDialog}
-                    save={save}
-                    headerTemplate={headerTemplate}
-                    onTemplateSelect={onTemplateSelect}
-                    onTemplateRemove={onTemplateRemove}
-                    onTemplateClear={onTemplateClear}
-                    emptyTemplate={emptyTemplate}
-                    itemTemplate={itemTemplate}
-                    onInputTextChange={onInputTextChange}
-                    onInputNumberChange={onInputNumberChange}
-                    otherfields={formFields}
-                />
+            <DialogForm
+                visible={chargerDialog}
+                submitted={submitted}
+                object={charger}
+                editActive={editActive}
+                hideDialog={hideDialog}
+                save={save}
+                headerTemplate={headerTemplate}
+                onTemplateSelect={onTemplateSelect}
+                onTemplateRemove={onTemplateRemove}
+                onTemplateClear={onTemplateClear}
+                emptyTemplate={emptyTemplate}
+                itemTemplate={itemTemplate}
+                onInputTextChange={onInputTextChange}
+                onInputNumberChange={onInputNumberChange}
+                otherfields={formFields}
+            />
 
-                <DeleteProductDialog
-                    visible={deleteChargerDialog}
-                    hideDialog={hideDeleteChargerDialog}
-                    object={charger}
-                    delete={deleteCharger}
-                />
+            <DeleteProductDialog
+                visible={deleteChargerDialog}
+                hideDialog={hideDeleteChargerDialog}
+                object={charger}
+                delete={deleteCharger}
+            />
 
-                <DeleteProductsDialog
-                    visible={deleteChargersDialog}
-                    hideDialog={hideDeleteChargersDialog}
-                    delete={deleteSelectedChargers}
-                    object={charger}
-                />
+            <DeleteProductsDialog
+                visible={deleteChargersDialog}
+                hideDialog={hideDeleteChargersDialog}
+                delete={deleteSelectedChargers}
+                object={charger}
+            />
 
-            </div>
-        </div>
+        </RenderLayout>
     );
 
 }
