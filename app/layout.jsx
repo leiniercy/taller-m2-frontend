@@ -24,7 +24,7 @@ const RootLayout = ({children}) => {
         <html lang='en'>
         <body className="bg-gray-body ">
         <SessionProvider>
-            <div className="app relative grid">
+            <div className="app relative flex flex-wrap">
                 {children}
             </div>
         </SessionProvider>

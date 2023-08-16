@@ -1,6 +1,7 @@
 "use client"
 
 import React, {useState, useEffect, useRef} from 'react';
+import { useSession } from 'next-auth/react'
 
 //Components
 import ProductService from "@services/ProductService";
@@ -9,6 +10,8 @@ import Table from "@components/pages/Product/Table";
 import DialogForm from "@components/pages/Product/DialogForm";
 import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
+import RenderLayout from "@components/layout/RenderLayout";
+import AccessDeniedPage from "@components/pages/Error/AccessDeniedPage";
 
 //primereact
 import {Fieldset} from 'primereact/fieldset';
@@ -19,7 +22,15 @@ import {Tag} from "primereact/tag";
 
 
 
+
 export default function Accesorio(props) {
+
+    const { data: session, status } = useSession({
+        required: true,
+        onUnauthenticated() {
+            redirect('/')
+        }
+    });
 
     let emptyProduct = {
         id: null,
@@ -318,16 +329,22 @@ export default function Accesorio(props) {
         });
     };/*Eliminar varios objetos*/
 
-
     const legendTemplate = (<div className="flex align-items-center ">
         <span className="pi pi-user mr-2"></span>
         <span className="font-bold text-lg">Accesorios</span>
     </div>);
 
+    if(session?.user.rol !=='ROLE_ADMIN'){
+        return (
+            <RenderLayout>
+                <AccessDeniedPage/>
+            </RenderLayout>
+        );
+    }
+
     return (
-        <div className="sm:relative md:relative col-12 sm:col-12 md:col lg:col p-2 ml-2 sm:ml-2">
-            <Toast ref={toast}/>
-            <div className="card grid mt-2">
+        <RenderLayout>
+                <Toast ref={toast}/>
                 <Fieldset legend={legendTemplate} className="col-12">
                     <div className="col-12">
                         <Tools
@@ -387,8 +404,7 @@ export default function Accesorio(props) {
                     object={product}
                 />
 
-            </div>
-        </div>
+        </RenderLayout>
     );
 
 }

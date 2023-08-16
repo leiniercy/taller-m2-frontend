@@ -1,6 +1,8 @@
 "use client"
 
 import React, {useState, useEffect, useRef} from 'react';
+import {useSession} from "next-auth/react";
+
 
 //Components
 import RelojService from "@services/RelojService";
@@ -9,6 +11,10 @@ import Table from "@components/pages/Product/Table";
 import DialogForm from "@components/pages/Product/DialogForm";
 import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
+import FieldsCharjer from "@components/pages/Product/Charger/FieldsCharjer";
+import RenderLayout from "@components/layout/RenderLayout";
+import AccessDeniedPage from "@components/pages/Error/AccessDeniedPage";
+
 
 //primereact
 import {Fieldset} from 'primereact/fieldset';
@@ -20,6 +26,23 @@ import FieldsReloj from "@components/pages/Product/Reloj/FieldsReloj";
 
 
 export default function Reloj(props) {
+
+    const { data: session, status } = useSession({
+        required: true,
+        onUnauthenticated() {
+            redirect('/')
+        }
+    });
+
+    if(session?.user.rol !=='ROLE_ADMIN'){
+        return (
+            <RenderLayout>
+                <AccessDeniedPage/>
+            </RenderLayout>
+        );
+    }
+
+
 
     let emptyReloj = {
         id: null,

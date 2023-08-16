@@ -7,7 +7,6 @@ import {Image} from "primereact/image";
 // Error 404
 const NotFoundPage = () => {
     return (
-        <div className="grid">
             <div className="col-12">
                 <div
                     className=" card flex align-items-center justify-content-center overflow-hidden">
@@ -37,7 +36,6 @@ const NotFoundPage = () => {
                     </div>
                 </div>
             </div>
-        </div>
     );
 };
 

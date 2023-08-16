@@ -3,8 +3,16 @@
 
 import Link from 'next/link'
 import {useState} from "react";
+import { useSession } from 'next-auth/react'
 
 const AppMenu = () => {
+
+    const { data: session, status } = useSession({
+        required: true,
+        onUnauthenticated() {
+            redirect('/')
+        }
+    });
 
     const [openMenus, setOpenMenus] = useState([]);
 
@@ -15,6 +23,31 @@ const AppMenu = () => {
             setOpenMenus([...openMenus, index]);
         }
     };
+
+
+
+    if(session?.user.rol==='ROLE_MODERATOR'){
+        return (
+            <ul className="menu">
+                <li className="mt-2">
+                    <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                       href="/taller"><i
+                        className="pi pi-home"></i> Inicio</a>
+                </li>
+                <li>
+                    <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                       href="/taller/cliente"><i
+                        className="pi pi-user"></i> Clientes</a>
+                </li>
+                <li className="">
+                    <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                       href="/taller/ventas"><i
+                        className="pi pi-shopping-cart"></i> Ventas</a>
+                </li>
+
+            </ul>
+        )
+    }
 
 
     return (

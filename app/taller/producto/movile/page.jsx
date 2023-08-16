@@ -1,6 +1,8 @@
 "use client"
 
 import React, {useState, useEffect, useRef} from 'react';
+import {useSession} from "next-auth/react";
+
 
 //Components
 import MovileService from "@services/MovileServie";
@@ -9,6 +11,10 @@ import Table from "@components/pages/Product/Table";
 import DialogForm from "@components/pages/Product/DialogForm";
 import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
+import FieldsMovile from "@components/pages/Product/Movile/FieldsMovile";
+import RenderLayout from "@components/layout/RenderLayout";
+import AccessDeniedPage from "@components/pages/Error/AccessDeniedPage";
+
 
 //primereact
 import {Fieldset} from 'primereact/fieldset';
@@ -16,10 +22,24 @@ import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
 import {Tag} from "primereact/tag";
-import FieldsMovile from "@components/pages/Product/Movile/FieldsMovile";
 
 
 export default function Movile(props) {
+
+    const { data: session, status } = useSession({
+        required: true,
+        onUnauthenticated() {
+            redirect('/')
+        }
+    });
+
+    if(session?.user.rol !=='ROLE_ADMIN'){
+        return (
+            <RenderLayout>
+                <AccessDeniedPage/>
+            </RenderLayout>
+        );
+    }
 
     let emptyMovile = {
         id: null,

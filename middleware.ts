@@ -41,6 +41,7 @@ export function middleware(request: NextRequest) {
             url.pathname = '/taller';
             return NextResponse.redirect(url);
         }
+
     }
 
     if (request.nextUrl.pathname.startsWith('/login')) {

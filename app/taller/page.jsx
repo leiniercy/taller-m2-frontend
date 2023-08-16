@@ -38,7 +38,6 @@ export default function Home() {
 
     return (
         <RenderLayout>
-            <div className="grid">
                 <div className="col-12 lg:col-6 xl:col-3">
                     <div className="bg-gray-items card mb-0 p-3 border-round">
                         <div className="flex justify-content-between mb-3">
@@ -125,7 +124,6 @@ export default function Home() {
                     <StackedBarChart/>
                 </div>
 
-            </div>
         </RenderLayout>
     )
 

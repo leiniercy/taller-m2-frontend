@@ -8,6 +8,7 @@ import ChargerService from "@services/ChargerService";
 import RelojService from "@services/RelojService";
 import ProductService from "@services/ProductService";
 import DataViewAccesorio from "@components/pages/Client/Product/DataViewAccesorio";
+import RenderLayout from "@components/layout/RenderLayout";
 
 export default function Cliente(props) {
 
@@ -17,8 +18,7 @@ export default function Cliente(props) {
     const productService = new ProductService();
 
     return (
-        <div className="sm:relative col p-4">
-            <div className="grid">
+        <RenderLayout>
                 <div className="col-12">
                     <div className="card">
                         <Fieldset legend="Dispositivos de carga" toggleable>
@@ -58,7 +58,5 @@ export default function Cliente(props) {
                         </Fieldset>
                     </div>
                 </div>
-            </div>
-        </div>
-    );
+        </RenderLayout>);
 }
