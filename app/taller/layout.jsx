@@ -20,10 +20,10 @@ const HomeLayout = ({children}) => {
             <AppTopbarDesktop handleClick={handleClick}/>
             <div className="relative top-3rem sm:top-3rem md:top-100px grid">
                 {appSidebarVisible && <AppSidebar/>}
-                {children}
+                   {children}
             </div>
         </div>
     );
 }
 
-export default HomeLayout
+export default HomeLayout;
