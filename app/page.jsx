@@ -2,7 +2,7 @@
 
 //Componentes
 import React, {useContext, useEffect, useRef, useState} from 'react';
-// import {useRouter} from "next/navigation"
+import {useRouter} from "next/navigation";
 import {setCookie} from 'cookies-next';
 import {signIn, signOut, useSession} from "next-auth/react";
 
@@ -16,8 +16,8 @@ import {classNames} from 'primereact/utils';
 
 export default function Login() {
 
-    // const router = useRouter();
-    // const {data: session} = useSession();
+    const router = useRouter();
+    const {data: session, status} = useSession();
 
     const signInResponseEmpty = {
         username: '',
@@ -31,24 +31,26 @@ export default function Login() {
     const loginService = new LoginService();
 
 
-    const handleSubmit = () => {
+    const handleSubmit = async  () => {
         setSubmitted(true);
 
-        loginService.login(signInResponse).then((data) => {
-            //localStorage.setItem("token", data.token);
-            setloginFailed(false);
-            const res = signIn("credentials", {
-                username: signInResponse.username,
-                password: signInResponse.password,
-                redirect: true,
-                callbackUrl: "/taller",
-            })
+        const res = await  signIn("credentials", {
+            username: signInResponse.username,
+            password: signInResponse.password,
+            redirect: false
+            // redirect: true,
+            // callbackUrl: "/taller",
+        });
+
+        if(res.ok){
             setCookie('logged', 'true');
             setSubmitted(false);
-        }).catch(error => {
-            //Muestra sms de error
+            setloginFailed(false);
+            router.push('/taller');
+        }else{
             setloginFailed(true);
-        });
+            router.push('/?error=authentication')
+        }
 
     }
 

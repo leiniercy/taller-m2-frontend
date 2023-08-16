@@ -59,7 +59,7 @@ export const authOptions = {
         async session({session, token, user}) {
             session.user = token;
             return session;
-        }
+        },
     },
     pages: {
         signIn: "/",
@@ -68,4 +68,4 @@ export const authOptions = {
     },
 
 };
-export default NextAuth(authOptions);
+export default NextAuth(authOptions)
