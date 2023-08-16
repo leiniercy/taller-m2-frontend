@@ -7,6 +7,7 @@ import { Menu } from 'primereact/menu';
 import { Button } from 'primereact/button';
 
 import {useRouter} from "next/navigation";
+import { deleteCookie } from 'cookies-next';
 
 const LoginButton = () => {
 
@@ -27,9 +28,10 @@ const LoginButton = () => {
             label: 'Quit',
             icon: 'pi pi-fw pi-power-off',
             command: () => {
+                deleteCookie('logged');
                 signOut({
                     redirect: true,
-                    callbackUrl: "/taller"
+                    callbackUrl: "/"
                 });
             }
         }

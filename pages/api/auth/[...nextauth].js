@@ -30,8 +30,7 @@ export const authOptions = {
 
                 //If no error and we have user data, return it
                 if (res.ok && user) {
-
-                     const tokenDecode = jwt.decode(user.token);
+                    const tokenDecode = jwt.decode(user.token);
                     //Utilizar tokenExpirationDate para cerrar la cession
                     const tokenExpirationDate = tokenDecode.exp;
                     const tokenUser = tokenDecode.user;
@@ -43,7 +42,7 @@ export const authOptions = {
                         rol: tokenUser.roles[0]
                     }
 
-                }else{
+                } else {
                     //Return null if user data could not be retrieved
                     throw new Error("Incorrect_credentials");
                     return null;

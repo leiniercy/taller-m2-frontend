@@ -2,20 +2,22 @@
 
 //Componentes
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import { signIn, signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation"
-import {classNames} from 'primereact/utils';
-import jwt from 'jsonwebtoken';
+// import {useRouter} from "next/navigation"
+import {setCookie} from 'cookies-next';
+import {signIn, signOut, useSession} from "next-auth/react";
+
 import LoginService from '@services/LoginService';
 import {Button} from "primereact/button";
 import {InputText} from "primereact/inputtext"
 import {Image} from "primereact/image";
-import { Message } from 'primereact/message';
+import {Message} from 'primereact/message';
+import {classNames} from 'primereact/utils';
 
 
 export default function Login() {
 
-    const router = useRouter();
+    // const router = useRouter();
+    // const {data: session} = useSession();
 
     const signInResponseEmpty = {
         username: '',
@@ -31,26 +33,22 @@ export default function Login() {
 
     const handleSubmit = () => {
         setSubmitted(true);
-        const res = signIn("credentials", {
-            username: signInResponse.username,
-            password: signInResponse.password,
-            redirect: true,
-            callbackUrl: "/taller",
-        })
-        // loginService.login(signInResponse).then((data) => {
-        //     localStorage.setItem("token", data.token);
-        //     setloginFailed(false);
-        //     const res = signIn("credentials", {
-        //         username: signInResponse.username,
-        //         password: signInResponse.password,
-        //         redirect: true,
-        //         callbackUrl: "/taller",
-        //     })
-        //     //    router.push("/home");
-        // }).catch( error =>{
-        //     //Muestra sms de error
-        //     setloginFailed(true);
-        // });
+
+        loginService.login(signInResponse).then((data) => {
+            //localStorage.setItem("token", data.token);
+            setloginFailed(false);
+            const res = signIn("credentials", {
+                username: signInResponse.username,
+                password: signInResponse.password,
+                redirect: true,
+                callbackUrl: "/taller",
+            })
+            setCookie('logged', 'true');
+            setSubmitted(false);
+        }).catch(error => {
+            //Muestra sms de error
+            setloginFailed(true);
+        });
 
     }
 
@@ -104,7 +102,8 @@ export default function Login() {
                         />
                         {submitted && !signInResponse.password && <small className="p-error">Campo requerido.</small>}
                     </div>
-                    {loginFailed && <div className="field"> <Message severity="error" className="w-full"  text="Usuario o contraseña incorrectos" /> </div>}
+                    {loginFailed && <div className="field"><Message severity="error" className="w-full"
+                                                                    text="Usuario o contraseña incorrectos"/></div>}
                     <div className="field">
                         <Button label="Iniciar sesión"
                                 icon="pi pi-user"
