@@ -3,6 +3,7 @@
 //Componentes
 import React, {useContext, useEffect, useRef, useState} from 'react';
 
+import RenderLayout from "@components/layout/RenderLayout";
 import DoughnutChart from "@components/pages/Home/DoughnutChart";
 import HorizontalBar from "@components/pages/Home/HorizontalBarChart";
 import StackedBarChart from "@components/pages/Home/StackedBarChart";
@@ -12,6 +13,7 @@ import ChargerService from "@services/ChargerService";
 import MovileService from "@services/MovileServie";
 import RelojService from "@services/RelojService";
 import ProductService from "@services/ProductService";
+
 
 export default function Home() {
 
@@ -35,7 +37,7 @@ export default function Home() {
     });
 
     return (
-        <div className="sm:relative sm:col-12 md:col p-4 sm:p-4">
+        <RenderLayout>
             <div className="grid">
                 <div className="col-12 lg:col-6 xl:col-3">
                     <div className="bg-gray-items card mb-0 p-3 border-round">
@@ -124,8 +126,7 @@ export default function Home() {
                 </div>
 
             </div>
-        </div>
-
+        </RenderLayout>
     )
 
 

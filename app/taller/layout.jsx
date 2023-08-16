@@ -15,14 +15,14 @@ const HomeLayout = ({children}) => {
     }
 
     return (
-        <div className='h-full w-full relative'>
+        <>
             {/*<AppTopbarMovile visible={visible} handleSidebar={handleSidebar} />*/}
             <AppTopbarDesktop handleClick={handleClick}/>
-            <div className="relative top-3rem sm:top-3rem md:top-100px grid">
+            <div className="relative top-3rem sm:top-3rem md:top-100px grid col-12" style={{height: '100%'}}>
                 {appSidebarVisible && <AppSidebar/>}
                    {children}
             </div>
-        </div>
+        </>
     );
 }
 

@@ -9,7 +9,7 @@ function AppTopbarDesktop(props) {
 
 
     return (
-        <div className="bg-gray-items hidden sm:hidden md:flex md:flex-row w-full fixed z-1">
+        <div className="bg-gray-items hidden sm:hidden md:flex md:flex-row w-full flex-grow-0 flex-shrink-0 fixed z-1" style={{flexBasis: '0'}}>
             <div className="col-fixed flex flex-row justify-content-center   align-items-center"
                  style={{width: '240px'}}>
                 <div className="bg-gray-items text-center border-round-sm font-bold">

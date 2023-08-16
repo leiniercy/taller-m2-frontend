@@ -7,11 +7,10 @@ import {Image} from "primereact/image";
 // Error 404
 const NotFoundPage = () => {
     return (
-        <div className="sm:relative sm:col-12 md:col p-4 sm:p-4">
-            <div
-                className="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
-                <div className="flex flex-column align-items-center justify-content-center">
-                    {/*<img src="/" alt="Taller 2M" className="mb-5 w-6rem flex-shrink-0" />*/}
+        <div className="grid">
+            <div className="col-12">
+                <div
+                    className=" card flex align-items-center justify-content-center overflow-hidden">
                     <div style={{
                         borderRadius: '56px',
                         padding: '0.3rem',
@@ -20,43 +19,18 @@ const NotFoundPage = () => {
                         <div
                             className="w-full surface-card pb-8 pt-5 px-5 sm:px-8 flex flex-column align-items-center"
                             style={{borderRadius: '53px'}}>
-                            <Image src="/assets/images/tallerM2.png" alt="Logo" width={80} height={80}
-                                   className="object-contain mb-2"
-                            />
-                            <span className="text-blue-500 font-bold text-3xl">404</span>
+                            <img src="/assets/images/tallerM2.png" alt="Taller 2M" className="mb-5 w-6rem flex-shrink-0" />
+                            <span className="text-blue-500 font-bold text-3xl sm:text-3xl md:text-4xl">404</span>
                             <h1 className="text-900 font-bold text-5xl mb-2">Not Found</h1>
-                            <div className="text-600 mb-5">Requested resource is not available</div>
+                            <div className="text-600 mb-5">Esta página no está disponible</div>
                             <Link href="/"
-                                  className="w-full flex align-items-center py-5 border-300 border-bottom-1">
+                                  className="w-full flex align-items-baseline py-5 border-300 border-bottom-1">
                             <span className="flex justify-content-center align-items-center bg-cyan-400 border-round"
                                   style={{height: '3.5rem', width: '3.5rem'}}>
-                                <i className="text-50 pi pi-fw pi-table text-2xl"></i>
+                                <i className="text-50 pi pi-fw pi-home text-2xl"></i>
                             </span>
                                 <span className="ml-4 flex flex-column">
-                                <span className="text-900 lg:text-xl font-medium mb-1">Frequently Asked Questions</span>
-                                <span className="text-600 lg:text-lg">Ultricies mi quis hendrerit dolor.</span>
-                            </span>
-                            </Link>
-                            <Link href="/"
-                                  className="w-full flex align-items-center py-5 border-300 border-bottom-1">
-                            <span className="flex justify-content-center align-items-center bg-orange-400 border-round"
-                                  style={{height: '3.5rem', width: '3.5rem'}}>
-                                <i className="pi pi-fw pi-question-circle text-50 text-2xl"></i>
-                            </span>
-                                <span className="ml-4 flex flex-column">
-                                <span className="text-900 lg:text-xl font-medium mb-1">Solution Center</span>
-                                <span className="text-600 lg:text-lg">Phasellus faucibus scelerisque eleifend.</span>
-                            </span>
-                            </Link>
-                            <Link href="/"
-                                  className="w-full flex align-items-center mb-5 py-5 border-300 border-bottom-1">
-                            <span className="flex justify-content-center align-items-center bg-indigo-400 border-round"
-                                  style={{height: '3.5rem', width: '3.5rem'}}>
-                                <i className="pi pi-fw pi-unlock text-50 text-2xl"></i>
-                            </span>
-                                <span className="ml-4 flex flex-column">
-                                <span className="text-900 lg:text-xl font-medium mb-1">Permission Manager</span>
-                                <span className="text-600 lg:text-lg">Accumsan in nisl nisi scelerisque</span>
+                                <span className="text-900 lg:text-xl font-medium mb-1">Regrese a la página de inicio</span>
                             </span>
                             </Link>
                         </div>
@@ -64,7 +38,6 @@ const NotFoundPage = () => {
                 </div>
             </div>
         </div>
-
     );
 };
 
