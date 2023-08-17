@@ -1,8 +1,6 @@
 "use client"
 
 import React, {useState, useEffect, useRef} from 'react';
-import {useSession} from "next-auth/react";
-
 
 //Components
 import RelojService from "@services/RelojService";
@@ -12,15 +10,16 @@ import DialogForm from "@components/pages/Product/DialogForm";
 import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
 import RenderLayout from "@components/layout/RenderLayout";
-
+import ProductFieldset from "@components/pages/Product/ProductFieldset";
+import FieldsReloj from "@components/pages/Product/Reloj/FieldsReloj";
 
 //primereact
-import {Fieldset} from 'primereact/fieldset';
 import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
 import {Tag} from "primereact/tag";
-import FieldsReloj from "@components/pages/Product/Reloj/FieldsReloj";
+
+
 
 
 export default function Reloj(props) {
@@ -31,6 +30,7 @@ export default function Reloj(props) {
         files: null,
         price: 0,
         cant: 0,
+        taller: '',
         specialFeature: '',
         compatibleDevice: '',
         bateryLife: 0
@@ -41,6 +41,7 @@ export default function Reloj(props) {
         name: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
         price: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
         cant: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
+        taller: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
         specialFeature: {
             operator: FilterOperator.AND,
             constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]
@@ -53,17 +54,7 @@ export default function Reloj(props) {
     };/*Mis filtros*/
 
     const globalFilterFields = [
-        'name', 'price', 'cant', 'specialFeature', 'compatibleDevice', 'bateryLife'
-    ];
-
-    const columns = [
-        {field: 'name', header: 'Nombre'},
-        {field: 'price', header: 'Precio'},
-        {field: 'cant', header: 'Cantidad'},
-        {field: 'specialFeature', header: 'specialFeature'},
-        {field: 'compatibleDevice', header: 'compatibleDevice'},
-        {field: 'bateryLife', header: 'bateryLife'},
-
+        'name', 'price', 'cant', 'taller', 'specialFeature', 'compatibleDevice', 'bateryLife'
     ];
 
     const toast = useRef(null);
@@ -84,14 +75,12 @@ export default function Reloj(props) {
     useEffect(() => {
         relojService.getAll().then((data) => setRelojes(data));
     });
-
     const openNew = () => {
         setSubmitted(false);
         setReloj(emptyReloj);
         setRelojDialog(true);
         setEditActive(false);
     }; /*Abrir nueva ventana para crear un objeto*/
-
     const confirmDeleteSelected = () => {
         if (selectedRelojes.length > 1) {
             setDeleteRelojesDialog(true);
@@ -101,11 +90,9 @@ export default function Reloj(props) {
             setDeleteRelojDialog(true);
         }
     }; /*Abrir el dialog de confirmacion de eliminacion de los objetos*/
-
     const onSelectionChangeSelectedObjects = (e) => {
         setSelectedRelojes(e.value);
     } /*Se encarga de obtener la informacion de los objetos seleccionados*/
-
     const actionBodyTemplate = (rowData) => {
         return (
             <React.Fragment>
@@ -122,7 +109,6 @@ export default function Reloj(props) {
         setRelojDialog(false);
         setSubmitted(false);
     }; /*Ocultar dialog de anadir*/
-
     const save = () => {
         setSubmitted(true);
 
@@ -133,6 +119,7 @@ export default function Reloj(props) {
             formData.append('name', reloj.name);
             formData.append('price', reloj.price);
             formData.append('cant', reloj.cant);
+            formData.append('taller', reloj.taller.name);
             formData.append('specialFeature', reloj.specialFeature);
             formData.append('compatibleDevice', reloj.compatibleDevice);
             formData.append('bateryLife', reloj.bateryLife);
@@ -170,6 +157,7 @@ export default function Reloj(props) {
             formData.append('name', reloj.name);
             formData.append('price', reloj.price);
             formData.append('cant', reloj.cant);
+            formData.append('taller', reloj.taller.name);
             formData.append('specialFeature', reloj.specialFeature);
             formData.append('compatibleDevice', reloj.compatibleDevice);
             formData.append('bateryLife', reloj.bateryLife);
@@ -202,13 +190,11 @@ export default function Reloj(props) {
             });
         }
     }; /*Crear o actualizar la informacion de un objeto*/
-
     const edit = (reloj) => {
         setEditActive(true);
         setReloj(reloj);
         setRelojDialog(true);
     };/*Editar la informacion de un objeto existente*/
-
     const onTemplateSelect = (e) => {
         const val = e.files;
         let _reloj = {...reloj};
@@ -280,13 +266,18 @@ export default function Reloj(props) {
         _reloj[`${name}`] = val;
         setReloj(_reloj);
     }; /*Modifica el valor de un numero especificado del objeto*/
+    const onChangeSelectedBoxTaller = (e) => {
+        const val = e.value || '';
+        let _reloj = {...reloj};
+        _reloj[`${'taller'}`] = val;
+        setReloj(_reloj);
+    } //Modifica el estado de seleccion del selectbox del taller
     const onCheckBoxChange = (e, name) => {
         const val = e.checked || false;
         let _reloj = {...reloj};
         _reloj[`${name}`] = val;
         setReloj(_reloj);
     }; /*Modifica el valor de un bool especificado del objeto*/
-
     const hideDeleteRelojDialog = () => {
         setDeleteRelojDialog(false);
     };/*Ocultar dialog de eliminar un objeto*/
@@ -344,32 +335,23 @@ export default function Reloj(props) {
         });
     };/*Eliminar varios objetos*/
 
-    const formFields = (
-        <FieldsReloj
-            submitted={submitted}
-            object={reloj}
-            onInputTextChange={onInputTextChange}
-            onInputNumberChange={onInputNumberChange}
-        />
-    );//Campos especificos del formulario
-
-    const legendTemplate = (<div className="flex align-items-center ">
-        <span className="pi pi-user mr-2"></span>
-        <span className="font-bold text-lg">Relojes inteligentes</span>
-    </div>);
+    const formFields = (<FieldsReloj
+        submitted={submitted}
+        object={reloj}
+        onInputTextChange={onInputTextChange}
+        onInputNumberChange={onInputNumberChange}
+    />);//Campos especificos del formulario
 
     return (
         <RenderLayout>
             <Toast ref={toast}/>
-
-            <Fieldset legend={legendTemplate} className="col-12">
+            <ProductFieldset label={'Relojes inteligentes'}>
                 <div className="col-12">
                     <Tools
                         openNew={openNew}
                         confirmDeleteSelected={confirmDeleteSelected}
                         selectedObjects={selectedRelojes}
                         objects={relojes}
-                        columns={columns}
                         dt={dt}
                         fileName={'reloj'}
                     /> {/*barra de herramientas*/}
@@ -388,7 +370,7 @@ export default function Reloj(props) {
                     />
 
                 </div>
-            </Fieldset>
+            </ProductFieldset>
 
             <DialogForm
                 visible={relojDialog}
@@ -405,6 +387,7 @@ export default function Reloj(props) {
                 itemTemplate={itemTemplate}
                 onInputTextChange={onInputTextChange}
                 onInputNumberChange={onInputNumberChange}
+                onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
                 otherfields={formFields}
             />
 

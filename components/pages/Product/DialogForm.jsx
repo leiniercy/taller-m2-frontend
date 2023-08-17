@@ -6,7 +6,7 @@ import {classNames} from "primereact/utils";
 import {InputNumber} from "primereact/inputnumber";
 import {Slider} from "primereact/slider";
 import {Button} from "primereact/button";
-import FieldsMovile from "@components/pages/Product/Movile/FieldsMovile";
+import {Dropdown} from "primereact/dropdown";
 
 
 export default function DialogForm(props) {
@@ -28,6 +28,10 @@ export default function DialogForm(props) {
         className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined'
     };/*Drag and Drop options (image)*/
 
+    const tallerNames = [
+        { name: 'Taller 2M', code: '2M' },
+        { name: 'Taller MJ', code: 'MJ' },
+    ];
 
     return (
         <Dialog visible={props.visible}
@@ -99,6 +103,15 @@ export default function DialogForm(props) {
                                 min={0} max={500}
                                 className="w-full"/>
                     </div>
+                </div>
+                <div className="field">
+                    <Dropdown value={props.object.taller}
+                              onChange={(e) => props.onChangeSelectedBoxTaller(e)}
+                              options={tallerNames}
+                              optionLabel="name"
+                              placeholder="Seleccione el taller"
+                              showClear
+                              className="w-full" />
                 </div>
 
                 {props.otherfields}

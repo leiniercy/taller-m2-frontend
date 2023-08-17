@@ -25,7 +25,6 @@ export default function Tools(props) {
     const rightToolbarTemplate = () => {
         return <ExportInfo
             objects={props.objects}
-            columns={props.columns}
             dt={props.dt}
             fileName={props.fileName}/>
     }; /*Barra de herramientas*/

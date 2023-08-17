@@ -1,7 +1,6 @@
 "use client"
 
 import React, {useState, useEffect, useRef} from 'react';
-import { useSession } from 'next-auth/react'
 
 //Components
 import ProductService from "@services/ProductService";
@@ -11,9 +10,9 @@ import DialogForm from "@components/pages/Product/DialogForm";
 import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
 import RenderLayout from "@components/layout/RenderLayout";
+import ProductFieldset from "@components/pages/Product/ProductFieldset";
 
 //primereact
-import {Fieldset} from 'primereact/fieldset';
 import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
@@ -29,6 +28,7 @@ export default function Accesorio(props) {
         files: null,
         price: 0,
         cant: 0,
+        taller: ''
     };
 
     const emptyFilters = {
@@ -36,17 +36,13 @@ export default function Accesorio(props) {
         name: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
         price: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
         cant: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
+        taller: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
     };/*Mis filtros*/
 
     const globalFilterFields = [
-        'name', 'price', 'cant'
+        'name', 'price', 'cant', 'taller'
     ];
 
-    const columns = [
-        {field: 'name', header: 'Nombre'},
-        {field: 'price', header: 'Precio'},
-        {field: 'cant', header: 'Cantidad'},
-    ];
 
     const toast = useRef(null);
     const dt = useRef(null);
@@ -66,14 +62,12 @@ export default function Accesorio(props) {
     useEffect(() => {
         productService.getAllProducts().then((data) => setProducts(data));
     });
-
     const openNew = () => {
         setSubmitted(false);
         setProduct(emptyProduct);
         setProductDialog(true);
         setEditActive(false);
     }; /*Abrir nueva ventana para crear un objeto*/
-
     const confirmDeleteSelected = () => {
         if (selecteProducts.length > 1) {
             setDeleteProductsDialog(true);
@@ -83,11 +77,9 @@ export default function Accesorio(props) {
             setDeleteProductDialog(true);
         }
     }; /*Abrir el dialog de confirmacion de eliminacion de los objetos*/
-
     const onSelectionChangeSelectedObjects = (e) => {
         setSelecteProducts(e.value);
     } /*Se encarga de obtener la informacion de los objetos seleccionados*/
-
     const actionBodyTemplate = (rowData) => {
         return (
             <React.Fragment>
@@ -104,7 +96,6 @@ export default function Accesorio(props) {
         setProductDialog(false);
         setSubmitted(false);
     }; /*Ocultar dialog de anadir*/
-
     const save = () => {
         setSubmitted(true);
 
@@ -115,6 +106,7 @@ export default function Accesorio(props) {
             formData.append('name', product.name);
             formData.append('price', product.price);
             formData.append('cant', product.cant);
+            formData.append('taller', product.taller.name);
             product.files.forEach((file, i) => {
                 formData.append('files', file);
             });
@@ -149,6 +141,7 @@ export default function Accesorio(props) {
             formData.append('name', product.name);
             formData.append('price', product.price);
             formData.append('cant', product.cant);
+            formData.append('taller', charger.taller.name);
             product.files.forEach((file, i) => {
                 formData.append('files', file);
             });
@@ -178,13 +171,11 @@ export default function Accesorio(props) {
             });
         }
     }; /*Crear o actualizar la informacion de un objeto*/
-
     const edit = (product) => {
         setEditActive(true);
         setProduct(product);
         setProductDialog(true);
     };/*Editar la informacion de un objeto existente*/
-
     const onTemplateSelect = (e) => {
         const val = e.files;
         let _product = {...product};
@@ -256,13 +247,18 @@ export default function Accesorio(props) {
         _product[`${name}`] = val;
         setProduct(_product);
     }; /*Modifica el valor de un numero especificado del objeto*/
+    const onChangeSelectedBoxTaller = (e) => {
+        const val = e.value || '';
+        let _product = {...product};
+        _product[`${'taller'}`] = val;
+        setProduct(_product);
+    } //Modifica el estado de seleccion del selectbox del taller
     const onCheckBoxChange = (e, name) => {
         const val = e.checked || false;
         let _product = {...product};
         _product[`${name}`] = val;
         setProduct(_product);
     }; /*Modifica el valor de un bool especificado del objeto*/
-
     const hideDeleteProductDialog = () => {
         setDeleteProductDialog(false);
     };/*Ocultar dialog de eliminar un objeto*/
@@ -320,72 +316,66 @@ export default function Accesorio(props) {
         });
     };/*Eliminar varios objetos*/
 
-    const legendTemplate = (<div className="flex align-items-center ">
-        <span className="pi pi-user mr-2"></span>
-        <span className="font-bold text-lg">Accesorios</span>
-    </div>);
-
     return (
         <RenderLayout>
-                <Toast ref={toast}/>
-                <Fieldset legend={legendTemplate} className="col-12">
-                    <div className="col-12">
-                        <Tools
-                            openNew={openNew}
-                            confirmDeleteSelected={confirmDeleteSelected}
-                            selectedObjects={selecteProducts}
-                            objects={products}
-                            columns={columns}
-                            dt={dt}
-                            fileName={'products'}
-                        /> {/*barra de herramientas*/}
-                    </div>
-                    <div className="col-12">
+            <Toast ref={toast}/>
+            <ProductFieldset label={'Accesorios'}>
+                <div className="col-12">
+                    <Tools
+                        openNew={openNew}
+                        confirmDeleteSelected={confirmDeleteSelected}
+                        selectedObjects={selecteProducts}
+                        objects={products}
+                        dt={dt}
+                        fileName={'products'}
+                    /> {/*barra de herramientas*/}
+                </div>
+                <div className="col-12">
 
-                        <Table
-                            headerLabel={'accesorios'}
-                            dt={dt}
-                            objects={products}
-                            selectedObjects={selecteProducts}
-                            setSelectedObject={onSelectionChangeSelectedObjects}
-                            emptyFilters={emptyFilters}
-                            globalFilterFields={globalFilterFields}
-                            actionBodyTemplate={actionBodyTemplate}
-                        />
+                    <Table
+                        headerLabel={'accesorios'}
+                        dt={dt}
+                        objects={products}
+                        selectedObjects={selecteProducts}
+                        setSelectedObject={onSelectionChangeSelectedObjects}
+                        emptyFilters={emptyFilters}
+                        globalFilterFields={globalFilterFields}
+                        actionBodyTemplate={actionBodyTemplate}
+                    />
 
-                    </div>
-                </Fieldset>
+                </div>
+            </ProductFieldset>
+            <DialogForm
+                visible={productDialog}
+                submitted={submitted}
+                object={product}
+                editActive={editActive}
+                hideDialog={hideDialog}
+                save={save}
+                headerTemplate={headerTemplate}
+                onTemplateSelect={onTemplateSelect}
+                onTemplateRemove={onTemplateRemove}
+                onTemplateClear={onTemplateClear}
+                emptyTemplate={emptyTemplate}
+                itemTemplate={itemTemplate}
+                onInputTextChange={onInputTextChange}
+                onInputNumberChange={onInputNumberChange}
+                onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
+            />
 
-                <DialogForm
-                    visible={productDialog}
-                    submitted={submitted}
-                    object={product}
-                    editActive={editActive}
-                    hideDialog={hideDialog}
-                    save={save}
-                    headerTemplate={headerTemplate}
-                    onTemplateSelect={onTemplateSelect}
-                    onTemplateRemove={onTemplateRemove}
-                    onTemplateClear={onTemplateClear}
-                    emptyTemplate={emptyTemplate}
-                    itemTemplate={itemTemplate}
-                    onInputTextChange={onInputTextChange}
-                    onInputNumberChange={onInputNumberChange}
-                />
+            <DeleteProductDialog
+                visible={deleteProductDialog}
+                hideDialog={hideDeleteProductDialog}
+                object={product}
+                delete={deleteProduct}
+            />
 
-                <DeleteProductDialog
-                    visible={deleteProductDialog}
-                    hideDialog={hideDeleteProductDialog}
-                    object={product}
-                    delete={deleteProduct}
-                />
-
-                <DeleteProductsDialog
-                    visible={deleteProductsDialog}
-                    hideDialog={hideDeleteProductsDialog}
-                    delete={deleteSelectedProducts}
-                    object={product}
-                />
+            <DeleteProductsDialog
+                visible={deleteProductsDialog}
+                hideDialog={hideDeleteProductsDialog}
+                delete={deleteSelectedProducts}
+                object={product}
+            />
 
         </RenderLayout>
     );

@@ -1,7 +1,6 @@
 "use client"
 
 import React, {useState, useEffect, useRef} from 'react';
-import {useSession} from "next-auth/react";
 
 
 //Components
@@ -13,10 +12,9 @@ import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
 import FieldsMovile from "@components/pages/Product/Movile/FieldsMovile";
 import RenderLayout from "@components/layout/RenderLayout";
-
+import ProductFieldset from "@components/pages/Product/ProductFieldset";
 
 //primereact
-import {Fieldset} from 'primereact/fieldset';
 import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
@@ -32,6 +30,7 @@ export default function Movile(props) {
         files: null,
         price: 0,
         cant: 0,
+        taller: '',
         sizeStorage: 0,
         ram: 0,
         camaraTrasera: 0,
@@ -60,24 +59,10 @@ export default function Movile(props) {
     };/*Mis filtros*/
 
     const globalFilterFields = [
-        'name', 'price', 'cant',
+        'name', 'price', 'cant','taller',
         'sizeStorage', 'ram', 'camaraTrasera', 'camaraFrontal',
         'banda2G', 'banda3G', 'banda4G', 'banda5G', 'bateria'];
 
-    const columns = [
-        {field: 'name', header: 'Nombre'},
-        {field: 'price', header: 'Precio'},
-        {field: 'cant', header: 'Cantidad'},
-        {field: 'sizeStorage', header: 'Almacenamiento'},
-        {field: 'ram', header: 'Ram'},
-        {field: 'camaraTrasera', header: 'Camara trasera'},
-        {field: 'camaraFrontal', header: 'Camara frontal'},
-        {field: 'banda2G', header: 'Banda 2G'},
-        {field: 'banda3G', header: 'Banda 3G'},
-        {field: 'banda4G', header: 'Banda 4G'},
-        {field: 'banda5G', header: 'Banda 5G'},
-        {field: 'bateria', header: 'Duración bateria'},
-    ];
 
     const toast = useRef(null);
     const dt = useRef(null);
@@ -135,7 +120,6 @@ export default function Movile(props) {
         setMovileDialog(false);
         setSubmitted(false);
     }; /*Ocultar dialog de anadir*/
-
     const save = () => {
         setSubmitted(true);
 
@@ -145,7 +129,8 @@ export default function Movile(props) {
             formData.append('id', movile.id);
             formData.append('name', movile.name);
             formData.append('price', movile.price);
-            formData.append('cant', movile.cant);
+            formData.append('cant', movile.cant)
+            formData.append('taller', movile.taller.name);
             formData.append('sizeStorage', movile.sizeStorage);
             formData.append('ram', movile.ram);
             formData.append('camaraTrasera', movile.camaraTrasera);
@@ -190,6 +175,7 @@ export default function Movile(props) {
             formData.append('name', movile.name);
             formData.append('price', movile.price);
             formData.append('cant', movile.cant);
+            formData.append('taller', movile.taller.name);
             formData.append('sizeStorage', movile.sizeStorage);
             formData.append('ram', movile.ram);
             formData.append('camaraTrasera', movile.camaraTrasera);
@@ -228,13 +214,11 @@ export default function Movile(props) {
             });
         }
     }; /*Crear o actualizar la informacion de un objeto*/
-
     const edit = (movile) => {
         setEditActive(true);
         setMovile(movile);
         setMovileDialog(true);
     };/*Editar la informacion de un objeto existente*/
-
     const onTemplateSelect = (e) => {
         const val = e.files;
         let _movile = {...movile};
@@ -306,13 +290,18 @@ export default function Movile(props) {
         _movile[`${name}`] = val;
         setMovile(_movile);
     }; /*Modifica el valor de un numero especificado del objeto*/
+    const onChangeSelectedBoxTaller = (e) => {
+        const val = e.value || '';
+        let _movile = {...movile};
+        _movile[`${'taller'}`] = val;
+        setMovile(_movile);
+    } //Modifica el estado de seleccion del selectbox del taller
     const onCheckBoxChange = (e, name) => {
         const val = e.checked || false;
         let _movile = {...movile};
         _movile[`${name}`] = val;
         setMovile(_movile);
     }; /*Modifica el valor de un bool especificado del objeto*/
-
     const hideDeleteMovileDialog = () => {
         setDeleteMovileDialog(false);
     };/*Ocultar dialog de eliminar un objeto*/
@@ -370,32 +359,25 @@ export default function Movile(props) {
         });
     };/*Eliminar varios objetos*/
 
-    const formFields = (
-        <FieldsMovile
+    const formFields = (<FieldsMovile
             submitted={submitted}
             object={movile}
             onInputTextChange={onInputTextChange}
             onInputNumberChange={onInputNumberChange}
             onCheckBoxChange={onCheckBoxChange}
-        />
-    );//Campos especificos del formulario
+        />);//Campos especificos del formulario
 
-    const legendTemplate = (<div className="flex align-items-center ">
-        <span className="pi pi-user mr-2"></span>
-        <span className="font-bold text-lg">Dispositivos moviles</span>
-    </div>);
 
     return (
         <RenderLayout>
             <Toast ref={toast}/>
-            <Fieldset legend={legendTemplate} className="col-12">
+            <ProductFieldset label={'Dispositivos moviles'}>
                 <div className="col-12">
                     <Tools
                         openNew={openNew}
                         confirmDeleteSelected={confirmDeleteSelected}
                         selectedObjects={selectedMoviles}
                         objects={moviles}
-                        columns={columns}
                         dt={dt}
                         fileName={'movile'}
                     /> {/*barra de herramientas*/}
@@ -414,7 +396,7 @@ export default function Movile(props) {
                     />
 
                 </div>
-            </Fieldset>
+            </ProductFieldset>
 
             <DialogForm
                 visible={movileDialog}
@@ -431,6 +413,7 @@ export default function Movile(props) {
                 itemTemplate={itemTemplate}
                 onInputTextChange={onInputTextChange}
                 onInputNumberChange={onInputNumberChange}
+                onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
                 otherfields={formFields}
             />
 

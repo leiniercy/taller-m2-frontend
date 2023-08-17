@@ -1,9 +1,15 @@
-
 import {Button} from 'primereact/button';
 
 export default function ExportInfo(props) {
 
-   const exportColumns = props.columns.map((col) => ({title: col.header, dataKey: col.field}));
+    const columns = [
+        {field: 'name', header: 'Nombre'},
+        {field: 'taller', header: 'Taller'},
+        {field: 'price', header: 'Precio'},
+        {field: 'cant', header: 'Cantidad'},
+    ];
+
+    const exportColumns = columns.map((col) => ({title: col.header, dataKey: col.field}));
 
     /*Exportar informacion*/
     const exportExcel = () => {
@@ -38,7 +44,7 @@ export default function ExportInfo(props) {
             import('jspdf-autotable').then(() => {
                 const doc = new jsPDF.default(0, 0);
                 doc.autoTable(exportColumns, props.objects);
-                doc.save(props.fileName+'.pdf');
+                doc.save(props.fileName + '.pdf');
             });
         });
     };

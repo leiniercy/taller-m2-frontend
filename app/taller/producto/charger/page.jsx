@@ -1,7 +1,6 @@
 "use client"
 
 import React, {useState, useEffect, useRef} from 'react';
-import {useSession} from "next-auth/react";
 
 //Components
 import ChargerService from "@services/ChargerService";
@@ -12,14 +11,15 @@ import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
 import FieldsCharjer from "@components/pages/Product/Charger/FieldsCharjer";
 import RenderLayout from "@components/layout/RenderLayout";
+import ProductFieldset from "@components/pages/Product/ProductFieldset";
 
 
 //primereact
-import {Fieldset} from 'primereact/fieldset';
 import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
 import {Tag} from "primereact/tag";
+
 
 
 export default function Charger(props) {
@@ -31,6 +31,7 @@ export default function Charger(props) {
         files: null,
         price: 0,
         cant: 0,
+        taller: '',
         connectorType: '',
         compatibleDevice: ''
     };
@@ -40,6 +41,7 @@ export default function Charger(props) {
         name: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
         price: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
         cant: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
+        taller: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
         connectorType: {
             operator: FilterOperator.AND,
             constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]
@@ -51,15 +53,7 @@ export default function Charger(props) {
     };/*Mis filtros*/
 
     const globalFilterFields = [
-        'name', 'price', 'cant', 'connectorType', 'compatibleDevice'
-    ];
-
-    const columns = [
-        {field: 'name', header: 'Nombre'},
-        {field: 'price', header: 'Precio'},
-        {field: 'cant', header: 'Cantidad'},
-        {field: 'connectorType', header: 'connectorType'},
-        {field: 'compatibleDevice', header: 'compatibleDevice'},
+        'name', 'price', 'cant', 'taller', 'connectorType', 'compatibleDevice'
     ];
 
     const toast = useRef(null);
@@ -129,6 +123,7 @@ export default function Charger(props) {
             formData.append('name', charger.name);
             formData.append('price', charger.price);
             formData.append('cant', charger.cant);
+            formData.append('taller', charger.taller.name);
             formData.append('connectorType', charger.connectorType);
             formData.append('compatibleDevice', charger.compatibleDevice);
             charger.files.forEach((file, i) => {
@@ -165,6 +160,7 @@ export default function Charger(props) {
             formData.append('name', charger.name);
             formData.append('price', charger.price);
             formData.append('cant', charger.cant);
+            formData.append('taller', charger.taller.name);
             formData.append('connectorType', charger.connectorType);
             formData.append('compatibleDevice', charger.compatibleDevice);
             charger.files.forEach((file, i) => {
@@ -274,6 +270,12 @@ export default function Charger(props) {
         _charger[`${name}`] = val;
         setCharger(_charger);
     }; /*Modifica el valor de un numero especificado del objeto*/
+    const onChangeSelectedBoxTaller = (e) => {
+        const val = e.value || '';
+        let _charger = {...charger};
+        _charger[`${'taller'}`] = val;
+        setCharger(_charger);
+    } //Modifica el estado de seleccion del selectbox del taller
     const onCheckBoxChange = (e, name) => {
         const val = e.checked || false;
         let _charger = {...charger};
@@ -346,22 +348,17 @@ export default function Charger(props) {
         />
     );//Campos especificos del formulario
 
-    const legendTemplate = (<div className="flex align-items-center ">
-        <span className="pi pi-user mr-2"></span>
-        <span className="font-bold text-lg">Dispositivos de carga</span>
-    </div>);
 
     return (
         <RenderLayout>
             <Toast ref={toast}/>
-            <Fieldset legend={legendTemplate} className="col-12">
+            <ProductFieldset label={'Dispositivos de carga'}>
                 <div className="col-12">
                     <Tools
                         openNew={openNew}
                         confirmDeleteSelected={confirmDeleteSelected}
                         selectedObjects={selectedChargers}
                         objects={chargers}
-                        columns={columns}
                         dt={dt}
                         fileName={'charger'}
                     /> {/*barra de herramientas*/}
@@ -380,7 +377,7 @@ export default function Charger(props) {
                     />
 
                 </div>
-            </Fieldset>
+            </ProductFieldset>
 
             <DialogForm
                 visible={chargerDialog}
@@ -397,6 +394,7 @@ export default function Charger(props) {
                 itemTemplate={itemTemplate}
                 onInputTextChange={onInputTextChange}
                 onInputNumberChange={onInputNumberChange}
+                onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
                 otherfields={formFields}
             />
 

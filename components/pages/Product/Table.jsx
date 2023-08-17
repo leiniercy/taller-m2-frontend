@@ -85,12 +85,17 @@ export default function Table(props) {
                     filterClear={filterClearTemplate}
                     filterApply={filterApplyTemplate}
                     style={{minWidth: '16rem'}}></Column>
+            <Column field="taller" header="Taller" sortable filter
+                    filterPlaceholder="Bucar por taller"
+                    filterClear={filterClearTemplate}
+                    filterApply={filterApplyTemplate}
+                    style={{minWidth: '8rem'}}></Column>
             <Column field="price" header="Precio" sortable filter
                     filterPlaceholder="Bucar por precio"
                     filterClear={filterClearTemplate}
                     filterApply={filterApplyTemplate}
                     body={priceBodyTemplate}
-                    style={{minWidth: '8rem'}}></Column>
+                    style={{minWidth: '6rem'}}></Column>
             <Column field="cant" header="Cantidad" sortable filter
                     filterPlaceholder="Bucar por cantidad"
                     filterClear={filterClearTemplate}
