@@ -12,7 +12,6 @@ import FieldsMovile from "@components/pages/Product/Movile/FieldsMovile";
 import PickListSale from "@components/pages/Ventas/PickListSale";
 import SelectBoxCustomer from "@components/pages/Ventas/SelectBoxCustomer";
 import SaleInfo from "@components/pages/Ventas/SaleInfo";
-import SelectBoxTaller from "@components/pages/Ventas/SelectBoxTaller";
 import SaleCalendar from "@components/pages/Ventas/SaleCalendar";
 
 
@@ -36,15 +35,6 @@ export default function DialogFormSale(props) {
         >
 
             <form id="product-form" onSubmit={props.save}>
-                <div className="field">
-                    <label htmlFor="taller" className="font-bold">
-                        Taller
-                    </label>
-                    <SelectBoxTaller
-                        selectedTaller={props.selectedTaller}
-                        onChangeSelectedBoxTaller={props.onChangeSelectedBoxTaller}
-                    />
-                </div>
                 <div className="field">
                     <label htmlFor="date" className="font-bold">
                         Fecha de venta

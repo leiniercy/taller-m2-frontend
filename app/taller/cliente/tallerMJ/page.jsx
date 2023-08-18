@@ -30,7 +30,7 @@ export default class TallerMJProducts extends Component {
                 chargerPath={'/taller/cliente/tallerMJ/charger/?id='}
                 relojes={this.relojService.getAllMJ()}
                 relojPath={'/taller/cliente/tallerMJ/reloj/?id='}
-                products={this.productService.getAllMJ()}
+                products={this.productService.getAllAccesoriosMJ()}
             />
         );
     }

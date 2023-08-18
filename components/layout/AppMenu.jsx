@@ -16,6 +16,7 @@ const AppMenu = () => {
 
     const [openMenusProduct, setOpenMenusProduct] = useState([]);
     const [openMenusCliente, setOpenMenusCliente] = useState([]);
+    const [openMenusVentas, setOpenMenusVentas] = useState([]);
 
     const handleMenuClickProducts = (index) => {
         if (openMenusProduct.includes(index)) {
@@ -30,6 +31,13 @@ const AppMenu = () => {
             setOpenMenusCliente(openMenusCliente.filter((i) => i !== index));
         } else {
             setOpenMenusCliente([...openMenusCliente, index]);
+        }
+    };
+    const handleMenuClickVentas = (index) => {
+        if (openMenusVentas.includes(index)) {
+            setOpenMenusVentas(openMenusVentas.filter((i) => i !== index));
+        } else {
+            setOpenMenusVentas([...openMenusVentas, index]);
         }
     };
 
@@ -65,7 +73,7 @@ const AppMenu = () => {
                 </li>
                 <li className="">
                     <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                       href="/taller/ventas"><i
+                       href="/taller/ventas/tallerMJ"><i
                         className="pi pi-shopping-cart"></i> Ventas</a>
                 </li>
 
@@ -133,19 +141,25 @@ const AppMenu = () => {
                     </ul>
                 )}
             </li>
-            {/*<li className="dropdown">*/}
-            {/*    <span onClick={() => handleMenuClick(1)}>Acerca de</span>*/}
-            {/*    {openMenus.includes(1) && (*/}
-            {/*        <ul className="submenu">*/}
-            {/*            <li>Equipo</li>*/}
-            {/*            <li>Misión y visión</li>*/}
-            {/*        </ul>*/}
-            {/*    )}*/}
-            {/*</li>*/}
-            <li className="">
-                <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                   href="/taller/ventas"><i
-                    className="pi pi-shopping-cart"></i> Ventas</a>
+            <li className="dropdown">
+                <div className="w-full flex flex-row justify-content-between" onClick={() => handleMenuClickVentas(0)}>
+                    <span className="text-xl pl-3 py-3">Ventas</span>
+                    <i className={!openMenusVentas.includes(0) ? 'py-4 pi pi-angle-down': 'py-4 pi pi-angle-up'} ></i>
+                </div>
+                {openMenusVentas.includes(0) && (
+                    <ul className="submenu">
+                        <li className="">
+                            <a className="block no-underline text-xl pl-3 py-3 pr-2  border-round link-hover text-color-blue-2m"
+                               href="/taller/ventas/taller2M"><i
+                                className="pi pi-shopping-cart"></i> Taller 2M</a>
+                        </li>
+                        <li className="">
+                            <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                               href="/taller/ventas/tallerMJ"><i
+                                className="pi pi-shopping-cart"></i> Taller MJ</a>
+                        </li>
+                    </ul>
+                )}
             </li>
         </ul>
     );

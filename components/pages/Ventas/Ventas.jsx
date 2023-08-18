@@ -18,7 +18,7 @@ import ProductService from "@services/ProductService";
 import SellService from "@services/SellService";
 
 
-export default function VentasGeneral() {
+export default function Ventas(props) {
 
     let emptyCustomer = {
         id: null,
@@ -60,7 +60,6 @@ export default function VentasGeneral() {
     const [date, setDate] = useState(null);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
     const [selectedProducts, setSelectedProducts] = useState(null);
-    const [selectedTaller, setSelectedTaller] = useState(null);
     const [quantities, setQuantities] = useState(null);
     const [descriptions, setDescriptions] = useState(null);
     const [prices, setPrices] = useState(null)
@@ -74,22 +73,17 @@ export default function VentasGeneral() {
     const [deleteSellDialog, setDeleteSellDialog] = useState(false);
     const [deleteSalesDialog, setDeleteSalesDialog] = useState(false);
 
-    const productService = new ProductService();
-    const customerService = new CustomerService();
-    const sellService = new SellService();
-
 
     useEffect(() => {
-        productService.getAll().then((data) => setProductsTable(data));
-        productService.getAllProductsCantThanCero().then((data) => setProductsForm(data));
-        customerService.getAll().then((data) => setCustomers(data));
-        sellService.getAll().then(data => setSales(data));
+        props.productsTable.then((data) => setProductsTable(data));
+        props.productsForm.then((data) => setProductsForm(data));
+        props.customers.then((data) => setCustomers(data));
+        props.sellService.getAll().then(data => setSales(data));
     });
     const openNewDialogSale = () => {
         setSubmittedSale(false);
         setDescriptions(null);
         setPrices(null);
-        setSelectedTaller(null);
         setDate(null);
         setSelectedCustomer(null);
         setSelectedProducts(null);
@@ -104,7 +98,6 @@ export default function VentasGeneral() {
     const hideDialogSale = (e) => {
         setSaleDialog(false);
         setSubmittedSale(false);
-        setSelectedTaller(null);
         setDate(null);
         setSelectedCustomer(null);
         setSelectedProducts(null);
@@ -119,14 +112,9 @@ export default function VentasGeneral() {
     const onChangeReportCalendar = (e) => {
         setSelectedReportDate(e.value);
     } //Modifica el estado de seleccion del selectbox del calendario de reporte
-
     const onChangeCalendar = (e) => {
         setDate(e.value);
     } //Modifica el estado de seleccion del selectbox del calendario
-
-    const onChangeSelectedBoxTaller = (e) => {
-        setSelectedTaller(e.value);
-    } //Modifica el estado de seleccion del selectbox del taller
     const onChangeSelectedBoxCustomer = (e) => {
         setSelectedCustomer(e.value);
     }//Modifica el estado de seleccion del selectbox de cliente
@@ -167,7 +155,7 @@ export default function VentasGeneral() {
     }; //Modifica el valor de un numero especificado del objeto
     const saveCustomer = () => {
         setSubmittedCustomer(true);
-        customerService.save(customer).then((data) => {
+        props.customerService.save(customer).then((data) => {
             //Muestra sms de confirmacion
             toast.current.show({
                 severity: 'success',
@@ -178,7 +166,7 @@ export default function VentasGeneral() {
             setCustomerDialog(false);
             setCustomer(emptyCustomer);
             //Actualiza la lista
-            customerService.getAll().then(data => setCustomers(data));
+            props.customerService.getAll().then(data => setCustomers(data));
         }).catch((error) => {
             toast.current.show({
                 severity: 'danger',
@@ -195,18 +183,17 @@ export default function VentasGeneral() {
             descriptions: descriptions,
             prices: prices,
             customer: selectedCustomer,
-            tallerName: selectedTaller.name,
+            tallerName: props.taller,
             date: date,
             products: selectedProducts,
             quantities: quantities
         };
 
-        sellService.save(sellRequest).then(data => {
+        props.sellService.save(sellRequest).then(data => {
             setSaleDialog(false);
             setSubmittedSale(false);
             setDescriptions(null);
             setPrices(null);
-            setSelectedTaller(null);
             setDate(null);
             setSelectedCustomer(null);
             setSelectedProducts(null);
@@ -217,11 +204,11 @@ export default function VentasGeneral() {
                 detail: "Se registró la venta correctamente",
                 life: 2000
             });
-            productService.getAllProductsCantThanCero().then((data) => setProductsForm(data));
 
-            console.log(data);
+            props.productsForm.then((data) => setProductsForm(data));
+            props.productsTable.then((data) => setProductsTable(data));
 
-            sellService.getPDFVenta(data).then(d => {
+            props.sellService.getPDFVenta(data).then(d => {
                 // Descargar el archivo PDF generado
                 const url = window.URL.createObjectURL(new Blob([d]));
                 const link = document.createElement('a');
@@ -263,10 +250,10 @@ export default function VentasGeneral() {
     const deleteSell = () => {
         let _sales = sales.filter((val) => val.id === sell.id);
 
-        sellService.delete(_sales[0].id).then(data => {
+        props.sellService.delete(_sales[0].id).then(data => {
                 //Actualiza la lista de ventas
-                productService.getAllProductsCantThanCero().then((data) => setProductsForm(data));
-                productService.getAll().then((data) => setProductsTable(data));
+            props.productsForm.then((data) => setProductsForm(data));
+            props.productsTable.then((data) => setProductsTable(data));
                 setDeleteSellDialog(false);
                 setSelectedSales(false);
                 setSell(emtpySell);
@@ -289,9 +276,9 @@ export default function VentasGeneral() {
     };/*Elimnar un Objeto*/
     const deleteSelectedSales = () => {
 
-        sellService.deleteAll(selectedSales).then((data) => {
-            productService.getAllProductsCantThanCero().then((data) => setProductsForm(data));
-            productService.getAll().then((data) => setProductsTable(data));
+        props.sellService.deleteAll(selectedSales).then((data) => {
+            props.productsForm.then((data) => setProductsForm(data));
+            props.productsTable.then((data) => setProductsTable(data));
             setSales(data);
             setDeleteSalesDialog(false);
             setSelectedSales(false);
@@ -324,6 +311,7 @@ export default function VentasGeneral() {
                         selectedObjects={selectedSales}
                         selectedReportDate={selectedReportDate}
                         onChangeReportCalendar={onChangeReportCalendar}
+                        taller={props.taller}
                     /> {/*barra de herramientas*/}
                 </div>
                 <div className="col-12">
@@ -346,8 +334,6 @@ export default function VentasGeneral() {
                     save={saveSale}
                     date={date}
                     onChangeCalendar={onChangeCalendar}
-                    selectedTaller={selectedTaller}
-                    onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
                     customers={customers}
                     selectedCustomer={selectedCustomer}
                     onChangeSelectedBoxCustomer={onChangeSelectedBoxCustomer}

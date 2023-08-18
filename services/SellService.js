@@ -7,8 +7,8 @@ export default class SellService {
         return axios.get(this.baseUrl + "all").then(res => res.data);
     }
 
-    getByDate(fecha) {
-        return axios.get(this.baseUrl + "all/date/"+fecha).then(res => res.data);
+    getByDate(fecha,taller) {
+        return axios.get(this.baseUrl + "all/date/"+fecha+"/"+taller).then(res => res.data);
     }
 
     getById(id) {
