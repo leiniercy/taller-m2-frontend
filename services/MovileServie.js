@@ -6,7 +6,12 @@ export default class MovileService {
     getAll() {
         return axios.get(this.baseUrl + "all").then(res => res.data);
     }
-
+    getAll2M() {
+        return axios.get(this.baseUrl + "all/2M").then(res => res.data);
+    }
+    getAllMJ() {
+        return axios.get(this.baseUrl + "all/MJ").then(res => res.data);
+    }
     getById(id) {
         return axios.get(this.baseUrl + "get/"+id).then(res => res.data);
     }

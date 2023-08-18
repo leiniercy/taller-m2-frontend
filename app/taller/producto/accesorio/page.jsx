@@ -141,7 +141,7 @@ export default function Accesorio(props) {
             formData.append('name', product.name);
             formData.append('price', product.price);
             formData.append('cant', product.cant);
-            formData.append('taller', charger.taller.name);
+            formData.append('taller', product.taller.name);
             product.files.forEach((file, i) => {
                 formData.append('files', file);
             });

@@ -5,11 +5,18 @@ export default class ProductService {
     getAll(){
         return axios.get(this.baseUrl+"all").then(res => res.data);
     }
+
+    getAll2M() {
+        return axios.get(this.baseUrl + "all/2M").then(res => res.data);
+    }
+    getAllMJ() {
+        return axios.get(this.baseUrl + "all/MJ").then(res => res.data);
+    }
     getAllProducts(){
-        return axios.get(this.baseUrl+"allProducts").then(res => res.data);
+        return axios.get(this.baseUrl+"all/accesorio").then(res => res.data);
     }
     getAllProductsCantThanCero(){
-        return axios.get(this.baseUrl+"allProduct-cant").then(res => res.data);
+        return axios.get(this.baseUrl+"all/product/cant").then(res => res.data);
     }
     getCant() {
         return axios.get(this.baseUrl + "getCant").then(res => res.data);
