@@ -1,10 +1,8 @@
 "use client"
 
-import RenderLayout from "@components/layout/RenderLayout";
 import {Fieldset} from "primereact/fieldset";
 import DataViewProduct from "@components/pages/Client/DataViewProduct";
-import DataViewAccesorio from "@components/pages/Client/Product/DataViewAccesorio";
-
+import RenderLayout from "@components/layout/RenderLayout";
 
 const Cliente = (props) => {
 
@@ -15,7 +13,8 @@ const Cliente = (props) => {
                     <Fieldset legend="Dispositivos de carga" toggleable>
                         <DataViewProduct
                             service={props.chargers}
-                             path={'/taller/cliente/charger/informacion/?id='}
+                             path={props.chargerPath}
+                            isMovile={false}
                         />
                     </Fieldset>
                 </div>
@@ -25,7 +24,8 @@ const Cliente = (props) => {
                     <Fieldset legend="Dispositivos móviles" toggleable>
                         <DataViewProduct
                             service={props.moviles}
-                            path={'/taller/cliente/movil/informacion/?id='}
+                            path={props.movilPath}
+                            isMovile={false}
                         />
                     </Fieldset>
                 </div>
@@ -35,7 +35,8 @@ const Cliente = (props) => {
                     <Fieldset legend="Relojes inteligentes" toggleable>
                         <DataViewProduct
                             service={props.relojes}
-                            path={'/taller/cliente/reloj/informacion/?id='}
+                            path={props.relojPath}
+                            isMovile={false}
                         />
                     </Fieldset>
                 </div>
@@ -43,8 +44,9 @@ const Cliente = (props) => {
             <div className="col-12">
                 <div className="card">
                     <Fieldset legend="Otros productos" toggleable>
-                        <DataViewAccesorio
+                        <DataViewProduct
                             service={props.products}
+                            isMovile={true}
                         />
                     </Fieldset>
                 </div>

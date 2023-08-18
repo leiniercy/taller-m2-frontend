@@ -69,9 +69,9 @@ export default function DataViewGridItem(props) {
                 />
                 <div className="text-2xl font-bold">{props.data.name}</div>
             </div>
-            <div className="flex align-items-center">
+            { !props.isMovile && <div className="flex align-items-center">
                 <Button className="w-full" label="Ver más" icon="pi pi-amazon" onClick={(e) => handleClick(e, props.data)}/>
-            </div>
+            </div> }
         </div>
     </div>);
 

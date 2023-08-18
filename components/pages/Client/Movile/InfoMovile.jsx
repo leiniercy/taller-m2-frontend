@@ -6,7 +6,7 @@ import {Galleria} from 'primereact/galleria';
 import RenderLayout from "@components/layout/RenderLayout";
 
 
-export default function Info(props) {
+export default function InfoMovile(props) {
 
     let emptyMovile = {
         id: null,

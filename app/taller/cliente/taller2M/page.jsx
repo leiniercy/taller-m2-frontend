@@ -25,8 +25,11 @@ export default class Taller2MProducts extends Component {
         return (
             <Cliente
                 moviles={this.movileService.getAll2M()}
+                movilPath={'/taller/cliente/taller2M/movil/?id='}
                 chargers={this.chargerService.getAll2M()}
+                chargerPath={'/taller/cliente/taller2M/charger/?id='}
                 relojes={this.relojService.getAll2M()}
+                relojPath={'/taller/cliente/taller2M/reloj/?id='}
                 products={this.productService.getAll2M()}
             />
         );

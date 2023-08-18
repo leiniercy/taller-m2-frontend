@@ -86,6 +86,7 @@ export default function DataViewProduct(props) {
               getSeverity={getSeverity}
               getValue={getValue}
               path={props.path}
+              isMovile={props.isMovile}
             />
         );
     };
