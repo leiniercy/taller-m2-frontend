@@ -7,19 +7,20 @@ export default class SellService {
         return axios.get(this.baseUrl + "all").then(res => res.data);
     }
 
-    getByDate(fecha,taller) {
-        return axios.get(this.baseUrl + "all/date/"+fecha+"/"+taller).then(res => res.data);
+    getByDate(fecha, taller) {
+        return axios.get(this.baseUrl + "all/date/" + fecha + "/" + taller).then(res => res.data);
     }
 
     getById(id) {
-        return axios.get(this.baseUrl + "get/"+id).then(res => res.data);
-    }
-    getPDFDiario(ventas){
-        return axios.post(this.baseUrl + "pdf/diario", ventas, { responseType: 'arraybuffer' }).then(res => res.data);
+        return axios.get(this.baseUrl + "get/" + id).then(res => res.data);
     }
 
-    getPDFVenta(ventas){
-        return axios.post(this.baseUrl + "pdf/venta", ventas, { responseType: 'arraybuffer' }).then(res => res.data);
+    getPDFDiario(taller, ventas) {
+        return axios.post(this.baseUrl + "pdf/diario/" + taller, ventas, {responseType: 'arraybuffer'}).then(res => res.data);
+    }
+
+    getPDFVenta(taller, ventas) {
+        return axios.post(this.baseUrl + "pdf/venta/"+taller, ventas, {responseType: 'arraybuffer'}).then(res => res.data);
     }
 
     save(sell) {

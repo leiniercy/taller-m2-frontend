@@ -11,11 +11,14 @@ import DialogFormSale from "@components/pages/Ventas/DialogFormSale";
 import DialogFormCustomer from "@components/pages/Ventas/DialogFormCustomer";
 import DeleteSellDialog from "@components/pages/Ventas/DeleteSellDialog";
 import DeleteSalesDialog from "@components/pages/Ventas/DeleteSalesDialog";
+import RenderLayout from "@components/layout/RenderLayout";
+import VentasFieldSet from "@components/pages/Ventas/VentasFieldSet";
 
 //Service
 import CustomerService from "@services/CustomerService";
 import ProductService from "@services/ProductService";
 import SellService from "@services/SellService";
+
 
 
 export default function Ventas(props) {
@@ -222,7 +225,7 @@ export default function Ventas(props) {
             }
             customerService.getAll().then((data) => setCustomers(data));
 
-            sellService.getPDFVenta(data).then(d => {
+            sellService.getPDFVenta(props.taller,data).then(d => {
                 // Descargar el archivo PDF generado
                 const url = window.URL.createObjectURL(new Blob([d]));
                 const link = document.createElement('a');
@@ -326,8 +329,8 @@ export default function Ventas(props) {
 
 
     return (
-        <div className="sm:relative md:relative col-12 sm:col-12 md:col lg:col p-2 ml-2 sm:ml-2">
-            <div className="card grid mt-2">
+        <RenderLayout>
+            <VentasFieldSet label={"Ventas "+ props.taller}>
                 <div className="col-12">
                     <ToolsBarSales
                         toast={toast}
@@ -351,6 +354,7 @@ export default function Ventas(props) {
                         confirmDeleteSell={confirmDeleteSell}
                     />
                 </div>
+            </VentasFieldSet>
                 <Toast ref={toast}/>
 
                 <DialogFormSale
@@ -398,9 +402,7 @@ export default function Ventas(props) {
                     delete={deleteSelectedSales}
                     object={sell}
                 />
-
-            </div>
-        </div>
+        </RenderLayout>
     );
 
 }
