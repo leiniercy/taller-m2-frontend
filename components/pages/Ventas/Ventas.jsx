@@ -73,12 +73,20 @@ export default function Ventas(props) {
     const [deleteSellDialog, setDeleteSellDialog] = useState(false);
     const [deleteSalesDialog, setDeleteSalesDialog] = useState(false);
 
+    const productService = new ProductService();
+    const customerService = new CustomerService();
+    const sellService = new SellService();
 
     useEffect(() => {
-        props.productsTable.then((data) => setProductsTable(data));
-        props.productsForm.then((data) => setProductsForm(data));
-        props.customers.then((data) => setCustomers(data));
-        props.sellService.getAll().then(data => setSales(data));
+        if (props.taller === 'Taller MJ') {
+            productService.getAllProductsMJ().then((data) => setProductsTable(data));
+            productService.getAllProductsCantThanCero("Taller MJ").then((data) => setProductsForm(data));
+        } else if (props.taller === 'Taller 2M') {
+            productService.getAllProducts2M().then((data) => setProductsTable(data));
+            productService.getAllProductsCantThanCero("Taller 2M").then((data) => setProductsForm(data));
+        }
+        customerService.getAll().then((data) => setCustomers(data));
+        sellService.getAll().then((data) => setSales(data));
     });
     const openNewDialogSale = () => {
         setSubmittedSale(false);
@@ -155,7 +163,7 @@ export default function Ventas(props) {
     }; //Modifica el valor de un numero especificado del objeto
     const saveCustomer = () => {
         setSubmittedCustomer(true);
-        props.customerService.save(customer).then((data) => {
+        customerService.save(customer).then((data) => {
             //Muestra sms de confirmacion
             toast.current.show({
                 severity: 'success',
@@ -166,7 +174,7 @@ export default function Ventas(props) {
             setCustomerDialog(false);
             setCustomer(emptyCustomer);
             //Actualiza la lista
-            props.customerService.getAll().then(data => setCustomers(data));
+            customerService.getAll().then(data => setCustomers(data));
         }).catch((error) => {
             toast.current.show({
                 severity: 'danger',
@@ -189,7 +197,7 @@ export default function Ventas(props) {
             quantities: quantities
         };
 
-        props.sellService.save(sellRequest).then(data => {
+        sellService.save(sellRequest).then(data => {
             setSaleDialog(false);
             setSubmittedSale(false);
             setDescriptions(null);
@@ -205,10 +213,16 @@ export default function Ventas(props) {
                 life: 2000
             });
 
-            props.productsForm.then((data) => setProductsForm(data));
-            props.productsTable.then((data) => setProductsTable(data));
+            if (props.taller === 'Taller MJ') {
+                productService.getAllProductsMJ().then((data) => setProductsTable(data));
+                productService.getAllProductsCantThanCero("Taller MJ").then((data) => setProductsForm(data));
+            } else if (props.taller === 'Taller 2M') {
+                productService.getAllProducts2M().then((data) => setProductsTable(data));
+                productService.getAllProductsCantThanCero("Taller 2M").then((data) => setProductsForm(data));
+            }
+            customerService.getAll().then((data) => setCustomers(data));
 
-            props.sellService.getPDFVenta(data).then(d => {
+            sellService.getPDFVenta(data).then(d => {
                 // Descargar el archivo PDF generado
                 const url = window.URL.createObjectURL(new Blob([d]));
                 const link = document.createElement('a');
@@ -250,10 +264,16 @@ export default function Ventas(props) {
     const deleteSell = () => {
         let _sales = sales.filter((val) => val.id === sell.id);
 
-        props.sellService.delete(_sales[0].id).then(data => {
+        sellService.delete(_sales[0].id).then(data => {
                 //Actualiza la lista de ventas
-            props.productsForm.then((data) => setProductsForm(data));
-            props.productsTable.then((data) => setProductsTable(data));
+                if (props.taller === 'Taller MJ') {
+                    productService.getAllProductsMJ().then((data) => setProductsTable(data));
+                    productService.getAllProductsCantThanCero("Taller MJ").then((data) => setProductsForm(data));
+                } else if (props.taller === 'Taller 2M') {
+                    productService.getAllProducts2M().then((data) => setProductsTable(data));
+                    productService.getAllProductsCantThanCero("Taller 2M").then((data) => setProductsForm(data));
+                }
+                customerService.getAll().then((data) => setCustomers(data));
                 setDeleteSellDialog(false);
                 setSelectedSales(false);
                 setSell(emtpySell);
@@ -276,9 +296,15 @@ export default function Ventas(props) {
     };/*Elimnar un Objeto*/
     const deleteSelectedSales = () => {
 
-        props.sellService.deleteAll(selectedSales).then((data) => {
-            props.productsForm.then((data) => setProductsForm(data));
-            props.productsTable.then((data) => setProductsTable(data));
+        sellService.deleteAll(selectedSales).then((data) => {
+            if (props.taller === 'Taller MJ') {
+                productService.getAllProductsMJ().then((data) => setProductsTable(data));
+                productService.getAllProductsCantThanCero("Taller MJ").then((data) => setProductsForm(data));
+            } else if (props.taller === 'Taller 2M') {
+                productService.getAllProducts2M().then((data) => setProductsTable(data));
+                productService.getAllProductsCantThanCero("Taller 2M").then((data) => setProductsForm(data));
+            }
+            customerService.getAll().then((data) => setCustomers(data));
             setSales(data);
             setDeleteSalesDialog(false);
             setSelectedSales(false);
