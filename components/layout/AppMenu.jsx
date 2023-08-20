@@ -90,6 +90,12 @@ const AppMenu = () => {
                     className="pi pi-home"></i> Inicio</a>
             </li>
 
+            <li className="mt-2">
+                <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                   href="/taller/user"><i
+                    className="pi pi-user"></i> Usuarios</a>
+            </li>
+
             <li className="dropdown">
                 <div className="w-full flex flex-row justify-content-between" onClick={() => handleMenuClickCliente(0)}>
                     <span className="text-xl pl-3 py-3">Clientes</span>

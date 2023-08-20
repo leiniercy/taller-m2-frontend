@@ -55,7 +55,7 @@ export default function Accesorio(props) {
 
     const [product, setProduct] = useState(emptyProduct);
     const [products, setProducts] = useState(null);
-    const [selecteProducts, setSelecteProducts] = useState(null);
+    const [selectedProducts, setSelectedProducts] = useState(null);
 
     const productService = new ProductService();
 
@@ -69,16 +69,16 @@ export default function Accesorio(props) {
         setEditActive(false);
     }; /*Abrir nueva ventana para crear un objeto*/
     const confirmDeleteSelected = () => {
-        if (selecteProducts.length > 1) {
+        if (selectedProducts.length > 1) {
             setDeleteProductsDialog(true);
         }
-        if (selecteProducts.length === 1) {
-            setProduct(selecteProducts[0]);
+        if (selectedProducts.length === 1) {
+            setProduct(selectedProducts[0]);
             setDeleteProductDialog(true);
         }
     }; /*Abrir el dialog de confirmacion de eliminacion de los objetos*/
     const onSelectionChangeSelectedObjects = (e) => {
-        setSelecteProducts(e.value);
+        setSelectedProducts(e.value);
     } /*Se encarga de obtener la informacion de los objetos seleccionados*/
     const actionBodyTemplate = (rowData) => {
         return (
@@ -125,7 +125,7 @@ export default function Accesorio(props) {
                 });
                 setProductDialog(false);
                 setEditActive(false);
-                setSelecteProducts(null);
+                setSelectedProducts(null);
             }).catch((error) => {
                 toast.current.show({
                     severity: 'danger',
@@ -160,7 +160,7 @@ export default function Accesorio(props) {
                 });
                 setProductDialog(false);
                 setEditActive(false);
-                setSelecteProducts(null);
+                setSelectedProducts(null);
             }).catch((error) => {
                 toast.current.show({
                     severity: 'danger',
@@ -269,7 +269,7 @@ export default function Accesorio(props) {
             //Actualiza la lista de productos
             productService.getAllProducts().then(data => setProducts(data));
             setDeleteProductDialog(false);
-            setSelecteProducts(false);
+            setSelectedProducts(false);
             setProduct(emptyProduct);
             //Muestra sms de confirmacion
             toast.current.show({
@@ -296,10 +296,10 @@ export default function Accesorio(props) {
     };/*Ocultar dialog de eliminar varios objetos*/
     const deleteSelectedProducts = () => {
 
-        productService.deleteAll(selecteProducts).then((data) => {
+        productService.deleteAll(selectedProducts).then((data) => {
             setProducts(data);
             setDeleteProductsDialog(false);
-            setSelecteProducts(false);
+            setSelectedProducts(false);
             toast.current.show({
                 severity: 'success',
                 summary: '!Atención',
@@ -324,7 +324,7 @@ export default function Accesorio(props) {
                     <Tools
                         openNew={openNew}
                         confirmDeleteSelected={confirmDeleteSelected}
-                        selectedObjects={selecteProducts}
+                        selectedObjects={selectedProducts}
                         objects={products}
                         dt={dt}
                         fileName={'products'}
@@ -336,7 +336,7 @@ export default function Accesorio(props) {
                         headerLabel={'accesorios'}
                         dt={dt}
                         objects={products}
-                        selectedObjects={selecteProducts}
+                        selectedObjects={selectedProducts}
                         setSelectedObject={onSelectionChangeSelectedObjects}
                         emptyFilters={emptyFilters}
                         globalFilterFields={globalFilterFields}
