@@ -58,7 +58,9 @@ const TableUser = (props) => {
     const header = renderHeader();/*Header de la tabla*/
 
     const rolBodyTemplate = (rowData) => {
-        if(rowData.roles[0].name === 'ROLE_ADMIN'){
+        if(rowData.roles[0] === undefined){
+            return <span> Vacío </span>;
+        }else if(rowData.roles[0].name === 'ROLE_ADMIN'){
             return <span> Administrador </span>;
         }else if(rowData.roles[0].name === 'ROLE_MODERATOR'){
             return <span> Moderador </span>;

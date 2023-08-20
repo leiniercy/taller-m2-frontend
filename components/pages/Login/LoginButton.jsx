@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from 'react';
+import {useRef, useState} from 'react';
 import { signIn, signOut, useSession } from "next-auth/react";
 import { deleteCookie } from 'cookies-next';
 
@@ -8,18 +8,22 @@ import { Avatar } from 'primereact/avatar';
 import { Menu } from 'primereact/menu';
 import { Button } from 'primereact/button';
 
+import DialogChangePassword from "@components/pages/User/DialogChangePassword";
+
 
 
 const LoginButton = () => {
 
     const { data: session } = useSession();
-
     const menu = useRef(null);
-
+    const [visible, setVisible] = useState(false);
     const items = [
         {
-            label: 'Perfil',
+            label: 'Cambiar contraseña',
             icon: 'pi pi-fw pi-user',
+            command: () => {
+                setVisible(true);
+            }
         },{
             separator: true
         },
@@ -37,8 +41,12 @@ const LoginButton = () => {
         }
     ];
 
+    const hideDialog = () => {
+        setVisible(false);
+    }//Ocular el dialog de cambiar contrasena
 
-    return (
+
+    return (<>
         <div className="ml-auto flex gap-2">
             {/*{session?.user ? (*/}
                 <>
@@ -55,7 +63,12 @@ const LoginButton = () => {
             {/*    </button>*/}
             {/*)}*/}
         </div>
-    );
+        <DialogChangePassword
+            user={session?.user.name}
+            visible={visible}
+            hideDialog={hideDialog}
+        />
+    </>);
 };
 
 export default LoginButton;
