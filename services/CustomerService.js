@@ -15,8 +15,8 @@ export default class CustomerService {
         return axios.post(this.baseUrl + "save", customer).then(res => res.data);
     }
 
-    update(formData, id) {
-        return axios.put(this.baseUrl + "update/" + id, formData).then(res => res.data);
+    update(customer) {
+        return axios.put(this.baseUrl + "update", customer).then(res => res.data);
     }
 
     delete(id) {

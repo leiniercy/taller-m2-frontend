@@ -17,6 +17,7 @@ const AppMenu = () => {
     const [openMenusProduct, setOpenMenusProduct] = useState([]);
     const [openMenusCliente, setOpenMenusCliente] = useState([]);
     const [openMenusVentas, setOpenMenusVentas] = useState([]);
+    const [openMenusUsers, setOpenMenusUsers] = useState([]);
 
     const handleMenuClickProducts = (index) => {
         if (openMenusProduct.includes(index)) {
@@ -38,6 +39,14 @@ const AppMenu = () => {
             setOpenMenusVentas(openMenusVentas.filter((i) => i !== index));
         } else {
             setOpenMenusVentas([...openMenusVentas, index]);
+        }
+    };
+
+    const handleMenuClickUsers = (index) => {
+        if (openMenusUsers.includes(index)) {
+            setOpenMenusUsers(openMenusUsers.filter((i) => i !== index));
+        } else {
+            setOpenMenusUsers([...openMenusUsers, index]);
         }
     };
 
@@ -90,15 +99,32 @@ const AppMenu = () => {
                     className="pi pi-home"></i> Inicio</a>
             </li>
 
-            <li className="mt-2">
-                <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                   href="/taller/user"><i
-                    className="pi pi-user"></i> Usuarios</a>
+
+            <li className="dropdown">
+                <div className="w-full flex flex-row justify-content-between" onClick={() => handleMenuClickUsers(0)}>
+                    <span className="text-xl pl-3 py-3">Usuarios</span>
+                    <i className={!openMenusUsers.includes(0) ? 'py-4 pi pi-angle-down': 'py-4 pi pi-angle-up'} ></i>
+                </div>
+                {openMenusUsers.includes(0) && (
+                    <ul className="submenu">
+                        <li className="">
+                            <a className="block no-underline text-xl pl-3 py-3 pr-2  border-round link-hover text-color-blue-2m"
+                               href="/taller/user"><i
+                                className="pi pi-user"></i> Usuario</a>
+                        </li>
+                        <li className="">
+                            <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                               href="/taller/user/customer"><i
+                                className="pi pi-user"></i> Cliente</a>
+                        </li>
+                    </ul>
+                )}
             </li>
+
 
             <li className="dropdown">
                 <div className="w-full flex flex-row justify-content-between" onClick={() => handleMenuClickCliente(0)}>
-                    <span className="text-xl pl-3 py-3">Clientes</span>
+                    <span className="text-xl pl-3 py-3">Información</span>
                     <i className={!openMenusCliente.includes(0) ? 'py-4 pi pi-angle-down': 'py-4 pi pi-angle-up'} ></i>
                 </div>
                 {openMenusCliente.includes(0) && (

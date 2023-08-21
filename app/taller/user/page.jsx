@@ -368,6 +368,7 @@ export default function Usuarios() {
             email={email} emailValid={emailValid}
             taller={taller}
             rol={rol}
+            onChangeName={onChangeUserName}
             onChangeEmail={onChangeEmail}
             onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
             onChangeSelectedBoxRol={onChangeSelectedBoxRol}

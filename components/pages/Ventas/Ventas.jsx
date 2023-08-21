@@ -20,7 +20,6 @@ import ProductService from "@services/ProductService";
 import SellService from "@services/SellService";
 
 
-
 export default function Ventas(props) {
 
     let emptyCustomer = {
@@ -75,6 +74,10 @@ export default function Ventas(props) {
     const [customerDialog, setCustomerDialog] = useState(false)
     const [deleteSellDialog, setDeleteSellDialog] = useState(false);
     const [deleteSalesDialog, setDeleteSalesDialog] = useState(false);
+    const [editCustomerActive, setEditCustomerActive] = useState(false);
+
+    const [customerNameValid, setCustomerNameValid] = useState(true);
+    const [customerPhoneValid,setCustomerPhoneValid] = useState(true);
 
     const productService = new ProductService();
     const customerService = new CustomerService();
@@ -164,28 +167,42 @@ export default function Ventas(props) {
         _customer[`${name}`] = val;
         setCustomer(_customer);
     }; //Modifica el valor de un numero especificado del objeto
+    const validateCustomerForm = () => {
+
+        const nameRegex = /^[a-zA-Z\s]*$/; // Expresión regular para validar nombres
+        if (!nameRegex.test(customer.customerName) || customer.customerName === '') {
+            setCustomerNameValid(false);
+            return false;
+        } else {
+            setCustomerNameValid(true);
+        }
+
+        const phoneRegex = /^[0-9]{8}$/; // Expresión regular para validar los numeros de telefono
+        if (!phoneRegex.test(customer.customerMovile) || customer.customerMovile === '') {
+            setCustomerPhoneValid(false);
+            return false;
+        } else {
+            setCustomerPhoneValid(true);
+        }
+
+
+        return true;
+    }//Validacion del formulario de crear cliente
     const saveCustomer = () => {
         setSubmittedCustomer(true);
-        customerService.save(customer).then((data) => {
-            //Muestra sms de confirmacion
-            toast.current.show({
-                severity: 'success',
-                summary: 'Atención!',
-                detail: "Se creó el cliente correctamente",
-                life: 2000
+        if(validateCustomerForm()){
+            customerService.save(customer).then((data) => {
+                //Muestra sms de confirmacion
+                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se creó el cliente correctamente", life: 2000});
+                setCustomerDialog(false);
+                setCustomer(emptyCustomer);
+                //Actualiza la lista
+                customerService.getAll().then(data => setCustomers(data));
+            }).catch((error) => {
+                toast.current.show({severity: 'danger', summary: 'Atención!', detail: "Error al crear el cliente", life: 2000});
             });
-            setCustomerDialog(false);
-            setCustomer(emptyCustomer);
-            //Actualiza la lista
-            customerService.getAll().then(data => setCustomers(data));
-        }).catch((error) => {
-            toast.current.show({
-                severity: 'danger',
-                summary: 'Atención!',
-                detail: "Error al crear el cliente",
-                life: 2000
-            });
-        });
+        }
+
     } //Guarda la informacion de un nuevo cliente en caso de que no exista
     const saveSale = () => {
         setSubmittedSale(true);
@@ -225,7 +242,7 @@ export default function Ventas(props) {
             }
             customerService.getAll().then((data) => setCustomers(data));
 
-            sellService.getPDFVenta(props.taller,data).then(d => {
+            sellService.getPDFVenta(props.taller, data).then(d => {
                 // Descargar el archivo PDF generado
                 const url = window.URL.createObjectURL(new Blob([d]));
                 const link = document.createElement('a');
@@ -277,24 +294,14 @@ export default function Ventas(props) {
                     productService.getAllProductsCantThanCero("Taller 2M").then((data) => setProductsForm(data));
                 }
                 customerService.getAll().then((data) => setCustomers(data));
+                //Muestra sms de confirmacion
+                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se eliminó la venta correctamente", life: 2000});
                 setDeleteSellDialog(false);
                 setSelectedSales(false);
                 setSell(emtpySell);
-                //Muestra sms de confirmacion
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Atención!',
-                    detail: "Se eliminó la venta correctamente",
-                    life: 2000
-                });
             }
         ).catch(error => {
-            toast.current.show({
-                severity: 'danger',
-                summary: '!Atención',
-                detail: 'Error al eliminar la venta',
-                life: 2000
-            });
+            toast.current.show({error: error, severity: 'danger', summary: '!Atención', detail: 'Error al eliminar la venta', life: 2000});
         });
     };/*Elimnar un Objeto*/
     const deleteSelectedSales = () => {
@@ -330,7 +337,7 @@ export default function Ventas(props) {
 
     return (
         <RenderLayout>
-            <VentasFieldSet label={"Ventas "+ props.taller}>
+            <VentasFieldSet label={"Ventas " + props.taller}>
                 <div className="col-12">
                     <ToolsBarSales
                         toast={toast}
@@ -355,53 +362,56 @@ export default function Ventas(props) {
                     />
                 </div>
             </VentasFieldSet>
-                <Toast ref={toast}/>
+            <Toast ref={toast}/>
 
-                <DialogFormSale
-                    visible={saleDialog}
-                    hideDialog={hideDialogSale}
-                    submitted={submittedSale}
-                    save={saveSale}
-                    date={date}
-                    onChangeCalendar={onChangeCalendar}
-                    customers={customers}
-                    selectedCustomer={selectedCustomer}
-                    onChangeSelectedBoxCustomer={onChangeSelectedBoxCustomer}
-                    products={productsForm}
-                    selectedProducts={selectedProducts}
-                    quantities={quantities}
-                    prices={prices}
-                    descriptions={descriptions}
-                    onChangeSelectedBoxProducts={onChangeSelectedBoxProducts}
-                    handleQuantityChange={handleQuantityChange}
-                    handlePriceChange={handlePriceChange}
-                    handleDescriptionChange={handleDescriptionChange}
+            <DialogFormSale
+                visible={saleDialog}
+                hideDialog={hideDialogSale}
+                submitted={submittedSale}
+                save={saveSale}
+                date={date}
+                onChangeCalendar={onChangeCalendar}
+                customers={customers}
+                selectedCustomer={selectedCustomer}
+                onChangeSelectedBoxCustomer={onChangeSelectedBoxCustomer}
+                products={productsForm}
+                selectedProducts={selectedProducts}
+                quantities={quantities}
+                prices={prices}
+                descriptions={descriptions}
+                onChangeSelectedBoxProducts={onChangeSelectedBoxProducts}
+                handleQuantityChange={handleQuantityChange}
+                handlePriceChange={handlePriceChange}
+                handleDescriptionChange={handleDescriptionChange}
 
-                />
+            />
 
-                <DialogFormCustomer
-                    visible={customerDialog}
-                    hideDialog={hideDialogCustomer}
-                    submitted={submittedCustomer}
-                    save={saveCustomer}
-                    object={customer}
-                    onInputTextChange={onInputTextChange}
-                    onInputNumberChange={onInputNumberChange}
-                />
+            <DialogFormCustomer
+                visible={customerDialog}
+                hideDialog={hideDialogCustomer}
+                submitted={submittedCustomer}
+                editActive={editCustomerActive}
+                save={saveCustomer}
+                object={customer}
+                nameValid={customerNameValid}
+                phoneValid={customerPhoneValid}
+                onInputTextChange={onInputTextChange}
+                onInputNumberChange={onInputNumberChange}
+            />
 
-                <DeleteSellDialog
-                    visible={deleteSellDialog}
-                    hideDialog={hideDeleteSellDialog}
-                    object={sell}
-                    delete={deleteSell}
-                />
+            <DeleteSellDialog
+                visible={deleteSellDialog}
+                hideDialog={hideDeleteSellDialog}
+                object={sell}
+                delete={deleteSell}
+            />
 
-                <DeleteSalesDialog
-                    visible={deleteSalesDialog}
-                    hideDialog={hideDeleteSalesDialog}
-                    delete={deleteSelectedSales}
-                    object={sell}
-                />
+            <DeleteSalesDialog
+                visible={deleteSalesDialog}
+                hideDialog={hideDeleteSalesDialog}
+                delete={deleteSelectedSales}
+                object={sell}
+            />
         </RenderLayout>
     );
 
