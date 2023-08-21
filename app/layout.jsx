@@ -12,11 +12,11 @@ import 'primeflex/primeflex.css';
 
 import {SessionProvider, signIn, signOut} from "next-auth/react";
 
-export const metadata = {
-    title: "Taller M2",
-    description: "Taller M2"
-
-}
+// export const metadata = {
+//     title: "Taller M2",
+//     description: "Taller M2"
+//
+// }
 
 const RootLayout = ({children}) => {
 
