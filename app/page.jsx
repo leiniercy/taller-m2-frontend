@@ -6,12 +6,11 @@ import {useRouter} from "next/navigation";
 import {setCookie} from 'cookies-next';
 import {signIn, signOut, useSession} from "next-auth/react";
 
-import LoginService from '@services/LoginService';
 import {Button} from "primereact/button";
 import {InputText} from "primereact/inputtext"
-import {Image} from "primereact/image";
 import {Message} from 'primereact/message';
 import {classNames} from 'primereact/utils';
+import AppLogin from "@components/layout/AppLogin";
 
 
 export default function Login() {
@@ -28,13 +27,10 @@ export default function Login() {
     const [submitted, setSubmitted] = useState(false);
     const [loginFailed, setloginFailed] = useState(false);
 
-    const loginService = new LoginService();
-
-
-    const handleSubmit = async  () => {
+    const handleSubmit = async () => {
         setSubmitted(true);
 
-        const res = await  signIn("credentials", {
+        const res = await signIn("credentials", {
             username: signInResponse.username,
             password: signInResponse.password,
             redirect: false
@@ -42,12 +38,12 @@ export default function Login() {
             // callbackUrl: "/taller",
         });
 
-        if(res.ok){
+        if (res.ok) {
             setCookie('logged', 'true');
             setSubmitted(false);
             setloginFailed(false);
             router.push('/taller');
-        }else{
+        } else {
             setloginFailed(true);
             router.push('/?error=authentication')
         }
@@ -63,58 +59,46 @@ export default function Login() {
 
 
     return (
-        <div className="col-12">
-            <div className="flex align-items-center justify-content-center h-screen">
-                <div className="surface-card p-4 shadow-2 border-round w-full sm:w-full md:w-8 lg:w-6 xl:w-5">
-                    <div className="text-center mb-5">
-                        {/*<img src="/assets/images/tallerM2.png" alt="Taller 2M" height={50} className="mb-3"/>*/}
-                        <Image
-                            src="/assets/images/tallerM2.png" alt="Logo"
-                            width={80}
-                            height={80}
-                            className="object-contain"
-                        />
-                        <div className="font-rm_19-20 text-900 text-4xl font-medium mb-3">Taller 2M</div>
-                    </div>
+        <AppLogin>
+            <div className="field">
+                <label htmlFor="username" className="block text-900 font-medium mb-2">Usuario</label>
+                <InputText id="username"
+                           value={signInResponse.username}
+                           onChange={(e) => onInputChange(e, 'username')}
+                           type="text"
+                           required
+                           placeholder="Escriba su usuario"
+                           className={classNames({'p-invalid': submitted && !signInResponse.username}, "w-full mb-3")}
 
-                    {/*<form id="login-form">*/}
-                    <div className="field">
-                        <label htmlFor="username" className="block text-900 font-medium mb-2">Usuario</label>
-                        <InputText id="username"
-                                   value={signInResponse.username}
-                                   onChange={(e) => onInputChange(e, 'username')}
-                                   type="text"
-                                   required
-                                   placeholder="Escriba su usuario"
-                                   className={classNames({'p-invalid': submitted && !signInResponse.username}, "w-full mb-3")}
-
-                        />
-                        {submitted && !signInResponse.username && <small className="p-error">Campo requerido.</small>}
-                    </div>
-                    <div className="field">
-                        <label htmlFor="password" className="block text-900 font-medium mb-2">Contraseña</label>
-                        <InputText id="password"
-                                   value={signInResponse.password}
-                                   onChange={(e) => onInputChange(e, 'password')}
-                                   type="password"
-                                   placeholder="Escriba su contraseña"
-                                   required
-                                   className={classNames({'p-invalid': submitted && !signInResponse.password}, "w-full mb-3")}
-
-                        />
-                        {submitted && !signInResponse.password && <small className="p-error">Campo requerido.</small>}
-                    </div>
-                    {loginFailed && <div className="field"><Message severity="error" className="w-full"
-                                                                    text="Usuario o contraseña incorrectos"/></div>}
-                    <div className="field">
-                        <Button label="Iniciar sesión"
-                                icon="pi pi-user"
-                                className="w-full"
-                                onClick={handleSubmit}/>
-                    </div>
-                    {/*</form>*/}
-                </div>
+                />
+                {submitted && !signInResponse.username && <small className="p-error">Campo requerido.</small>}
             </div>
-        </div>
+            <div className="field">
+                <label htmlFor="password" className="block text-900 font-medium mb-2">Contraseña</label>
+                <InputText id="password"
+                           value={signInResponse.password}
+                           onChange={(e) => onInputChange(e, 'password')}
+                           type="password"
+                           placeholder="Escriba su contraseña"
+                           required
+                           className={classNames({'p-invalid': submitted && !signInResponse.password}, "w-full mb-3")}
+
+                />
+                {submitted && !signInResponse.password && <small className="p-error">Campo requerido.</small>}
+            </div>
+            <div className='field flex justify-content-end'>
+                <a  href='/forgot-password' className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
+                    ¿Olvidaste tu contraseña?
+                </a>
+            </div>
+            {loginFailed && <div className="field"><Message severity="error" className="w-full"
+                                                            text="Usuario o contraseña incorrectos"/></div>}
+            <div className="field">
+                <Button label="Iniciar sesión"
+                        icon="pi pi-user"
+                        className="w-full"
+                        onClick={handleSubmit}/>
+            </div>
+        </AppLogin>
     )
 }
