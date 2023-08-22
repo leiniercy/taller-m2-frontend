@@ -10,7 +10,9 @@ export default class SellService {
     getByDate(fecha, taller) {
         return axios.get(this.baseUrl + "all/date/" + fecha + "/" + taller).then(res => res.data);
     }
-
+    getAllByMonth() {
+        return axios.get(this.baseUrl + "all/date/month").then(res => res.data);
+    }
     getById(id) {
         return axios.get(this.baseUrl + "get/" + id).then(res => res.data);
     }

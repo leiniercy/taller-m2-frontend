@@ -5,36 +5,27 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 
 import RenderLayout from "@components/layout/RenderLayout";
 import DoughnutChart from "@components/pages/Home/DoughnutChart";
-import HorizontalBar from "@components/pages/Home/HorizontalBarChart";
 import StackedBarChart from "@components/pages/Home/StackedBarChart";
 import BasicChart from "@components/pages/Home/BasicChart";
+import HorizontalBarChart from "@components/pages/Home/HorizontalBarChart";
 
 import ChargerService from "@services/ChargerService";
 import MovileService from "@services/MovileServie";
 import RelojService from "@services/RelojService";
 import ProductService from "@services/ProductService";
+import SellService from "@services/SellService";
 
 
 export default function Home() {
 
     const menu1 = useRef(null);
 
-    const [cantAccesorios, setCantAccesorios] = useState(0);
-    const [cantChargers, setCantChargers] = useState(0);
-    const [cantMoviles, setCantMoviles] = useState(0);
-    const [cantRelojes, setCantRelojes] = useState(0);
-
     const productService = new ProductService();
     const chargerService = new ChargerService();
     const movileService = new MovileService();
     const relojService = new  RelojService();
+    const sellService = new SellService();
 
-    useEffect(() =>{
-        productService.getCant().then(data => setCantAccesorios(data));
-        chargerService.getCant().then(data => setCantChargers(data));
-        movileService.getCant().then(data => setCantMoviles(data));
-        relojService.getCant().then(data => setCantRelojes(data));
-    });
 
     return (
         <RenderLayout>
@@ -105,10 +96,10 @@ export default function Home() {
 
                 <div className="col-12 xl:col-6">
                     <DoughnutChart
-                        cantAccesorios={cantAccesorios}
-                        cantChargers={cantChargers}
-                        cantMoviles={cantMoviles}
-                        cantRelojes={cantRelojes}
+                        productService={productService.getCant()}
+                        chargerService={chargerService.getCant()}
+                        movileService={movileService.getCant()}
+                        relojService={relojService.getCant()}
                     />
                 </div>
 
@@ -117,7 +108,9 @@ export default function Home() {
                 </div>
 
                 <div className="col-12 xl:col-6">
-                    <HorizontalBar/>
+                    <HorizontalBarChart
+                    service={sellService.getAllByMonth()}
+                    />
                 </div>
 
                 <div className="col-12 xl:col-6">

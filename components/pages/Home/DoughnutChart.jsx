@@ -1,4 +1,3 @@
-
 import React, {useState, useEffect} from 'react';
 import {Chart} from 'primereact/chart';
 
@@ -9,34 +8,42 @@ export default function DoughnutChart(props) {
 
 
     useEffect(() => {
-        console.log(props.cantChargers);
-        const documentStyle = getComputedStyle(document.documentElement);
-        const data = {
-            labels: ['Accesorios', 'Cargadores', 'Moviles', 'Relojes'],
-            datasets: [
-                {
-                    data: [props.cantAccesorios, props.cantChargers, props.cantMoviles, props.cantRelojes],
-                    backgroundColor: [
-                        documentStyle.getPropertyValue('--blue-500'),
-                        documentStyle.getPropertyValue('--teal-500'),
-                        documentStyle.getPropertyValue('--cyan-500'),
-                        documentStyle.getPropertyValue('--purple-500')
-                    ],
-                    hoverBackgroundColor: [
-                        documentStyle.getPropertyValue('--blue-400'),
-                        documentStyle.getPropertyValue('--teal-400'),
-                        documentStyle.getPropertyValue('--cyan-400'),
-                        documentStyle.getPropertyValue('--purple-400')
-                    ]
-                }
-            ]
-        };
-        const options = {
-            cutout: '60%'
-        };
+        props.productService.then(accesorios => {
+            props.chargerService.then(chargers => {
+                props.movileService.then(moviles => {
+                    props.relojService.then(roljes => {
+                        const documentStyle = getComputedStyle(document.documentElement);
+                        const data = {
+                            labels: ['Accesorios', 'Cargadores', 'Moviles', 'Relojes'],
+                            datasets: [
+                                {
+                                    data: [accesorios, chargers, moviles, roljes],
+                                    backgroundColor: [
+                                        documentStyle.getPropertyValue('--blue-500'),
+                                        documentStyle.getPropertyValue('--teal-500'),
+                                        documentStyle.getPropertyValue('--cyan-500'),
+                                        documentStyle.getPropertyValue('--purple-500')
+                                    ],
+                                    hoverBackgroundColor: [
+                                        documentStyle.getPropertyValue('--blue-400'),
+                                        documentStyle.getPropertyValue('--teal-400'),
+                                        documentStyle.getPropertyValue('--cyan-400'),
+                                        documentStyle.getPropertyValue('--purple-400')
+                                    ]
+                                }
+                            ]
+                        };
+                        const options = {
+                            cutout: '60%'
+                        };
 
-        setChartData(data);
-        setChartOptions(options);
+                        setChartData(data);
+                        setChartOptions(options);
+                    });
+                });
+            });
+        });
+
     }, []);
 
     return (
