@@ -114,7 +114,9 @@ export default function Home() {
                 </div>
 
                 <div className="col-12 xl:col-6">
-                    <StackedBarChart/>
+                    <StackedBarChart
+                        service={sellService.getAllByMonthAndProduct()}
+                    />
                 </div>
 
         </RenderLayout>
