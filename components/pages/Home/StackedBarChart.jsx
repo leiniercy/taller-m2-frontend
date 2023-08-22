@@ -1,4 +1,4 @@
-
+"use client"
 import React, { useState, useEffect } from 'react';
 import { Chart } from 'primereact/chart';
 
@@ -24,13 +24,13 @@ export default function StackedBarChart(props) {
                     {
                         type: 'bar',
                         label: 'Cargadores',
-                        backgroundColor: documentStyle.getPropertyValue('--green-500'),
+                        backgroundColor: documentStyle.getPropertyValue('--teal-500'),
                         data: sellRequest.chargers
                     },
                     {
                         type: 'bar',
                         label: 'Moviles',
-                        backgroundColor: documentStyle.getPropertyValue('--yellow-500'),
+                        backgroundColor: documentStyle.getPropertyValue('--cyan-500'),
                         data: sellRequest.moviles
                     },
                     {

@@ -1,3 +1,5 @@
+"use client"
+
 import React, {useState, useEffect} from 'react';
 import {Chart} from 'primereact/chart';
 
@@ -11,13 +13,13 @@ export default function DoughnutChart(props) {
         props.productService.then(accesorios => {
             props.chargerService.then(chargers => {
                 props.movileService.then(moviles => {
-                    props.relojService.then(roljes => {
+                    props.relojService.then(relojes => {
                         const documentStyle = getComputedStyle(document.documentElement);
                         const data = {
                             labels: ['Accesorios', 'Cargadores', 'Moviles', 'Relojes'],
                             datasets: [
                                 {
-                                    data: [accesorios, chargers, moviles, roljes],
+                                    data: [accesorios, chargers, moviles, relojes],
                                     backgroundColor: [
                                         documentStyle.getPropertyValue('--blue-500'),
                                         documentStyle.getPropertyValue('--teal-500'),
