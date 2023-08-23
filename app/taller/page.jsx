@@ -33,9 +33,7 @@ export default function Home() {
     return (
         <RenderLayout>
                 <div className="col-12 lg:col-6 xl:col-3">
-                    <TotalVentas
-                        service={sellService.getAllByMonth()}
-                    />
+                    <TotalVentas service={sellService.getAllByMonth()}/>
                 </div>
                 <div className="col-12 lg:col-6 xl:col-3">
                     <TotalProductos
@@ -46,14 +44,10 @@ export default function Home() {
                     />
                 </div>
                 <div className="col-12 lg:col-6 xl:col-3">
-                    <TotalUsuarios
-                        service={userService.getAll()}
-                    />
+                    <TotalUsuarios service={userService.getAll()}/>
                 </div>
                 <div className="col-12 lg:col-6 xl:col-3">
-                    <TotalClientes
-                        service={customerService.getAll()}
-                    />
+                    <TotalClientes service={customerService.getAll()}/>
                 </div>
 
                 <div className="col-12 xl:col-6">
@@ -66,7 +60,7 @@ export default function Home() {
                 </div>
 
                 <div className="col-12 xl:col-6">
-                    <BasicChart/>
+                    <BasicChart service={sellService.getAllByWeek()}/>
                 </div>
 
                 <div className="col-12 xl:col-6">

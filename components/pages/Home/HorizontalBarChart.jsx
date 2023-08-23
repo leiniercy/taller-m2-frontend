@@ -21,7 +21,7 @@ export default function HorizontalBarChart(props) {
                 labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', "Agosto","Septiembre", "Octubre", "Noviembre","Diciembre"],
                 datasets: [
                     {
-                        label: 'Cantidad de ventas por mes',
+                        label: 'Ganancia mensual por ventas',
                         backgroundColor: documentStyle.getPropertyValue('--blue-500'),
                         borderColor: documentStyle.getPropertyValue('--blue-500'),
                         // data: [sales[0], sales[1], sales[2], sales[3], sales[4], sales[5], sales[6], sales[7], sales[8], sales[9], sales[10], sales[11]]

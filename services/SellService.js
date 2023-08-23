@@ -10,6 +10,10 @@ export default class SellService {
     getByDate(fecha, taller) {
         return axios.get(this.baseUrl + "all/date/" + fecha + "/" + taller).then(res => res.data);
     }
+
+    getAllByWeek() {
+        return axios.get(this.baseUrl + "all/date/week").then(res => res.data);
+    }
     getAllByMonth() {
         return axios.get(this.baseUrl + "all/date/month").then(res => res.data);
     }
