@@ -64,7 +64,7 @@ const LoginButton = () => {
             {/*)}*/}
         </div>
         <DialogChangePassword
-            user={session?.user.name}
+            user={session?.user}
             visible={visible}
             hideDialog={hideDialog}
         />

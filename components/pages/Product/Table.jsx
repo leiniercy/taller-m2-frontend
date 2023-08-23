@@ -47,9 +47,11 @@ export default function Table(props) {
     const header = renderHeader();/*Header de la tabla*/
 
     const imageBodyTemplate = (rowData) => {
+        if(rowData.files[0] === undefined){
+            return <span> Sin imagenes </span>;
+        }
         return <img src={rowData.files[0].url} alt={rowData.name}
                     className="shadow-2 border-round" style={{width: '64px'}}/>;
-        //return <img src={"data:image/jpeg;base64," + urlBase} alt={rowData.name} className="shadow-2 border-round" style={{ width: '64px' }} />;
     }; /*Formato con que se muestra la imagen del accesorio en la tabla*/
     const priceBodyTemplate = (rowData) => {
         return formatCurrency(rowData.price);

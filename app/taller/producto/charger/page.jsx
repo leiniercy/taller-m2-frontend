@@ -21,7 +21,6 @@ import {Toast} from 'primereact/toast';
 import {Tag} from "primereact/tag";
 
 
-
 export default function Charger(props) {
 
 
@@ -64,6 +63,7 @@ export default function Charger(props) {
     const [chargerDialog, setChargerDialog] = useState(false);
     const [deleteChargerDialog, setDeleteChargerDialog] = useState(false);
     const [deleteChargersDialog, setDeleteChargersDialog] = useState(false);
+    const [imageSelected, setImageSelected] = useState(false);
 
     const [charger, setCharger] = useState(emptyCharger);
     const [chargers, setChargers] = useState(null);
@@ -80,6 +80,7 @@ export default function Charger(props) {
         setCharger(emptyCharger);
         setChargerDialog(true);
         setEditActive(false);
+        setImageSelected(false);
     }; /*Abrir nueva ventana para crear un objeto*/
 
     const confirmDeleteSelected = () => {
@@ -112,11 +113,10 @@ export default function Charger(props) {
         setChargerDialog(false);
         setSubmitted(false);
     }; /*Ocultar dialog de anadir*/
-
     const save = () => {
         setSubmitted(true);
 
-        if (charger.id !== null) {
+        if (editActive) {
             //Actualizar
             const formData = new FormData();
             formData.append('id', charger.id);
@@ -126,9 +126,18 @@ export default function Charger(props) {
             formData.append('taller', charger.taller.name);
             formData.append('connectorType', charger.connectorType);
             formData.append('compatibleDevice', charger.compatibleDevice);
-            charger.files.forEach((file, i) => {
-                formData.append('files', file);
-            });
+
+            if (!imageSelected) {
+                charger.files.forEach((file, i) => {
+                    let blob = new Blob([file.url], {type: 'image/png'});
+                    let f = new File([blob], file.name, {type: 'image/png'});
+                    formData.append('files', f);
+                });
+            } else {
+                charger.files.forEach((file, i) => {
+                    formData.append('files', file);
+                });
+            }
 
             //Guardar en la BD y actualiza el estado de la informacion
             chargerService.update(formData, charger.id).then(data => {
@@ -144,12 +153,14 @@ export default function Charger(props) {
                 });
                 setChargerDialog(false);
                 setEditActive(false);
+                setImageSelected(false);
                 setSelectedChargers(null);
             }).catch((error) => {
                 toast.current.show({
+                    error: error,
                     severity: 'danger',
                     summary: 'Atención!',
-                    detail: "Error al actualizar el producto",
+                    detail: "Error: El producto no existe",
                     life: 2000
                 });
             });
@@ -174,19 +185,17 @@ export default function Charger(props) {
                 chargerService.getAll().then(data => setChargers(data));
                 //Muestra sms de confirmacion
                 toast.current.show({
-                    severity: 'success',
-                    summary: 'Atención!',
-                    detail: "Se creó el producto correctamente",
-                    life: 2000
+                    severity: 'success', summary: 'Atención!', detail: "Se creó el producto correctamente", life: 2000
                 });
                 setChargerDialog(false);
                 setEditActive(false);
                 setSelectedChargers(null);
             }).catch((error) => {
                 toast.current.show({
+                    error: error,
                     severity: 'danger',
                     summary: 'Atención!',
-                    detail: "Error al guardar el producto",
+                    detail: "Error el producto ya existe",
                     life: 2000
                 });
             });
@@ -196,67 +205,24 @@ export default function Charger(props) {
     const edit = (charger) => {
         setEditActive(true);
         setCharger(charger);
+        setImageSelected(false);
+        if(charger.taller === 'Taller 2M'){
+            let _charger = {...charger};
+            _charger[`${'taller'}`] = {name: 'Taller 2M', code: '2M'};
+            setCharger(_charger);
+        }else{
+            let _charger = {...charger};
+            _charger[`${'taller'}`] = {name: 'Taller MJ', code: 'MJ'};
+            setCharger(_charger);
+        }
         setChargerDialog(true);
     };/*Editar la informacion de un objeto existente*/
-
     const onTemplateSelect = (e) => {
+        setImageSelected(true);
         const val = e.files;
         let _charger = {...charger};
         _charger[`${'files'}`] = val;
         setCharger(_charger);
-    };/*Drag and Drop options (image)*/
-    const onTemplateRemove = (file, callback) => {
-        //Eliminar de la lista el elemento
-        let objetoElimnmar = charger.files.find(objeto => objeto === file); //Comprobamos que el objeto existe en la lista
-        let indiceAEiminar = charger.files.indexOf(objetoElimnmar); //Buscamos su indice exacto
-        charger.files.splice(indiceAEiminar, 1); //Eliminamos este objeto pasando su indice y la cant de elemntos a elimnar despues de el
-        callback();
-    };/*Drag and Drop options (image)*/
-    const onTemplateClear = () => {
-        charger.files = [];
-    };/*Drag and Drop options (image)*/
-    const headerTemplate = (options) => {
-        const {className, chooseButton, cancelButton} = options;
-
-        return (
-            <div className={className} style={{backgroundColor: 'transparent', display: 'flex', alignItems: 'center'}}>
-                {chooseButton}
-                {cancelButton}
-            </div>
-        );
-    };/*Drag and Drop options (image)*/
-    const emptyTemplate = () => {
-        return (
-            <div className="flex align-items-center flex-column">
-                <i className="pi pi-image mt-3 p-5" style={{
-                    fontSize: '5em',
-                    borderRadius: '50%',
-                    backgroundColor: 'var(--surface-b)',
-                    color: 'var(--surface-d)'
-                }}></i>
-                <span style={{fontSize: '1.2em', color: 'var(--text-color-secondary)'}} className="my-5">
-                    Arrastra y suelta las imágenes aquí
-                </span>
-            </div>
-        );
-    };/*Drag and Drop options (image)*/
-    const itemTemplate = (file, props) => {
-        return (
-            <div className="flex align-items-center flex-wrap">
-                <div className="flex align-items-center" style={{width: '40%'}}>
-                    <img alt={file.name} role="presentation" src={file.objectURL} width={100}/>
-                    <span className="flex flex-column text-left ml-3">
-                        {file.name}
-                        <small>{new Date().toLocaleDateString()}</small>
-                <Tag value={props.formatSize} severity="warning" className="px-3 py-2" style={{width: '50%'}}/>
-                    </span>
-                </div>
-                {/*<Tag value={props.formatSize} severity="warning" className="px-3 py-2"/>*/}
-                <Button type="button" icon="pi pi-times"
-                        className="p-button-outlined p-button-rounded p-button-danger ml-auto"
-                        onClick={() => onTemplateRemove(file, props.onRemove)}/>
-            </div>
-        );
     };/*Drag and Drop options (image)*/
     const onInputTextChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
@@ -282,7 +248,6 @@ export default function Charger(props) {
         _charger[`${name}`] = val;
         setCharger(_charger);
     }; /*Modifica el valor de un bool especificado del objeto*/
-
     const hideDeleteChargerDialog = () => {
         setDeleteChargerDialog(false);
     };/*Ocultar dialog de eliminar un objeto*/
@@ -386,16 +351,12 @@ export default function Charger(props) {
                 editActive={editActive}
                 hideDialog={hideDialog}
                 save={save}
-                headerTemplate={headerTemplate}
                 onTemplateSelect={onTemplateSelect}
-                onTemplateRemove={onTemplateRemove}
-                onTemplateClear={onTemplateClear}
-                emptyTemplate={emptyTemplate}
-                itemTemplate={itemTemplate}
                 onInputTextChange={onInputTextChange}
                 onInputNumberChange={onInputNumberChange}
                 onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
                 otherfields={formFields}
+                imageSelected={imageSelected}
             />
 
             <DeleteProductDialog

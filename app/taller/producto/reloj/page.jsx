@@ -65,6 +65,7 @@ export default function Reloj(props) {
     const [relojDialog, setRelojDialog] = useState(false);
     const [deleteRelojDialog, setDeleteRelojDialog] = useState(false);
     const [deleteRelojesDialog, setDeleteRelojesDialog] = useState(false);
+    const [imageSelected, setImageSelected] = useState(false);
 
     const [reloj, setReloj] = useState(emptyReloj);
     const [relojes, setRelojes] = useState(null);
@@ -80,6 +81,7 @@ export default function Reloj(props) {
         setReloj(emptyReloj);
         setRelojDialog(true);
         setEditActive(false);
+        setImageSelected(false);
     }; /*Abrir nueva ventana para crear un objeto*/
     const confirmDeleteSelected = () => {
         if (selectedRelojes.length > 1) {
@@ -112,7 +114,7 @@ export default function Reloj(props) {
     const save = () => {
         setSubmitted(true);
 
-        if (reloj.id !== null) {
+        if (editActive) {
             //Actualizar
             const formData = new FormData();
             formData.append('id', reloj.id);
@@ -123,9 +125,18 @@ export default function Reloj(props) {
             formData.append('specialFeature', reloj.specialFeature);
             formData.append('compatibleDevice', reloj.compatibleDevice);
             formData.append('bateryLife', reloj.bateryLife);
-            reloj.files.forEach((file, i) => {
-                formData.append('files', file);
-            });
+
+            if(!imageSelected){
+                reloj.files.forEach((file, i) => {
+                    let blob = new Blob([file.url], { type: 'image/png' });
+                    let f = new File([blob], file.name, { type: 'image/png' });
+                    formData.append('files', f);
+                });
+            }else{
+                reloj.files.forEach((file, i) => {
+                    formData.append('files', file);
+                });
+            }
 
             //Guardar en la BD y actualiza el estado de la informacion
             relojService.update(formData, reloj.id).then(data => {
@@ -133,22 +144,13 @@ export default function Reloj(props) {
                 //Actualiza la lista
                 relojService.getAll().then(data => setRelojes(data));
                 //Muestra sms de confirmacion
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Atención!',
-                    detail: "Se actualizó el producto correctamente",
-                    life: 2000
-                });
+                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se actualizó el producto correctamente", life: 2000});
                 setRelojDialog(false);
+                setImageSelected(false);
                 setEditActive(false);
                 setSelectedRelojes(null);
             }).catch((error) => {
-                toast.current.show({
-                    severity: 'danger',
-                    summary: 'Atención!',
-                    detail: "Error al actualizar el producto",
-                    life: 2000
-                });
+                toast.current.show({error: error, severity: 'danger', summary: 'Atención!', detail: "Error: El producto ya existe", life: 2000});
             });
 
         } else {
@@ -171,88 +173,36 @@ export default function Reloj(props) {
                 //Actualiza la lista
                 relojService.getAll().then(data => setRelojes(data));
                 //Muestra sms de confirmacion
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Atención!',
-                    detail: "Se creó el producto correctamente",
-                    life: 2000
-                });
+                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se creó el producto correctamente", life: 2000});
                 setRelojDialog(false);
                 setEditActive(false);
                 setSelectedRelojes(null);
             }).catch((error) => {
-                toast.current.show({
-                    severity: 'danger',
-                    summary: 'Atención!',
-                    detail: "Error al guardar el producto",
-                    life: 2000
-                });
+                toast.current.show({error: error, severity: 'danger', summary: 'Atención!', detail: "Error: El producto ya existe", life: 2000});
             });
         }
     }; /*Crear o actualizar la informacion de un objeto*/
     const edit = (reloj) => {
         setEditActive(true);
+        setImageSelected(false);
         setReloj(reloj);
+        if(reloj.taller === 'Taller 2M'){
+            let _reloj = {...reloj};
+            _reloj[`${'taller'}`] = {name: 'Taller 2M', code: '2M'};
+            setReloj(_reloj);
+        }else{
+            let _reloj = {...reloj};
+            _reloj[`${'taller'}`] = {name: 'Taller MJ', code: 'MJ'};
+            setReloj(_reloj);
+        }
         setRelojDialog(true);
     };/*Editar la informacion de un objeto existente*/
     const onTemplateSelect = (e) => {
+        setImageSelected(true);
         const val = e.files;
         let _reloj = {...reloj};
         _reloj[`${'files'}`] = val;
         setReloj(_reloj);
-    };/*Drag and Drop options (image)*/
-    const onTemplateRemove = (file, callback) => {
-        //Eliminar de la lista el elemento
-        let objetoElimnmar = reloj.files.find(objeto => objeto === file); //Comprobamos que el objeto existe en la lista
-        let indiceAEiminar = reloj.files.indexOf(objetoElimnmar); //Buscamos su indice exacto
-        reloj.files.splice(indiceAEiminar, 1); //Eliminamos este objeto pasando su indice y la cant de elemntos a elimnar despues de el
-        callback();
-    };/*Drag and Drop options (image)*/
-    const onTemplateClear = () => {
-        reloj.files = [];
-    };/*Drag and Drop options (image)*/
-    const headerTemplate = (options) => {
-        const {className, chooseButton, cancelButton} = options;
-
-        return (
-            <div className={className} style={{backgroundColor: 'transparent', display: 'flex', alignItems: 'center'}}>
-                {chooseButton}
-                {cancelButton}
-            </div>
-        );
-    };/*Drag and Drop options (image)*/
-    const emptyTemplate = () => {
-        return (
-            <div className="flex align-items-center flex-column">
-                <i className="pi pi-image mt-3 p-5" style={{
-                    fontSize: '5em',
-                    borderRadius: '50%',
-                    backgroundColor: 'var(--surface-b)',
-                    color: 'var(--surface-d)'
-                }}></i>
-                <span style={{fontSize: '1.2em', color: 'var(--text-color-secondary)'}} className="my-5">
-                    Arrastra y suelta las imágenes aquí
-                </span>
-            </div>
-        );
-    };/*Drag and Drop options (image)*/
-    const itemTemplate = (file, props) => {
-        return (
-            <div className="flex align-items-center flex-wrap">
-                <div className="flex align-items-center" style={{width: '40%'}}>
-                    <img alt={file.name} role="presentation" src={file.objectURL} width={100}/>
-                    <span className="flex flex-column text-left ml-3">
-                        {file.name}
-                        <small>{new Date().toLocaleDateString()}</small>
-                <Tag value={props.formatSize} severity="warning" className="px-3 py-2" style={{width: '50%'}}/>
-                    </span>
-                </div>
-                {/*<Tag value={props.formatSize} severity="warning" className="px-3 py-2"/>*/}
-                <Button type="button" icon="pi pi-times"
-                        className="p-button-outlined p-button-rounded p-button-danger ml-auto"
-                        onClick={() => onTemplateRemove(file, props.onRemove)}/>
-            </div>
-        );
     };/*Drag and Drop options (image)*/
     const onInputTextChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
@@ -272,12 +222,6 @@ export default function Reloj(props) {
         _reloj[`${'taller'}`] = val;
         setReloj(_reloj);
     } //Modifica el estado de seleccion del selectbox del taller
-    const onCheckBoxChange = (e, name) => {
-        const val = e.checked || false;
-        let _reloj = {...reloj};
-        _reloj[`${name}`] = val;
-        setReloj(_reloj);
-    }; /*Modifica el valor de un bool especificado del objeto*/
     const hideDeleteRelojDialog = () => {
         setDeleteRelojDialog(false);
     };/*Ocultar dialog de eliminar un objeto*/
@@ -379,16 +323,12 @@ export default function Reloj(props) {
                 editActive={editActive}
                 hideDialog={hideDialog}
                 save={save}
-                headerTemplate={headerTemplate}
                 onTemplateSelect={onTemplateSelect}
-                onTemplateRemove={onTemplateRemove}
-                onTemplateClear={onTemplateClear}
-                emptyTemplate={emptyTemplate}
-                itemTemplate={itemTemplate}
                 onInputTextChange={onInputTextChange}
                 onInputNumberChange={onInputNumberChange}
                 onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
                 otherfields={formFields}
+                imageSelected={imageSelected}
             />
 
             <DeleteProductDialog

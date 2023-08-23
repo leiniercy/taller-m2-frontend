@@ -52,6 +52,7 @@ export default function Accesorio(props) {
     const [productDialog, setProductDialog] = useState(false);
     const [deleteProductDialog, setDeleteProductDialog] = useState(false);
     const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
+    const [imageSelected, setImageSelected] = useState(false);
 
     const [product, setProduct] = useState(emptyProduct);
     const [products, setProducts] = useState(null);
@@ -66,6 +67,7 @@ export default function Accesorio(props) {
         setSubmitted(false);
         setProduct(emptyProduct);
         setProductDialog(true);
+        setImageSelected(false);
         setEditActive(false);
     }; /*Abrir nueva ventana para crear un objeto*/
     const confirmDeleteSelected = () => {
@@ -99,7 +101,7 @@ export default function Accesorio(props) {
     const save = () => {
         setSubmitted(true);
 
-        if (product.id !== null) {
+        if (editActive) {
             //Actualizar
             const formData = new FormData();
             formData.append('id', product.id);
@@ -107,9 +109,18 @@ export default function Accesorio(props) {
             formData.append('price', product.price);
             formData.append('cant', product.cant);
             formData.append('taller', product.taller.name);
-            product.files.forEach((file, i) => {
-                formData.append('files', file);
-            });
+
+            if(!imageSelected){
+                product.files.forEach((file, i) => {
+                    let blob = new Blob([file.url], { type: 'image/png' });
+                    let f = new File([blob], file.name, { type: 'image/png' });
+                    formData.append('files', f);
+                });
+            }else{
+                product.files.forEach((file, i) => {
+                    formData.append('files', file);
+                });
+            }
 
             //Guardar en la BD y actualiza el estado de la informacion
             productService.update(formData, product.id).then(data => {
@@ -117,22 +128,13 @@ export default function Accesorio(props) {
                 //Actualiza la lista
                 productService.getAllProducts().then(data => setProducts(data));
                 //Muestra sms de confirmacion
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Atención!',
-                    detail: "Se actualizó el producto correctamente",
-                    life: 2000
-                });
+                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se actualizó el producto correctamente", life: 2000});
                 setProductDialog(false);
                 setEditActive(false);
+                setImageSelected(false);
                 setSelectedProducts(null);
             }).catch((error) => {
-                toast.current.show({
-                    severity: 'danger',
-                    summary: 'Atención!',
-                    detail: "Error al actualizar el producto",
-                    life: 2000
-                });
+                toast.current.show({severity: 'danger', summary: 'Atención!', detail: "Error: El producto no existe", life: 2000});
             });
 
         } else {
@@ -152,88 +154,36 @@ export default function Accesorio(props) {
                 //Actualiza la lista
                 productService.getAllProducts().then(data => setProducts(data));
                 //Muestra sms de confirmacion
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Atención!',
-                    detail: "Se creó el producto correctamente",
-                    life: 2000
-                });
+                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se creó el producto correctamente", life: 2000});
                 setProductDialog(false);
                 setEditActive(false);
                 setSelectedProducts(null);
             }).catch((error) => {
-                toast.current.show({
-                    severity: 'danger',
-                    summary: 'Atención!',
-                    detail: "Error al guardar el producto",
-                    life: 2000
-                });
+                toast.current.show({severity: 'danger', summary: 'Atención!', detail: "Error: El producto ya existe", life: 2000});
             });
         }
     }; /*Crear o actualizar la informacion de un objeto*/
     const edit = (product) => {
         setEditActive(true);
+        setImageSelected(false);
         setProduct(product);
+        if(product.taller === 'Taller 2M'){
+            let _product = {...product};
+            _product[`${'taller'}`] = {name: 'Taller 2M', code: '2M'};
+            setProduct(_product);
+        }else{
+            let _product = {...product};
+            _product[`${'taller'}`] = {name: 'Taller MJ', code: 'MJ'};
+            setProduct(_product);
+        }
         setProductDialog(true);
     };/*Editar la informacion de un objeto existente*/
     const onTemplateSelect = (e) => {
+        setImageSelected(true);
         const val = e.files;
         let _product = {...product};
         _product[`${'files'}`] = val;
         setProduct(_product);
-    };/*Drag and Drop options (image)*/
-    const onTemplateRemove = (file, callback) => {
-        //Eliminar de la lista el elemento
-        let objetoElimnmar = product.files.find(objeto => objeto === file); //Comprobamos que el objeto existe en la lista
-        let indiceAEiminar = product.files.indexOf(objetoElimnmar); //Buscamos su indice exacto
-        product.files.splice(indiceAEiminar, 1); //Eliminamos este objeto pasando su indice y la cant de elemntos a elimnar despues de el
-        callback();
-    };/*Drag and Drop options (image)*/
-    const onTemplateClear = () => {
-        product.files = [];
-    };/*Drag and Drop options (image)*/
-    const headerTemplate = (options) => {
-        const {className, chooseButton, cancelButton} = options;
-
-        return (
-            <div className={className} style={{backgroundColor: 'transparent', display: 'flex', alignItems: 'center'}}>
-                {chooseButton}
-                {cancelButton}
-            </div>
-        );
-    };/*Drag and Drop options (image)*/
-    const emptyTemplate = () => {
-        return (
-            <div className="flex align-items-center flex-column">
-                <i className="pi pi-image mt-3 p-5" style={{
-                    fontSize: '5em',
-                    borderRadius: '50%',
-                    backgroundColor: 'var(--surface-b)',
-                    color: 'var(--surface-d)'
-                }}></i>
-                <span style={{fontSize: '1.2em', color: 'var(--text-color-secondary)'}} className="my-5">
-                    Arrastra y suelta las imágenes aquí
-                </span>
-            </div>
-        );
-    };/*Drag and Drop options (image)*/
-    const itemTemplate = (file, props) => {
-        return (
-            <div className="flex align-items-center flex-wrap">
-                <div className="flex align-items-center" style={{width: '40%'}}>
-                    <img alt={file.name} role="presentation" src={file.objectURL} width={100}/>
-                    <span className="flex flex-column text-left ml-3">
-                        {file.name}
-                        <small>{new Date().toLocaleDateString()}</small>
-                <Tag value={props.formatSize} severity="warning" className="px-3 py-2" style={{width: '50%'}}/>
-                    </span>
-                </div>
-                {/*<Tag value={props.formatSize} severity="warning" className="px-3 py-2"/>*/}
-                <Button type="button" icon="pi pi-times"
-                        className="p-button-outlined p-button-rounded p-button-danger ml-auto"
-                        onClick={() => onTemplateRemove(file, props.onRemove)}/>
-            </div>
-        );
     };/*Drag and Drop options (image)*/
     const onInputTextChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
@@ -253,12 +203,6 @@ export default function Accesorio(props) {
         _product[`${'taller'}`] = val;
         setProduct(_product);
     } //Modifica el estado de seleccion del selectbox del taller
-    const onCheckBoxChange = (e, name) => {
-        const val = e.checked || false;
-        let _product = {...product};
-        _product[`${name}`] = val;
-        setProduct(_product);
-    }; /*Modifica el valor de un bool especificado del objeto*/
     const hideDeleteProductDialog = () => {
         setDeleteProductDialog(false);
     };/*Ocultar dialog de eliminar un objeto*/
@@ -352,15 +296,11 @@ export default function Accesorio(props) {
                 editActive={editActive}
                 hideDialog={hideDialog}
                 save={save}
-                headerTemplate={headerTemplate}
                 onTemplateSelect={onTemplateSelect}
-                onTemplateRemove={onTemplateRemove}
-                onTemplateClear={onTemplateClear}
-                emptyTemplate={emptyTemplate}
-                itemTemplate={itemTemplate}
                 onInputTextChange={onInputTextChange}
                 onInputNumberChange={onInputNumberChange}
                 onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
+                imageSelected={imageSelected}
             />
 
             <DeleteProductDialog

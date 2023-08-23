@@ -30,12 +30,14 @@ const DialogChangePassword = (props) => {
     const userService = new UserService();
 
     useEffect(() => {
-        userService.getByUsername(props.user).then((data) => {
-            setUser(data);
-        }).catch((error) => {
-            console.log(error);
-        });
-    })
+        if(props.user !== undefined){
+            userService.getByUsername(props.user.name).then((data) => {
+                setUser(data);
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+    },[]);
 
     const onChangePassword = (e) => {
         setPassword(e.target.value);

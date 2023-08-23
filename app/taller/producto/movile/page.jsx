@@ -59,10 +59,9 @@ export default function Movile(props) {
     };/*Mis filtros*/
 
     const globalFilterFields = [
-        'name', 'price', 'cant','taller',
+        'name', 'price', 'cant', 'taller',
         'sizeStorage', 'ram', 'camaraTrasera', 'camaraFrontal',
         'banda2G', 'banda3G', 'banda4G', 'banda5G', 'bateria'];
-
 
     const toast = useRef(null);
     const dt = useRef(null);
@@ -72,6 +71,7 @@ export default function Movile(props) {
     const [movileDialog, setMovileDialog] = useState(false);
     const [deleteMovilDialog, setDeleteMovileDialog] = useState(false);
     const [deleteMovilesDialog, setDeleteMovilesDialog] = useState(false);
+    const [imageSelected, setImageSelected] = useState(false);
 
     const [movile, setMovile] = useState(emptyMovile);
     const [moviles, setMoviles] = useState(null);
@@ -88,6 +88,7 @@ export default function Movile(props) {
         setMovile(emptyMovile);
         setMovileDialog(true);
         setEditActive(false);
+        setImageSelected(false);
     }; /*Abrir nueva ventana para crear un objeto*/
 
     const confirmDeleteSelected = () => {
@@ -123,7 +124,7 @@ export default function Movile(props) {
     const save = () => {
         setSubmitted(true);
 
-        if (movile.id !== null) {
+        if (editActive) {
             //Actualizar
             const formData = new FormData();
             formData.append('id', movile.id);
@@ -141,9 +142,18 @@ export default function Movile(props) {
             formData.append('banda5G', movile.banda5G);
             formData.append('bateria', movile.bateria);
 
-            movile.files.forEach((file, i) => {
-                formData.append('files', file);
-            });
+            if(!imageSelected){
+                movile.files.forEach((file, i) => {
+                    let blob = new Blob([file.url], { type: 'image/png' });
+                    let f = new File([blob], file.name, { type: 'image/png' });
+                    formData.append('files', f);
+                });
+            }else{
+                movile.files.forEach((file, i) => {
+                    formData.append('files', file);
+                });
+            }
+
 
             //Guardar en la BD y actualiza el estado de la informacion
             movileService.update(formData, movile.id).then(data => {
@@ -151,22 +161,13 @@ export default function Movile(props) {
                 //Actualiza la lista
                 movileService.getAll().then(data => setMoviles(data));
                 //Muestra sms de confirmacion
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Atención!',
-                    detail: "Se actualizó el producto correctamente",
-                    life: 2000
-                });
+                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se actualizó el producto correctamente", life: 2000});
                 setMovileDialog(false);
                 setEditActive(false);
+                setImageSelected(false);
                 setSelectedMoviles(null);
             }).catch((error) => {
-                toast.current.show({
-                    severity: 'danger',
-                    summary: 'Atención!',
-                    detail: "Error al actualizar el producto",
-                    life: 2000
-                });
+                toast.current.show({error: error, severity: 'danger', summary: 'Atención!', detail: "Error: El producto no existe", life: 2000});
             });
 
         } else {
@@ -195,88 +196,37 @@ export default function Movile(props) {
                 //Actualiza la lista
                 movileService.getAll().then(data => setMoviles(data));
                 //Muestra sms de confirmacion
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Atención!',
-                    detail: "Se creó el producto correctamente",
-                    life: 2000
-                });
+                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se creó el producto correctamente", life: 2000});
                 setMovileDialog(false);
                 setEditActive(false);
                 setSelectedMoviles(null);
             }).catch((error) => {
-                toast.current.show({
-                    severity: 'danger',
-                    summary: 'Atención!',
-                    detail: "Error al guardar el producto",
-                    life: 2000
-                });
+                toast.current.show({severity: 'danger', summary: 'Atención!', detail: "Error el producto ya existe", life: 2000});
             });
         }
     }; /*Crear o actualizar la informacion de un objeto*/
     const edit = (movile) => {
         setEditActive(true);
+        setImageSelected(false);
         setMovile(movile);
+        if(movile.taller === 'Taller 2M'){
+            let _movile = {...movile};
+            _movile[`${'taller'}`] = {name: 'Taller 2M', code: '2M'};
+            setMovile(_movile);
+        }else{
+            let _movile = {...movile};
+            _movile[`${'taller'}`] = {name: 'Taller MJ', code: 'MJ'};
+            setMovile(_movile);
+        }
         setMovileDialog(true);
+
     };/*Editar la informacion de un objeto existente*/
     const onTemplateSelect = (e) => {
+        setImageSelected(true);
         const val = e.files;
         let _movile = {...movile};
         _movile[`${'files'}`] = val;
         setMovile(_movile);
-    };/*Drag and Drop options (image)*/
-    const onTemplateRemove = (file, callback) => {
-        //Eliminar de la lista el elemento
-        let objetoElimnmar = movile.files.find(objeto => objeto === file); //Comprobamos que el objeto existe en la lista
-        let indiceAEiminar = movile.files.indexOf(objetoElimnmar); //Buscamos su indice exacto
-        movile.files.splice(indiceAEiminar, 1); //Eliminamos este objeto pasando su indice y la cant de elemntos a elimnar despues de el
-        callback();
-    };/*Drag and Drop options (image)*/
-    const onTemplateClear = () => {
-        movile.files = [];
-    };/*Drag and Drop options (image)*/
-    const headerTemplate = (options) => {
-        const {className, chooseButton, cancelButton} = options;
-
-        return (
-            <div className={className} style={{backgroundColor: 'transparent', display: 'flex', alignItems: 'center'}}>
-                {chooseButton}
-                {cancelButton}
-            </div>
-        );
-    };/*Drag and Drop options (image)*/
-    const emptyTemplate = () => {
-        return (
-            <div className="flex align-items-center flex-column">
-                <i className="pi pi-image mt-3 p-5" style={{
-                    fontSize: '5em',
-                    borderRadius: '50%',
-                    backgroundColor: 'var(--surface-b)',
-                    color: 'var(--surface-d)'
-                }}></i>
-                <span style={{fontSize: '1.2em', color: 'var(--text-color-secondary)'}} className="my-5">
-                    Arrastra y suelta las imágenes aquí
-                </span>
-            </div>
-        );
-    };/*Drag and Drop options (image)*/
-    const itemTemplate = (file, props) => {
-        return (
-            <div className="flex align-items-center flex-wrap">
-                <div className="flex align-items-center" style={{width: '40%'}}>
-                    <img alt={file.name} role="presentation" src={file.objectURL} width={100}/>
-                    <span className="flex flex-column text-left ml-3">
-                        {file.name}
-                        <small>{new Date().toLocaleDateString()}</small>
-                <Tag value={props.formatSize} severity="warning" className="px-3 py-2" style={{width: '50%'}}/>
-                    </span>
-                </div>
-                {/*<Tag value={props.formatSize} severity="warning" className="px-3 py-2"/>*/}
-                <Button type="button" icon="pi pi-times"
-                        className="p-button-outlined p-button-rounded p-button-danger ml-auto"
-                        onClick={() => onTemplateRemove(file, props.onRemove)}/>
-            </div>
-        );
     };/*Drag and Drop options (image)*/
     const onInputTextChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
@@ -360,12 +310,12 @@ export default function Movile(props) {
     };/*Eliminar varios objetos*/
 
     const formFields = (<FieldsMovile
-            submitted={submitted}
-            object={movile}
-            onInputTextChange={onInputTextChange}
-            onInputNumberChange={onInputNumberChange}
-            onCheckBoxChange={onCheckBoxChange}
-        />);//Campos especificos del formulario
+        submitted={submitted}
+        object={movile}
+        onInputTextChange={onInputTextChange}
+        onInputNumberChange={onInputNumberChange}
+        onCheckBoxChange={onCheckBoxChange}
+    />);//Campos especificos del formulario
 
 
     return (
@@ -405,16 +355,12 @@ export default function Movile(props) {
                 editActive={editActive}
                 hideDialog={hideDialog}
                 save={save}
-                headerTemplate={headerTemplate}
                 onTemplateSelect={onTemplateSelect}
-                onTemplateRemove={onTemplateRemove}
-                onTemplateClear={onTemplateClear}
-                emptyTemplate={emptyTemplate}
-                itemTemplate={itemTemplate}
                 onInputTextChange={onInputTextChange}
                 onInputNumberChange={onInputNumberChange}
                 onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
                 otherfields={formFields}
+                imageSelected={imageSelected}
             />
 
             <DeleteProductDialog
