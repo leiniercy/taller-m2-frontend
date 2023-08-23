@@ -47,10 +47,10 @@ const LoginButton = () => {
 
 
     return (<>
-        <div className="ml-auto flex gap-2">
+        <div className="ml-auto flex align-items-center gap-2">
             {/*{session?.user ? (*/}
                 <>
-                    <Avatar icon="pi pi-user" size="large" />
+                    <Avatar className="h-10 sm:h-10" icon="pi pi-user"/>
                     {/*<SplitButton label={session.user.name} severity="secondary"  text model={items} />*/}
                     <Menu model={items} popup ref={menu} id="popup_menu_left" />
                     <Button label={session?.user.name}

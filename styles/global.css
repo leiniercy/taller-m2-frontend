@@ -67,8 +67,8 @@ overflow-x-auto {
 }
 
 @media screen and (min-width: 576px) {
-    .sm\:top-3rem {
-        top: 3rem !important;
+    .sm\:top-8rem {
+        top: 8rem !important;
     }
 }
 

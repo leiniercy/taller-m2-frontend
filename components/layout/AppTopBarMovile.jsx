@@ -1,29 +1,51 @@
 "use client"
-
+import React from "react";
 //PrimeReact
 import {Button} from "primereact/button";
 import {Sidebar} from "primereact/sidebar";
 import {Image} from "primereact/image";
+import {Toolbar} from "primereact/toolbar";
 
 //Components
 import LoginButton from "@components/pages/Login/LoginButton";
+import AppMenu from "@components/layout/AppMenu";
 
 
-function AppTopbarMovile(props) {
+export default function AppTopbarMovile(props) {
 
-
-    return (<div
-        className="bg-primary flex sm:flex sm:flex-row md:hidden h-3rem align-items-center justify-content-between w-full fixed z-1">
-        <div>
-            Logo
-        </div>
-        <div className="">
-            <Sidebar visible={props.visible} onHide={props.handleSidebar}>
-                <a href="#">link</a>
-                <a href="#">link</a>
-                <a href="#">link</a>
+    const rightToolbarTemplate = () => {
+        return (<div className="text-center border-round-sm font-bold">
+                <LoginButton/>
+            </div>);
+    }
+    const leftToolbarTemplate = () => {
+        return (<>
+            <div className="bg-gray-items text-center border-round-sm font-bold">
+                <Button className="topbar-items" icon="pi pi pi-bars" onClick={props.handleSidebar}/>
+            </div>
+            <Sidebar visible={props.visible} onHide={props.handleSidebar} >
+                <AppMenu/>
             </Sidebar>
-            <Button icon="pi pi pi-bars" onClick={props.handleSidebar}/>
-        </div>
-    </div>);
+        </>);
+    }
+
+    const centerToolbarTemplate = () => {
+        return(<>
+            <div className="" style={{height: '80px', width: '80px'}}>
+                <Image
+                    src="/assets/images/tallerM2-logo.png" alt="Logo"
+                    width={80}
+                    height={80}
+                    className="object-contain"
+                />
+            </div>
+        </>);
+    }
+
+    return (<Toolbar
+        className="bg-gray-items md:hidden  w-full fixed z-1"
+        left={leftToolbarTemplate}
+        center={centerToolbarTemplate}
+        right={rightToolbarTemplate}
+    />);
 }
