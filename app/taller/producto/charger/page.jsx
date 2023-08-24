@@ -323,9 +323,6 @@ export default function Charger(props) {
                         openNew={openNew}
                         confirmDeleteSelected={confirmDeleteSelected}
                         selectedObjects={selectedChargers}
-                        objects={chargers}
-                        dt={dt}
-                        fileName={'charger'}
                     /> {/*barra de herramientas*/}
                 </div>
                 <div className="col-12">

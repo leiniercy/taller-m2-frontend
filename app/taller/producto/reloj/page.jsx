@@ -295,9 +295,6 @@ export default function Reloj(props) {
                         openNew={openNew}
                         confirmDeleteSelected={confirmDeleteSelected}
                         selectedObjects={selectedRelojes}
-                        objects={relojes}
-                        dt={dt}
-                        fileName={'reloj'}
                     /> {/*barra de herramientas*/}
                 </div>
                 <div className="col-12">

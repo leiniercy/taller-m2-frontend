@@ -327,9 +327,6 @@ export default function Movile(props) {
                         openNew={openNew}
                         confirmDeleteSelected={confirmDeleteSelected}
                         selectedObjects={selectedMoviles}
-                        objects={moviles}
-                        dt={dt}
-                        fileName={'movile'}
                     /> {/*barra de herramientas*/}
                 </div>
                 <div className="col-12">

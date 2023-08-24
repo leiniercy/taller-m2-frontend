@@ -2,9 +2,6 @@ import React from "react";
 import {Toolbar} from "primereact/toolbar";
 import {Button} from "primereact/button";
 
-import ExportInfo from "@components/pages/Product/ExportInfo";
-
-
 export default function Tools(props) {
 
     const leftToolbarTemplate = () => {
@@ -21,17 +18,8 @@ export default function Tools(props) {
         );
     };/*Barra de herramientas*/
 
-
-    const rightToolbarTemplate = () => {
-        return <ExportInfo
-            objects={props.objects}
-            dt={props.dt}
-            fileName={props.fileName}/>
-    }; /*Barra de herramientas*/
-
-
     return (
-        <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+        <Toolbar className="mb-4" left={leftToolbarTemplate} ></Toolbar>
     )
 
 

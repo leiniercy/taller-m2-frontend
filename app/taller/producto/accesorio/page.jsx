@@ -269,9 +269,6 @@ export default function Accesorio(props) {
                         openNew={openNew}
                         confirmDeleteSelected={confirmDeleteSelected}
                         selectedObjects={selectedProducts}
-                        objects={products}
-                        dt={dt}
-                        fileName={'products'}
                     /> {/*barra de herramientas*/}
                 </div>
                 <div className="col-12">
