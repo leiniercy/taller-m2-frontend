@@ -5,6 +5,7 @@ import React, {useState, useEffect, useRef} from 'react';
 
 //Components
 import MovileService from "@services/MovileServie";
+import CustomFieldset from "@components/layout/CustomFieldSet";
 import Tools from "@components/pages/Product/Tools";
 import Table from "@components/pages/Product/Table";
 import DialogForm from "@components/pages/Product/DialogForm";
@@ -12,7 +13,7 @@ import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
 import FieldsMovile from "@components/pages/Product/Movile/FieldsMovile";
 import RenderLayout from "@components/layout/RenderLayout";
-import ProductFieldset from "@components/pages/Product/ProductFieldset";
+
 
 //primereact
 import {Button} from "primereact/button";
@@ -73,6 +74,15 @@ export default function Movile(props) {
     const [deleteMovilesDialog, setDeleteMovilesDialog] = useState(false);
     const [imageSelected, setImageSelected] = useState(false);
 
+    const [nameValid, setNameValid] = useState(true);
+    const [priceValid, setPriceValid] = useState(true);
+    const [cantValid, setCantValid] = useState(true);
+    const [sizeStorageValid, setSizeStorageValid] = useState(true);
+    const [ramValid, setRamValid] = useState(true);
+    const [camaraTraseraValid, setCamaraTraseraValid] = useState(true);
+    const [camaraFrontalValid, setCamaraFrontalValid] = useState(true);
+    const [bateriaValid, setBateriaValid] = useState(true);
+
     const [movile, setMovile] = useState(emptyMovile);
     const [moviles, setMoviles] = useState(null);
     const [selectedMoviles, setSelectedMoviles] = useState(null);
@@ -81,7 +91,7 @@ export default function Movile(props) {
 
     useEffect(() => {
         movileService.getAll().then((data) => setMoviles(data));
-    });
+    }, []);
 
     const openNew = () => {
         setSubmitted(false);
@@ -90,7 +100,6 @@ export default function Movile(props) {
         setEditActive(false);
         setImageSelected(false);
     }; /*Abrir nueva ventana para crear un objeto*/
-
     const confirmDeleteSelected = () => {
         if (selectedMoviles.length > 1) {
             setDeleteMovilesDialog(true);
@@ -100,11 +109,9 @@ export default function Movile(props) {
             setDeleteMovileDialog(true);
         }
     }; /*Abrir el dialog de confirmacion de eliminacion de los objetos*/
-
     const onSelectionChangeSelectedObjects = (e) => {
         setSelectedMoviles(e.value);
     } /*Se encarga de obtener la informacion de los objetos seleccionados*/
-
     const actionBodyTemplate = (rowData) => {
         return (
             <React.Fragment>
@@ -121,11 +128,73 @@ export default function Movile(props) {
         setMovileDialog(false);
         setSubmitted(false);
     }; /*Ocultar dialog de anadir*/
+    const validForm = () => {
+        //Si no se selecciono ninguna imagen
+        if (movile.files === null || movile.files === undefined) {
+            return false;
+        }
+
+        const nameRegex = /^[a-zA-Z0-9À-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar nombres de producto
+        if (!nameRegex.test(movile.name) || movile.name === '') {
+            setNameValid(false);
+            return false;
+        } else {
+            setNameValid(true);
+        }
+
+        if (movile.price < 0 || movile.price === undefined) {
+            setPriceValid(false);
+            return false;
+        } else {
+            setPriceValid(true);
+        }
+
+        if (movile.cant < 0 || movile.cant === undefined) {
+            setCantValid(false);
+            return false;
+        } else {
+            setCantValid(true);
+        }
+
+        //Si no se selecciono algun taller
+        if (movile.taller === '') {
+            return false;
+        }
+
+        if (movile.sizeStorage < 0 || movile.sizeStorage === undefined) {
+            setSizeStorageValid(false);
+            return false;
+        } else {
+            setSizeStorageValid(true);
+        }
+
+        if (movile.camaraFrontal < 0 || movile.camaraFrontal === undefined) {
+            setCamaraFrontalValid(false);
+            return false;
+        } else {
+            setCamaraFrontalValid(true);
+        }
+
+        if (movile.camaraTrasera < 0 || movile.camaraTrasera === undefined) {
+            setCamaraTraseraValid(false);
+            return false;
+        } else {
+            setCamaraTraseraValid(true);
+        }
+
+        if (movile.bateria < 0 || movile.bateria === undefined) {
+            setBateriaValid(false);
+            return false;
+        } else {
+            setBateriaValid(true);
+        }
+
+        return true;
+    } //Validacion de los campos del formulario
     const save = () => {
         setSubmitted(true);
 
-        if (editActive) {
-            //Actualizar
+        if (validForm()) {
             const formData = new FormData();
             formData.append('id', movile.id);
             formData.append('name', movile.name);
@@ -142,78 +211,83 @@ export default function Movile(props) {
             formData.append('banda5G', movile.banda5G);
             formData.append('bateria', movile.bateria);
 
-            if(!imageSelected){
-                movile.files.forEach((file, i) => {
-                    let blob = new Blob([file.url], { type: 'image/png' });
-                    let f = new File([blob], file.name, { type: 'image/png' });
-                    formData.append('files', f);
+            if (editActive) {
+                //Actualizar
+                if (!imageSelected) {
+                    movile.files.forEach((file, i) => {
+                        let blob = new Blob([file.url], {type: 'image/png'});
+                        let f = new File([blob], file.name, {type: 'image/png'});
+                        formData.append('files', f);
+                    });
+                } else {
+                    movile.files.forEach((file, i) => {
+                        formData.append('files', file);
+                    });
+                }
+
+                //Guardar en la BD y actualiza el estado de la informacion
+                movileService.update(formData, movile.id).then(data => {
+                    //Muestra sms de confirmacion
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Atención!',
+                        detail: "Se actualizó el producto correctamente",
+                        life: 2000
+                    });
+                    //Actualiza la lista
+                    movileService.getAll().then(data => setMoviles(data));
+                    setMovileDialog(false);
+                    setEditActive(false);
+                    setImageSelected(false);
+                    setSelectedMoviles(null);
+                }).catch((error) => {
+                    toast.current.show({
+                        error: error,
+                        severity: 'danger',
+                        summary: 'Atención!',
+                        detail: "Error: El producto no existe",
+                        life: 2000
+                    });
                 });
-            }else{
+
+            } else {
                 movile.files.forEach((file, i) => {
                     formData.append('files', file);
                 });
+                //Guardar en la BD y actualiza el estado de la informacion
+                movileService.save(formData).then(data => {
+                    //Muestra sms de confirmacion
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Atención!',
+                        detail: "Se creó el producto correctamente",
+                        life: 2000
+                    });
+                    //Actualiza la lista
+                    movileService.getAll().then(data => setMoviles(data));
+                    setMovileDialog(false);
+                    setEditActive(false);
+                    setSelectedMoviles(null);
+                }).catch((error) => {
+                    toast.current.show({
+                        severity: 'danger',
+                        summary: 'Atención!',
+                        detail: "Error el producto ya existe",
+                        life: 2000
+                    });
+                });
             }
-
-
-            //Guardar en la BD y actualiza el estado de la informacion
-            movileService.update(formData, movile.id).then(data => {
-                setMovile(emptyMovile);
-                //Actualiza la lista
-                movileService.getAll().then(data => setMoviles(data));
-                //Muestra sms de confirmacion
-                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se actualizó el producto correctamente", life: 2000});
-                setMovileDialog(false);
-                setEditActive(false);
-                setImageSelected(false);
-                setSelectedMoviles(null);
-            }).catch((error) => {
-                toast.current.show({error: error, severity: 'danger', summary: 'Atención!', detail: "Error: El producto no existe", life: 2000});
-            });
-
-        } else {
-            //Crear Producto
-            const formData = new FormData();
-            formData.append('name', movile.name);
-            formData.append('price', movile.price);
-            formData.append('cant', movile.cant);
-            formData.append('taller', movile.taller.name);
-            formData.append('sizeStorage', movile.sizeStorage);
-            formData.append('ram', movile.ram);
-            formData.append('camaraTrasera', movile.camaraTrasera);
-            formData.append('camaraFrontal', movile.camaraFrontal);
-            formData.append('banda2G', movile.banda2G);
-            formData.append('banda3G', movile.banda3G);
-            formData.append('banda4G', movile.banda4G);
-            formData.append('banda5G', movile.banda5G);
-            formData.append('bateria', movile.bateria);
-            movile.files.forEach((file, i) => {
-                formData.append('files', file);
-            });
-
-            //Guardar en la BD y actualiza el estado de la informacion
-            movileService.save(formData).then(data => {
-                setMovile(emptyMovile);
-                //Actualiza la lista
-                movileService.getAll().then(data => setMoviles(data));
-                //Muestra sms de confirmacion
-                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se creó el producto correctamente", life: 2000});
-                setMovileDialog(false);
-                setEditActive(false);
-                setSelectedMoviles(null);
-            }).catch((error) => {
-                toast.current.show({severity: 'danger', summary: 'Atención!', detail: "Error el producto ya existe", life: 2000});
-            });
         }
     }; /*Crear o actualizar la informacion de un objeto*/
     const edit = (movile) => {
         setEditActive(true);
         setImageSelected(false);
         setMovile(movile);
-        if(movile.taller === 'Taller 2M'){
+        if (movile.taller === 'Taller 2M') {
             let _movile = {...movile};
             _movile[`${'taller'}`] = {name: 'Taller 2M', code: '2M'};
             setMovile(_movile);
-        }else{
+        } else {
             let _movile = {...movile};
             _movile[`${'taller'}`] = {name: 'Taller MJ', code: 'MJ'};
             setMovile(_movile);
@@ -315,13 +389,18 @@ export default function Movile(props) {
         onInputTextChange={onInputTextChange}
         onInputNumberChange={onInputNumberChange}
         onCheckBoxChange={onCheckBoxChange}
+        sizeStorageValid={sizeStorageValid}
+        ramValid={ramValid}
+        camaraTraseraValid={camaraTraseraValid}
+        camaraFrontalValid={camaraFrontalValid}
+        bateriaValid={bateriaValid}
     />);//Campos especificos del formulario
 
 
     return (
         <RenderLayout>
             <Toast ref={toast}/>
-            <ProductFieldset label={'Dispositivos moviles'}>
+            <CustomFieldset label={'Dispositivos moviles'} icon={'pi-amazon'}>
                 <div className="col-12">
                     <Tools
                         openNew={openNew}
@@ -343,7 +422,7 @@ export default function Movile(props) {
                     />
 
                 </div>
-            </ProductFieldset>
+            </CustomFieldset>
 
             <DialogForm
                 visible={movileDialog}
@@ -358,6 +437,9 @@ export default function Movile(props) {
                 onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
                 otherfields={formFields}
                 imageSelected={imageSelected}
+                nameValid={nameValid}
+                priceValid={priceValid}
+                cantValid={cantValid}
             />
 
             <DeleteProductDialog

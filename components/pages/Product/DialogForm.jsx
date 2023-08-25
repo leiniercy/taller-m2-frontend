@@ -6,9 +6,8 @@ import {Button} from "primereact/button";
 
 import SelectBoxImages from "@components/pages/Product/SelectBoxImages";
 import InputTextFieldName from "@components/pages/Product/InputTextFieldName";
-import InputNumberFieldPrice from "@components/pages/Product/InputNumberFieldPrice";
-import InputNumberFieldCant from "@components/pages/Product/InputNumberFieldCant";
 import SelectBoxTaller from "@components/pages/Product/SelectBoxTaller";
+import CustomInputNumber from "@components/pages/Product/CustomInputNumber";
 
 
 export default function DialogForm(props) {
@@ -51,19 +50,29 @@ export default function DialogForm(props) {
 
                 <div className="formgrid grid">
                     <div className="field col">
-                        <InputNumberFieldPrice
-                            object={props.object}
+                        <CustomInputNumber
+                            label={'Precio'}
+                            error={'Precio incorrecto'}
+                            name={'price'}
+                            object={props.object.price}
                             onInputNumberChange={props.onInputNumberChange}
+                            valid={props.priceValid}
+                            min={0}
+                            max={1000}
                             submitted={props.submitted}
-                            priceValid={props.priceValid}
                         />
                     </div>
                     <div className="field col">
-                        <InputNumberFieldCant
-                            object={props.object}
+                        <CustomInputNumber
+                            label={'Cantidad'}
+                            error={'Cantidad incorrecta'}
+                            name={'cant'}
+                            object={props.object.cant}
                             onInputNumberChange={props.onInputNumberChange}
+                            valid={props.cantValid}
+                            min={0}
+                            max={500}
                             submitted={props.submitted}
-                            cantValid={props.cantValid}
                         />
                     </div>
                 </div>
