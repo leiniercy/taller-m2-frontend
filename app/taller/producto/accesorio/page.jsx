@@ -17,10 +17,11 @@ import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
 import {Tag} from "primereact/tag";
-
-
+import {useSession} from "next-auth/react";
 
 export default function Accesorio(props) {
+
+    const {data: session} = useSession();
 
     let emptyProduct = {
         id: null,
@@ -43,8 +44,8 @@ export default function Accesorio(props) {
         'name', 'price', 'cant', 'taller'
     ];
 
-
     const toast = useRef(null);
+
     const dt = useRef(null);
 
     const [submitted, setSubmitted] = useState(false);
@@ -54,15 +55,23 @@ export default function Accesorio(props) {
     const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
     const [imageSelected, setImageSelected] = useState(false);
 
+    const [nameValid, setNameValid] = useState(true);
+    const [priceValid, setPriceValid] = useState(true);
+    const [cantValid, setCantValid] = useState(true);
+
     const [product, setProduct] = useState(emptyProduct);
     const [products, setProducts] = useState(null);
     const [selectedProducts, setSelectedProducts] = useState(null);
 
     const productService = new ProductService();
 
+
     useEffect(() => {
-        productService.getAllProducts().then((data) => setProducts(data));
-    });
+        if (session?.user !== undefined) {
+            productService.getAllProducts().then((data) => setProducts(data));
+        }
+
+    }, []);
     const openNew = () => {
         setSubmitted(false);
         setProduct(emptyProduct);
@@ -98,11 +107,46 @@ export default function Accesorio(props) {
         setProductDialog(false);
         setSubmitted(false);
     }; /*Ocultar dialog de anadir*/
+    const validForm = () => {
+        //Si no se selecciono ninguna imagen
+        if (product.files === null || product.files === undefined) {
+            return false;
+        }
+
+        const nameRegex = /^[a-zA-Z0-9\s]*$/; // Expresión regular para validar nombres de producto
+        if (!nameRegex.test(product.name) || product.name === '') {
+            setNameValid(false);
+            return false;
+        } else {
+            setNameValid(true);
+        }
+
+        if (product.price < 0 || product.price === undefined) {
+            setPriceValid(false);
+            return false;
+        } else {
+            setPriceValid(true);
+        }
+
+        if (product.cant < 0 || product.cant === undefined ) {
+            setCantValid(false);
+            return false;
+        } else {
+            setCantValid(true);
+        }
+
+        //Si no se selecciono algun taller
+        if (product.taller === '') {
+            return false;
+        }
+
+
+        return true;
+    }
     const save = () => {
         setSubmitted(true);
 
-        if (editActive) {
-            //Actualizar
+        if (validForm()) {
             const formData = new FormData();
             formData.append('id', product.id);
             formData.append('name', product.name);
@@ -110,68 +154,86 @@ export default function Accesorio(props) {
             formData.append('cant', product.cant);
             formData.append('taller', product.taller.name);
 
-            if(!imageSelected){
-                product.files.forEach((file, i) => {
-                    let blob = new Blob([file.url], { type: 'image/png' });
-                    let f = new File([blob], file.name, { type: 'image/png' });
-                    formData.append('files', f);
+            if (editActive) {
+                //Actualizar
+                if (!imageSelected) {
+                    product.files.forEach((file, i) => {
+                        let blob = new Blob([file.url], {type: 'image/png'});
+                        let f = new File([blob], file.name, {type: 'image/png'});
+                        formData.append('files', f);
+                    });
+                } else {
+                    product.files.forEach((file, i) => {
+                        formData.append('files', file);
+                    });
+                }
+                //Guardar en la BD y actualiza el estado de la informacion
+                productService.update(formData, product.id).then(data => {
+                    //Muestra sms de confirmacion
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Atención!',
+                        detail: "Se actualizó el producto correctamente",
+                        life: 2000
+                    });
+                    setProductDialog(false);
+                    productService.getAllProducts().then(data => setProducts(data));
+                    setProduct(emptyProduct);
+                    //Actualiza la lista
+                    setEditActive(false);
+                    setImageSelected(false);
+                    setSelectedProducts(null);
+                }).catch((error) => {
+                    toast.current.show({
+                        error: error,
+                        severity: 'danger',
+                        summary: 'Atención!',
+                        detail: "Error: El producto no existe",
+                        life: 2000
+                    });
                 });
-            }else{
+
+            } else {
                 product.files.forEach((file, i) => {
                     formData.append('files', file);
                 });
+
+                //Guardar en la BD y actualiza el estado de la informacion
+                productService.save(formData).then(data => {
+                    //Muestra sms de confirmacion
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Atención!',
+                        detail: "Se creó el producto correctamente",
+                        life: 2000
+                    });
+                    //Actualiza la lista
+                    productService.getAllProducts().then(data => setProducts(data));
+                    setProductDialog(false);
+                    setProduct(emptyProduct);
+                    setEditActive(false);
+                    setSelectedProducts(null);
+                }).catch((error) => {
+                    toast.current.show({
+                        error: error,
+                        severity: 'danger',
+                        summary: 'Atención!',
+                        detail: "Error: El producto ya existe",
+                        life: 2000
+                    });
+                });
             }
-
-            //Guardar en la BD y actualiza el estado de la informacion
-            productService.update(formData, product.id).then(data => {
-                setProduct(emptyProduct);
-                //Actualiza la lista
-                productService.getAllProducts().then(data => setProducts(data));
-                //Muestra sms de confirmacion
-                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se actualizó el producto correctamente", life: 2000});
-                setProductDialog(false);
-                setEditActive(false);
-                setImageSelected(false);
-                setSelectedProducts(null);
-            }).catch((error) => {
-                toast.current.show({severity: 'danger', summary: 'Atención!', detail: "Error: El producto no existe", life: 2000});
-            });
-
-        } else {
-            //Crear Producto
-            const formData = new FormData();
-            formData.append('name', product.name);
-            formData.append('price', product.price);
-            formData.append('cant', product.cant);
-            formData.append('taller', product.taller.name);
-            product.files.forEach((file, i) => {
-                formData.append('files', file);
-            });
-
-            //Guardar en la BD y actualiza el estado de la informacion
-            productService.save(formData).then(data => {
-                setProduct(emptyProduct);
-                //Actualiza la lista
-                productService.getAllProducts().then(data => setProducts(data));
-                //Muestra sms de confirmacion
-                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se creó el producto correctamente", life: 2000});
-                setProductDialog(false);
-                setEditActive(false);
-                setSelectedProducts(null);
-            }).catch((error) => {
-                toast.current.show({severity: 'danger', summary: 'Atención!', detail: "Error: El producto ya existe", life: 2000});
-            });
         }
     }; /*Crear o actualizar la informacion de un objeto*/
     const edit = (product) => {
         setEditActive(true);
         setImageSelected(false);
         setProduct(product);
-        if(product.taller === 'Taller 2M'){
+        if (product.taller === 'Taller 2M') {
             let _product = {...product};
             _product[`${'taller'}`] = {name: 'Taller 2M', code: '2M'};
             setProduct(_product);
-        }else{
+        } else {
             let _product = {...product};
             _product[`${'taller'}`] = {name: 'Taller MJ', code: 'MJ'};
             setProduct(_product);
@@ -298,6 +360,9 @@ export default function Accesorio(props) {
                 onInputNumberChange={onInputNumberChange}
                 onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
                 imageSelected={imageSelected}
+                nameValid={nameValid}
+                priceValid={priceValid}
+                cantValid={cantValid}
             />
 
             <DeleteProductDialog
