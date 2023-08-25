@@ -15,7 +15,7 @@ return(<>
                required autoFocus
                className={classNames({'p-invalid': props.submitted && !props.object.name})}/>
     {props.submitted && !props.object.name && <small className="p-error">Campo obligatorio.</small>}
-    {props.submitted && !props.nameValid && <small className="p-error">El nombre es incorrecto.</small>}
+    {props.submitted && !props.nameValid && <small className="p-error"> Nombre incorrecto.</small>}
 </>);
 
 }

@@ -4,24 +4,21 @@ import React, {useState, useEffect, useRef} from 'react';
 
 //Components
 import ProductService from "@services/ProductService";
+import CustomFieldset from "@components/layout/CustomFieldSet";
 import Tools from "@components/pages/Product/Tools";
 import Table from "@components/pages/Product/Table";
 import DialogForm from "@components/pages/Product/DialogForm";
 import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
 import RenderLayout from "@components/layout/RenderLayout";
-import ProductFieldset from "@components/pages/Product/ProductFieldset";
 
 //primereact
 import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
-import {Tag} from "primereact/tag";
-import {useSession} from "next-auth/react";
+
 
 export default function Accesorio(props) {
-
-    const {data: session} = useSession();
 
     let emptyProduct = {
         id: null,
@@ -65,12 +62,8 @@ export default function Accesorio(props) {
 
     const productService = new ProductService();
 
-
     useEffect(() => {
-        if (session?.user !== undefined) {
-            productService.getAllProducts().then((data) => setProducts(data));
-        }
-
+        productService.getAllProducts().then((data) => setProducts(data));
     }, []);
     const openNew = () => {
         setSubmitted(false);
@@ -113,7 +106,7 @@ export default function Accesorio(props) {
             return false;
         }
 
-        const nameRegex = /^[a-zA-Z0-9\s]*$/; // Expresión regular para validar nombres de producto
+        const nameRegex = /^[a-zA-Z0-9À-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar nombres de producto
         if (!nameRegex.test(product.name) || product.name === '') {
             setNameValid(false);
             return false;
@@ -128,7 +121,7 @@ export default function Accesorio(props) {
             setPriceValid(true);
         }
 
-        if (product.cant < 0 || product.cant === undefined ) {
+        if (product.cant < 0 || product.cant === undefined) {
             setCantValid(false);
             return false;
         } else {
@@ -142,7 +135,7 @@ export default function Accesorio(props) {
 
 
         return true;
-    }
+    } //Validacion de los campos del formulario
     const save = () => {
         setSubmitted(true);
 
@@ -178,7 +171,6 @@ export default function Accesorio(props) {
                     });
                     setProductDialog(false);
                     productService.getAllProducts().then(data => setProducts(data));
-                    setProduct(emptyProduct);
                     //Actualiza la lista
                     setEditActive(false);
                     setImageSelected(false);
@@ -210,7 +202,6 @@ export default function Accesorio(props) {
                     //Actualiza la lista
                     productService.getAllProducts().then(data => setProducts(data));
                     setProductDialog(false);
-                    setProduct(emptyProduct);
                     setEditActive(false);
                     setSelectedProducts(null);
                 }).catch((error) => {
@@ -324,8 +315,7 @@ export default function Accesorio(props) {
 
     return (
         <RenderLayout>
-            <Toast ref={toast}/>
-            <ProductFieldset label={'Accesorios'}>
+            <CustomFieldset label={'Accesorios'} icon={'pi-amazon'}>
                 <div className="col-12">
                     <Tools
                         openNew={openNew}
@@ -334,7 +324,6 @@ export default function Accesorio(props) {
                     /> {/*barra de herramientas*/}
                 </div>
                 <div className="col-12">
-
                     <Table
                         headerLabel={'accesorios'}
                         dt={dt}
@@ -345,9 +334,9 @@ export default function Accesorio(props) {
                         globalFilterFields={globalFilterFields}
                         actionBodyTemplate={actionBodyTemplate}
                     />
-
                 </div>
-            </ProductFieldset>
+            </CustomFieldset>
+            <Toast ref={toast}/>
             <DialogForm
                 visible={productDialog}
                 submitted={submitted}

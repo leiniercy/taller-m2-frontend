@@ -96,7 +96,7 @@ export default function Customers() {
     }
     const validateForm = () => {
 
-        const nameRegex = /^[a-zA-Z\s]*$/; // Expresión regular para validar nombres
+        const nameRegex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar nombres
         if (!nameRegex.test(customer.customerName) || customer.customerName === '') {
             setNameValid(false);
             return false;

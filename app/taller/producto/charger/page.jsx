@@ -4,6 +4,7 @@ import React, {useState, useEffect, useRef} from 'react';
 
 //Components
 import ChargerService from "@services/ChargerService";
+import CustomFieldset from "@components/layout/CustomFieldSet";
 import Tools from "@components/pages/Product/Tools";
 import Table from "@components/pages/Product/Table";
 import DialogForm from "@components/pages/Product/DialogForm";
@@ -11,18 +12,14 @@ import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
 import FieldsCharjer from "@components/pages/Product/Charger/FieldsCharjer";
 import RenderLayout from "@components/layout/RenderLayout";
-import ProductFieldset from "@components/pages/Product/ProductFieldset";
 
 
 //primereact
 import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
-import {Tag} from "primereact/tag";
-
 
 export default function Charger(props) {
-
 
     let emptyCharger = {
         id: null,
@@ -65,6 +62,12 @@ export default function Charger(props) {
     const [deleteChargersDialog, setDeleteChargersDialog] = useState(false);
     const [imageSelected, setImageSelected] = useState(false);
 
+    const [nameValid, setNameValid] = useState(true);
+    const [priceValid, setPriceValid] = useState(true);
+    const [cantValid, setCantValid] = useState(true);
+    const [connectorTypeValid, setConnectorTypeValid] = useState(true);
+    const [compatibleDeviceValid, setCompatibleDeviceValid] = useState(true);
+
     const [charger, setCharger] = useState(emptyCharger);
     const [chargers, setChargers] = useState(null);
     const [selectedChargers, setSelectedChargers] = useState(null);
@@ -73,7 +76,7 @@ export default function Charger(props) {
 
     useEffect(() => {
         chargerService.getAll().then((data) => setChargers(data));
-    });
+    }, []);
 
     const openNew = () => {
         setSubmitted(false);
@@ -113,11 +116,62 @@ export default function Charger(props) {
         setChargerDialog(false);
         setSubmitted(false);
     }; /*Ocultar dialog de anadir*/
+    const validForm = () => {
+        //Si no se selecciono ninguna imagen
+        if (charger.files === null || charger.files === undefined) {
+            return false;
+        }
+
+        const nameRegex = /^[0-9a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar nombres de producto
+        if (!nameRegex.test(charger.name) || charger.name === '') {
+            setNameValid(false);
+            return false;
+        } else {
+            setNameValid(true);
+        }
+
+        if (charger.price < 0 || charger.price === undefined) {
+            setPriceValid(false);
+            return false;
+        } else {
+            setPriceValid(true);
+        }
+
+        if (charger.cant < 0 || charger.cant === undefined) {
+            setCantValid(false);
+            return false;
+        } else {
+            setCantValid(true);
+        }
+
+        //Si no se selecciono algun taller
+        if (charger.taller === '') {
+            return false;
+        }
+
+        const connectorTypeRegex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar tipos de conectores
+        if (!connectorTypeRegex.test(charger.connectorType) || charger.connectorType === '') {
+            setConnectorTypeValid(false);
+            return false;
+        } else {
+            setConnectorTypeValid(true);
+        }
+
+        const compatibleDeviceRegex = /^[,.a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar tipos de conectores
+        if (!compatibleDeviceRegex.test(charger.compatibleDevice) || charger.compatibleDevice === '') {
+            setCompatibleDeviceValid(false);
+            return false;
+        } else {
+            setCompatibleDeviceValid(true);
+        }
+
+        return true;
+    }
     const save = () => {
         setSubmitted(true);
 
-        if (editActive) {
-            //Actualizar
+        if (validForm()) {
+
             const formData = new FormData();
             formData.append('id', charger.id);
             formData.append('name', charger.name);
@@ -127,90 +181,85 @@ export default function Charger(props) {
             formData.append('connectorType', charger.connectorType);
             formData.append('compatibleDevice', charger.compatibleDevice);
 
-            if (!imageSelected) {
-                charger.files.forEach((file, i) => {
-                    let blob = new Blob([file.url], {type: 'image/png'});
-                    let f = new File([blob], file.name, {type: 'image/png'});
-                    formData.append('files', f);
+            if (editActive) {
+                //Actualizar
+                if (!imageSelected) {
+                    charger.files.forEach((file, i) => {
+                        let blob = new Blob([file.url], {type: 'image/png'});
+                        let f = new File([blob], file.name, {type: 'image/png'});
+                        formData.append('files', f);
+                    });
+                } else {
+                    charger.files.forEach((file, i) => {
+                        formData.append('files', file);
+                    });
+                }
+
+                //Guardar en la BD y actualiza el estado de la informacion
+                chargerService.update(formData, charger.id).then(data => {
+                    //Muestra sms de confirmacion
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Atención!',
+                        detail: "Se actualizó el producto correctamente",
+                        life: 2000
+                    });
+                    setChargerDialog(false);
+                    //Actualiza la lista
+                    chargerService.getAll().then(data => setChargers(data));
+                    setEditActive(false);
+                    setImageSelected(false);
+                    setSelectedChargers(null);
+                }).catch((error) => {
+                    toast.current.show({
+                        error: error,
+                        severity: 'danger',
+                        summary: 'Atención!',
+                        detail: "Error: El producto no existe",
+                        life: 2000
+                    });
                 });
+
             } else {
                 charger.files.forEach((file, i) => {
                     formData.append('files', file);
                 });
+                //Guardar en la BD y actualiza el estado de la informacion
+                chargerService.save(formData).then(data => {
+                    //Muestra sms de confirmacion
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Atención!',
+                        detail: "Se creó el producto correctamente",
+                        life: 2000
+                    });
+                    setChargerDialog(false);
+                    //Actualiza la lista
+                    chargerService.getAll().then(data => setChargers(data));
+                    setChargerDialog(false);
+                    setEditActive(false);
+                    setSelectedChargers(null);
+                }).catch((error) => {
+                    toast.current.show({
+                        error: error,
+                        severity: 'danger',
+                        summary: 'Atención!',
+                        detail: "Error el producto ya existe",
+                        life: 2000
+                    });
+                });
             }
-
-            //Guardar en la BD y actualiza el estado de la informacion
-            chargerService.update(formData, charger.id).then(data => {
-                setCharger(emptyCharger);
-                //Actualiza la lista
-                chargerService.getAll().then(data => setChargers(data));
-                //Muestra sms de confirmacion
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Atención!',
-                    detail: "Se actualizó el producto correctamente",
-                    life: 2000
-                });
-                setChargerDialog(false);
-                setEditActive(false);
-                setImageSelected(false);
-                setSelectedChargers(null);
-            }).catch((error) => {
-                toast.current.show({
-                    error: error,
-                    severity: 'danger',
-                    summary: 'Atención!',
-                    detail: "Error: El producto no existe",
-                    life: 2000
-                });
-            });
-
-        } else {
-            //Crear Producto
-            const formData = new FormData();
-            formData.append('name', charger.name);
-            formData.append('price', charger.price);
-            formData.append('cant', charger.cant);
-            formData.append('taller', charger.taller.name);
-            formData.append('connectorType', charger.connectorType);
-            formData.append('compatibleDevice', charger.compatibleDevice);
-            charger.files.forEach((file, i) => {
-                formData.append('files', file);
-            });
-
-            //Guardar en la BD y actualiza el estado de la informacion
-            chargerService.save(formData).then(data => {
-                setCharger(emptyCharger);
-                //Actualiza la lista
-                chargerService.getAll().then(data => setChargers(data));
-                //Muestra sms de confirmacion
-                toast.current.show({
-                    severity: 'success', summary: 'Atención!', detail: "Se creó el producto correctamente", life: 2000
-                });
-                setChargerDialog(false);
-                setEditActive(false);
-                setSelectedChargers(null);
-            }).catch((error) => {
-                toast.current.show({
-                    error: error,
-                    severity: 'danger',
-                    summary: 'Atención!',
-                    detail: "Error el producto ya existe",
-                    life: 2000
-                });
-            });
         }
     }; /*Crear o actualizar la informacion de un objeto*/
-
     const edit = (charger) => {
         setEditActive(true);
         setCharger(charger);
         setImageSelected(false);
-        if(charger.taller === 'Taller 2M'){
+        if (charger.taller === 'Taller 2M') {
             let _charger = {...charger};
             _charger[`${'taller'}`] = {name: 'Taller 2M', code: '2M'};
             setCharger(_charger);
-        }else{
+        } else {
             let _charger = {...charger};
             _charger[`${'taller'}`] = {name: 'Taller MJ', code: 'MJ'};
             setCharger(_charger);
@@ -242,12 +291,6 @@ export default function Charger(props) {
         _charger[`${'taller'}`] = val;
         setCharger(_charger);
     } //Modifica el estado de seleccion del selectbox del taller
-    const onCheckBoxChange = (e, name) => {
-        const val = e.checked || false;
-        let _charger = {...charger};
-        _charger[`${name}`] = val;
-        setCharger(_charger);
-    }; /*Modifica el valor de un bool especificado del objeto*/
     const hideDeleteChargerDialog = () => {
         setDeleteChargerDialog(false);
     };/*Ocultar dialog de eliminar un objeto*/
@@ -310,6 +353,8 @@ export default function Charger(props) {
             submitted={submitted}
             object={charger}
             onInputTextChange={onInputTextChange}
+            connectorTypeValid={connectorTypeValid}
+            compatibleDeviceValid={compatibleDeviceValid}
         />
     );//Campos especificos del formulario
 
@@ -317,7 +362,7 @@ export default function Charger(props) {
     return (
         <RenderLayout>
             <Toast ref={toast}/>
-            <ProductFieldset label={'Dispositivos de carga'}>
+            <CustomFieldset label={'Dispositivos de carga'} icon={'pi-amazon'}>
                 <div className="col-12">
                     <Tools
                         openNew={openNew}
@@ -339,7 +384,7 @@ export default function Charger(props) {
                     />
 
                 </div>
-            </ProductFieldset>
+            </CustomFieldset>
 
             <DialogForm
                 visible={chargerDialog}
@@ -354,6 +399,9 @@ export default function Charger(props) {
                 onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
                 otherfields={formFields}
                 imageSelected={imageSelected}
+                nameValid={nameValid}
+                priceValid={priceValid}
+                cantValid={cantValid}
             />
 
             <DeleteProductDialog

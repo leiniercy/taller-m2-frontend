@@ -15,6 +15,7 @@ export default function FieldsCharjer(props) {
                        required autoFocus
                        className={classNames({'p-invalid': props.submitted && !props.object.connectorType})}/>
             {props.submitted && !props.object.connectorType && <small className="p-error">Campo obligatorio.</small>}
+            {props.submitted && !props.connectorTypeValid && <small className="p-error"> Tipo de conector incorrecto.</small>}
         </div>
         <div className="field">
             <label htmlFor="compatibleDevice" className="font-bold">
@@ -24,6 +25,7 @@ export default function FieldsCharjer(props) {
                        required autoFocus
                        className={classNames({'p-invalid': props.submitted && !props.object.compatibleDevice})}/>
             {props.submitted && !props.object.compatibleDevice && <small className="p-error">Campo obligatorio.</small>}
+            {props.submitted && !props.compatibleDeviceValid && <small className="p-error"> Dispositivos compatibles incorrectos.</small>}
         </div>
     </>);
 }

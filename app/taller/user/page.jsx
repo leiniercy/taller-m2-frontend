@@ -97,7 +97,7 @@ export default function Usuarios() {
         }
     }; /*Abrir el dialog de confirmacion de eliminacion de los objetos*/
     const validateSaveForm = () => {
-        const nameRegex = /^[a-zA-Z\s]*$/; // Expresión regular para validar nombres
+        const nameRegex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar nombres
         if (!nameRegex.test(username) || username === '') {
             setUsernameValid(false);
             return false;
@@ -159,12 +159,7 @@ export default function Usuarios() {
                     detail: "Se creó el usuario correctamente",
                     life: 2000
                 });
-                hideSaveDialog();setUserName('');
-                setEmail('');
-                setPassword('');
-                setConfirmPassword('');
-                setTaller('');
-                setRol('');
+                hideSaveDialog();
             }).catch((error) => {
                 toast.current.show({ error: error, severity: 'danger',summary: 'Error!',
                     detail: "El usuario ya existe", life: 3000});
@@ -180,7 +175,7 @@ export default function Usuarios() {
         setRol(user.roles[0].name === 'ROLE_ADMIN' ? { name: 'Administrador', code: 'ROLE_ADMIN' } : { name: 'Moderador', code: 'ROLE_MODERATOR' });
     }
     const validateEditForm = () => {
-        const nameRegex = /^[a-zA-Z\s]*$/; // Expresión regular para validar nombres
+        const nameRegex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar nombres
         if (!nameRegex.test(username) || username === '') {
             setUsernameValid(false);
             return false;
@@ -225,11 +220,6 @@ export default function Usuarios() {
                     life: 2000
                 });
                 hideEditDialog();
-                setId(null);
-                setUserName('');
-                setEmail('');
-                setTaller('');
-                setRol('');
             }).catch((error) => {
                 toast.current.show({ error: error, severity: 'danger',summary: 'Error!',
                     detail: "El usuario no existe", life: 3000});
