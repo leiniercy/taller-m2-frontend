@@ -1,13 +1,11 @@
-
-
 import React from "react";
 import {Dialog} from "primereact/dialog";
 import {Button} from "primereact/button";
 
 import SelectBoxImages from "@components/pages/Product/SelectBoxImages";
-import InputTextFieldName from "@components/pages/Product/InputTextFieldName";
 import SelectBoxTaller from "@components/pages/Product/SelectBoxTaller";
 import CustomInputNumber from "@components/pages/Product/CustomInputNumber";
+import CustomInputText from "@components/pages/Product/CustomInputText";
 
 
 export default function DialogForm(props) {
@@ -40,11 +38,14 @@ export default function DialogForm(props) {
                 </div>
 
                 <div className="field">
-                    <InputTextFieldName
-                        object={props.object}
+                    <CustomInputText
+                        label={'Nombre'}
+                        error={'Nombre incorrecto.'}
+                        object={props.object.name}
+                        name={'name'}
                         onInputTextChange={props.onInputTextChange}
                         submitted={props.submitted}
-                        nameValid={props.nameValid}
+                        valid={props.nameValid}
                     />
                 </div>
 

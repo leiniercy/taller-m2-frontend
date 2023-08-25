@@ -157,7 +157,7 @@ export default function Charger(props) {
             setConnectorTypeValid(true);
         }
 
-        const compatibleDeviceRegex = /^[,.a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar tipos de conectores
+        const compatibleDeviceRegex = /^[,.a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/;// Expresión regular para validar los dispositivos compatibles
         if (!compatibleDeviceRegex.test(charger.compatibleDevice) || charger.compatibleDevice === '') {
             setCompatibleDeviceValid(false);
             return false;

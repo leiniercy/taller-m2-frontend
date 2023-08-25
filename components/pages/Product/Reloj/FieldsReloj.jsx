@@ -1,44 +1,45 @@
 
 import React from "react";
-import {InputText} from "primereact/inputtext";
-import {classNames} from "primereact/utils";
-import {InputNumber} from "@node_modules/primereact/inputnumber";
-import {Slider} from "@node_modules/primereact/slider";
+import CustomInputNumber from "@components/pages/Product/CustomInputNumber";
+import CustomInputText from "@components/pages/Product/CustomInputText";
 
 export default function FieldsReloj(props) {
 
     return(<>
         <div className="field">
-            <label htmlFor="specialFeature" className="font-bold">
-                Funcionalidades
-            </label>
-            <InputText id="name" value={props.object.specialFeature} onChange={(e) => props.onInputTextChange(e, 'specialFeature')}
-                       required autoFocus
-                       className={classNames({'p-invalid': props.submitted && !props.object.specialFeature})}/>
-            {props.submitted && !props.object.specialFeature && <small className="p-error">Campo obligatorio.</small>}
+            <CustomInputText
+                label={'Funcionalidades'}
+                error={'Funcionalidades incorrectas.'}
+                object={props.object.specialFeature}
+                name={'specialFeature'}
+                onInputTextChange={props.onInputTextChange}
+                submitted={props.submitted}
+                valid={props.specialFeatureValid}
+            />
         </div>
         <div className="field">
-            <label htmlFor="compatibleDevice" className="font-bold">
-                Dispositivos compatibles
-            </label>
-            <InputText id="compatibleDevice" value={props.object.compatibleDevice} onChange={(e) => props.onInputTextChange(e, 'compatibleDevice')}
-                       required autoFocus
-                       className={classNames({'p-invalid': props.submitted && !props.object.compatibleDevice})}/>
-            {props.submitted && !props.object.compatibleDevice && <small className="p-error">Campo obligatorio.</small>}
+            <CustomInputText
+                label={'Dispositivos compatibles'}
+                error={'Dispositivos compatibles incorrectos.'}
+                object={props.object.compatibleDevice}
+                name={'compatibleDevice'}
+                onInputTextChange={props.onInputTextChange}
+                submitted={props.submitted}
+                valid={props.compatibleDeviceValid}
+            />
         </div>
         <div className="field">
-            <label htmlFor="bateryLife" className="font-bold">
-                Duración de la batería
-            </label>
-            <InputNumber id="bateryLife"
-                         suffix=" días"
-                         min={0} max={100}
-                         value={props.object.bateryLife}
-                         onValueChange={(e) => props.onInputNumberChange(e, 'bateryLife')}/>
-            <Slider value={props.object.bateryLife}
-                    onChange={(e) => props.onInputNumberChange(e, 'bateryLife')}
-                    min={0} max={100}
-                    className="w-full"/>
+            <CustomInputNumber
+                label={'Duración de la batería'}
+                error={'Duración de la batería incorrecta'}
+                name={'bateryLife'}
+                object={props.object.bateryLife}
+                onInputNumberChange={props.onInputNumberChange}
+                valid={props.bateryLifeValid}
+                min={0}
+                max={100}
+                submitted={props.submitted}
+            />
         </div>
     </>);
 }

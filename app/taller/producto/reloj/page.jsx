@@ -10,16 +10,13 @@ import DialogForm from "@components/pages/Product/DialogForm";
 import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
 import RenderLayout from "@components/layout/RenderLayout";
-import ProductFieldset from "@components/pages/Product/ProductFieldset";
+import CustomFieldset from "@components/layout/CustomFieldSet";
 import FieldsReloj from "@components/pages/Product/Reloj/FieldsReloj";
 
 //primereact
 import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
-import {Tag} from "primereact/tag";
-
-
 
 
 export default function Reloj(props) {
@@ -67,6 +64,13 @@ export default function Reloj(props) {
     const [deleteRelojesDialog, setDeleteRelojesDialog] = useState(false);
     const [imageSelected, setImageSelected] = useState(false);
 
+    const [nameValid, setNameValid] = useState(true);
+    const [priceValid, setPriceValid] = useState(true);
+    const [cantValid, setCantValid] = useState(true);
+    const [specialFeatureValid, setSpecialFeatureValid] = useState(true);
+    const [compatibleDeviceValid, setCompatibleDeviceValid] = useState(true);
+    const [bateryLifeValid, setBateryLifeValid] = useState(true);
+
     const [reloj, setReloj] = useState(emptyReloj);
     const [relojes, setRelojes] = useState(null);
     const [selectedRelojes, setSelectedRelojes] = useState(null);
@@ -75,7 +79,7 @@ export default function Reloj(props) {
 
     useEffect(() => {
         relojService.getAll().then((data) => setRelojes(data));
-    });
+    }, []);
     const openNew = () => {
         setSubmitted(false);
         setReloj(emptyReloj);
@@ -111,11 +115,68 @@ export default function Reloj(props) {
         setRelojDialog(false);
         setSubmitted(false);
     }; /*Ocultar dialog de anadir*/
+    const validForm = () => {
+        //Si no se selecciono ninguna imagen
+        if (reloj.files === null || reloj.files === undefined) {
+            return false;
+        }
+
+        const nameRegex = /^[a-zA-Z0-9À-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar nombres de producto
+        if (!nameRegex.test(reloj.name) || reloj.name === '') {
+            setNameValid(false);
+            return false;
+        } else {
+            setNameValid(true);
+        }
+
+        if (reloj.price < 0 || reloj.price === undefined) {
+            setPriceValid(false);
+            return false;
+        } else {
+            setPriceValid(true);
+        }
+
+        if (reloj.cant < 0 || reloj.cant === undefined) {
+            setCantValid(false);
+            return false;
+        } else {
+            setCantValid(true);
+        }
+
+        //Si no se selecciono algun taller
+        if (reloj.taller === '') {
+            return false;
+        }
+
+        const specialFeatureRegex = /^[,.a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar las funcionalidades del reloj
+        if (!specialFeatureRegex.test(reloj.specialFeature) || reloj.specialFeature === '') {
+            setSpecialFeatureValid(false);
+            return false;
+        } else {
+            setSpecialFeatureValid(true);
+        }
+
+        const compatibleDeviceRegex = /^[,.a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar los dispositivos compatibles
+        if (!compatibleDeviceRegex.test(reloj.compatibleDevice) || reloj.compatibleDevice === '') {
+            setCompatibleDeviceValid(false);
+            return false;
+        } else {
+            setCompatibleDeviceValid(true);
+        }
+
+        if (reloj.bateryLife < 0 || reloj.bateryLife === undefined) {
+            setBateryLifeValid(false);
+            return false;
+        } else {
+            setBateryLifeValid(true);
+        }
+
+        return true;
+    } //Validacion de los campos del formulario
     const save = () => {
         setSubmitted(true);
 
-        if (editActive) {
-            //Actualizar
+        if (validForm()) {
             const formData = new FormData();
             formData.append('id', reloj.id);
             formData.append('name', reloj.name);
@@ -125,72 +186,86 @@ export default function Reloj(props) {
             formData.append('specialFeature', reloj.specialFeature);
             formData.append('compatibleDevice', reloj.compatibleDevice);
             formData.append('bateryLife', reloj.bateryLife);
+            if (editActive) {
+                //Actualizar
+                if (!imageSelected) {
+                    reloj.files.forEach((file, i) => {
+                        let blob = new Blob([file.url], {type: 'image/png'});
+                        let f = new File([blob], file.name, {type: 'image/png'});
+                        formData.append('files', f);
+                    });
+                } else {
+                    reloj.files.forEach((file, i) => {
+                        formData.append('files', file);
+                    });
+                }
 
-            if(!imageSelected){
-                reloj.files.forEach((file, i) => {
-                    let blob = new Blob([file.url], { type: 'image/png' });
-                    let f = new File([blob], file.name, { type: 'image/png' });
-                    formData.append('files', f);
+                //Guardar en la BD y actualiza el estado de la informacion
+                relojService.update(formData, reloj.id).then(data => {
+                    //Muestra sms de confirmacion
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Atención!',
+                        detail: "Se actualizó el producto correctamente",
+                        life: 2000
+                    });
+                    //Actualiza la lista
+                    relojService.getAll().then(data => setRelojes(data));
+                    setRelojDialog(false);
+                    setImageSelected(false);
+                    setEditActive(false);
+                    setSelectedRelojes(null);
+                }).catch((error) => {
+                    toast.current.show({
+                        error: error,
+                        severity: 'danger',
+                        summary: 'Atención!',
+                        detail: "Error: El producto no existe",
+                        life: 2000
+                    });
                 });
-            }else{
+
+            } else {
+                //Crear Producto
                 reloj.files.forEach((file, i) => {
                     formData.append('files', file);
                 });
+
+                //Guardar en la BD y actualiza el estado de la informacion
+                relojService.save(formData).then(data => {
+                    //Muestra sms de confirmacion
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Atención!',
+                        detail: "Se creó el producto correctamente",
+                        life: 2000
+                    });
+                    //Actualiza la lista
+                    relojService.getAll().then(data => setRelojes(data));
+                    setRelojDialog(false);
+                    setEditActive(false);
+                    setSelectedRelojes(null);
+                }).catch((error) => {
+                    toast.current.show({
+                        error: error,
+                        severity: 'danger',
+                        summary: 'Atención!',
+                        detail: "Error: El producto ya existe",
+                        life: 2000
+                    });
+                });
             }
-
-            //Guardar en la BD y actualiza el estado de la informacion
-            relojService.update(formData, reloj.id).then(data => {
-                setReloj(emptyReloj);
-                //Actualiza la lista
-                relojService.getAll().then(data => setRelojes(data));
-                //Muestra sms de confirmacion
-                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se actualizó el producto correctamente", life: 2000});
-                setRelojDialog(false);
-                setImageSelected(false);
-                setEditActive(false);
-                setSelectedRelojes(null);
-            }).catch((error) => {
-                toast.current.show({error: error, severity: 'danger', summary: 'Atención!', detail: "Error: El producto ya existe", life: 2000});
-            });
-
-        } else {
-            //Crear Producto
-            const formData = new FormData();
-            formData.append('name', reloj.name);
-            formData.append('price', reloj.price);
-            formData.append('cant', reloj.cant);
-            formData.append('taller', reloj.taller.name);
-            formData.append('specialFeature', reloj.specialFeature);
-            formData.append('compatibleDevice', reloj.compatibleDevice);
-            formData.append('bateryLife', reloj.bateryLife);
-            reloj.files.forEach((file, i) => {
-                formData.append('files', file);
-            });
-
-            //Guardar en la BD y actualiza el estado de la informacion
-            relojService.save(formData).then(data => {
-                setReloj(emptyReloj);
-                //Actualiza la lista
-                relojService.getAll().then(data => setRelojes(data));
-                //Muestra sms de confirmacion
-                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se creó el producto correctamente", life: 2000});
-                setRelojDialog(false);
-                setEditActive(false);
-                setSelectedRelojes(null);
-            }).catch((error) => {
-                toast.current.show({error: error, severity: 'danger', summary: 'Atención!', detail: "Error: El producto ya existe", life: 2000});
-            });
         }
     }; /*Crear o actualizar la informacion de un objeto*/
     const edit = (reloj) => {
         setEditActive(true);
         setImageSelected(false);
         setReloj(reloj);
-        if(reloj.taller === 'Taller 2M'){
+        if (reloj.taller === 'Taller 2M') {
             let _reloj = {...reloj};
             _reloj[`${'taller'}`] = {name: 'Taller 2M', code: '2M'};
             setReloj(_reloj);
-        }else{
+        } else {
             let _reloj = {...reloj};
             _reloj[`${'taller'}`] = {name: 'Taller MJ', code: 'MJ'};
             setReloj(_reloj);
@@ -282,14 +357,17 @@ export default function Reloj(props) {
     const formFields = (<FieldsReloj
         submitted={submitted}
         object={reloj}
+        specialFeatureValid={specialFeatureValid}
+        compatibleDeviceValid={compatibleDeviceValid}
+        bateryLifeValid={bateryLifeValid}
         onInputTextChange={onInputTextChange}
         onInputNumberChange={onInputNumberChange}
     />);//Campos especificos del formulario
 
     return (
         <RenderLayout>
-            <Toast ref={toast}/>
-            <ProductFieldset label={'Relojes inteligentes'}>
+
+            <CustomFieldset label={'Relojes inteligentes'} icon={'pi-amazon'}>
                 <div className="col-12">
                     <Tools
                         openNew={openNew}
@@ -311,8 +389,8 @@ export default function Reloj(props) {
                     />
 
                 </div>
-            </ProductFieldset>
-
+            </CustomFieldset>
+            <Toast ref={toast}/>
             <DialogForm
                 visible={relojDialog}
                 submitted={submitted}
@@ -326,6 +404,9 @@ export default function Reloj(props) {
                 onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
                 otherfields={formFields}
                 imageSelected={imageSelected}
+                nameValid={nameValid}
+                priceValid={priceValid}
+                cantValid={cantValid}
             />
 
             <DeleteProductDialog
