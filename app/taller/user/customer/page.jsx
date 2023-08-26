@@ -1,7 +1,7 @@
 "use client"
 
 import React, {useEffect, useRef, useState} from "react";
-
+import {useSession} from "next-auth/react";
 import RenderLayout from "@components/layout/RenderLayout";
 import CustomFieldset from "@components/layout/CustomFieldSet";
 import ToolsUser from "@components/pages/User/ToolsUser";
@@ -17,7 +17,14 @@ import {Toast} from 'primereact/toast';
 import CustomerService from "@services/CustomerService";
 
 
+
 export default function Customers() {
+
+    const {data: session, status} = useSession();
+
+    if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_ADMIN") {
+        throw new Error('Access denied')
+    }
 
     let emptyCustomer = {
         id: null,

@@ -18,16 +18,6 @@ export function middleware(request: NextRequest) {
             url.pathname = '/taller';
             return NextResponse.redirect(url);
         }
-        // Si no es administrador
-        let rol = request.cookies.get('rol');
-        if ((url.pathname === '/taller/producto/accesorio'
-                || url.pathname === '/taller/producto/charger'
-                || url.pathname === '/taller/producto/movile'
-                || url.pathname === '/taller/producto/reloj')
-            && rol.value !== 'ROLE_ADMIN') {
-            url.pathname = '/taller/access-denied';
-            return NextResponse.redirect(url);
-        }
     }
 
     if (request.nextUrl.pathname.startsWith('/login')) {

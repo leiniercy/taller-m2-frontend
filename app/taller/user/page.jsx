@@ -1,6 +1,7 @@
 "use client"
 
 import React, {useEffect, useRef, useState} from "react";
+import {useSession} from "next-auth/react";
 
 import {FilterMatchMode} from "primereact/api";
 import {FilterOperator} from "primereact/api";
@@ -19,6 +20,12 @@ import DialogEditUser from "@components/pages/User/DialogEditUser";
 
 
 export default function Usuarios() {
+
+    const {data: session, status} = useSession();
+
+    if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_ADMIN") {
+        throw new Error('Access denied')
+    }
 
     let emptyUser = {
         username: '',

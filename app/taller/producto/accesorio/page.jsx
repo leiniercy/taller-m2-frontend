@@ -12,13 +12,22 @@ import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 import DeleteProductsDialog from "@components/pages/Product/DeleteProductsDialog";
 import RenderLayout from "@components/layout/RenderLayout";
 
+
 //primereact
 import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
 
+import {useSession} from "next-auth/react";
+
 
 export default function Accesorio(props) {
+
+    const {data: session, status} = useSession();
+
+    if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_ADMIN") {
+        throw new Error('Access denied')
+    }
 
     let emptyProduct = {
         id: null,

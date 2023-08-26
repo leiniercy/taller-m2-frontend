@@ -1,6 +1,7 @@
 "use client"
 
 import React, {useState, useEffect, useRef} from 'react';
+import {useSession} from "next-auth/react";
 
 //Components
 import RelojService from "@services/RelojService";
@@ -20,6 +21,12 @@ import {Toast} from 'primereact/toast';
 
 
 export default function Reloj(props) {
+
+    const {data: session, status} = useSession();
+
+    if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_ADMIN") {
+        throw new Error('Access denied')
+    }
 
     let emptyReloj = {
         id: null,

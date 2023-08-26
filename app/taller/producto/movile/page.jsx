@@ -1,7 +1,7 @@
 "use client"
 
 import React, {useState, useEffect, useRef} from 'react';
-
+import {useSession} from "next-auth/react";
 
 //Components
 import MovileService from "@services/MovileServie";
@@ -19,11 +19,16 @@ import RenderLayout from "@components/layout/RenderLayout";
 import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
-import {Tag} from "primereact/tag";
+
 
 
 export default function Movile(props) {
 
+    const {data: session, status} = useSession();
+
+    if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_ADMIN") {
+        throw new Error('Access denied')
+    }
 
     let emptyMovile = {
         id: null,

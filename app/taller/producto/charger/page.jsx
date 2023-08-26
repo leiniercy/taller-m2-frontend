@@ -1,6 +1,7 @@
 "use client"
 
 import React, {useState, useEffect, useRef} from 'react';
+import {useSession} from "next-auth/react";
 
 //Components
 import ChargerService from "@services/ChargerService";
@@ -20,6 +21,12 @@ import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
 
 export default function Charger(props) {
+
+    const {data: session, status} = useSession();
+
+    if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_ADMIN") {
+        throw new Error('Access denied')
+    }
 
     let emptyCharger = {
         id: null,
