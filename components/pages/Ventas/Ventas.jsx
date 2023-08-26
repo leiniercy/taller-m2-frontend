@@ -77,7 +77,11 @@ export default function Ventas(props) {
     const [editCustomerActive, setEditCustomerActive] = useState(false);
 
     const [customerNameValid, setCustomerNameValid] = useState(true);
-    const [customerPhoneValid,setCustomerPhoneValid] = useState(true);
+    const [customerPhoneValid, setCustomerPhoneValid] = useState(true);
+
+    const [salePricesValid, setSalePricesValid] = useState(true);
+    const [descriptionsValid, setDescriptionsValid] = useState(null);
+    const [quantitiesValid, setQuantitiesValid] = useState(null);
 
     const productService = new ProductService();
     const customerService = new CustomerService();
@@ -134,9 +138,14 @@ export default function Ventas(props) {
     }//Modifica el estado de seleccion del selectbox de cliente
     const onChangeSelectedBoxProducts = (e) => {
         setSelectedProducts(e.value);
+        //informaciones de los productos vendidos
         setQuantities(new Array(e.value.length).fill(1));
         setPrices(e.value.map(product => product.price));
         setDescriptions(new Array(e.value.length).fill(""));
+        //validaciones
+        setQuantitiesValid(new Array(e.value.length).fill(true));
+        setSalePricesValid(new Array(e.value.length).fill(true));
+        setDescriptionsValid(new Array(e.value.length).fill(true));
     } //Modifica el estado de seleccion del selectbox de los productos
     const handleQuantityChange = (index, value) => {
         const newQuantities = [...quantities];
@@ -169,7 +178,7 @@ export default function Ventas(props) {
     }; //Modifica el valor de un numero especificado del objeto
     const validateCustomerForm = () => {
 
-        const nameRegex = /^[a-zA-Z\s]*$/; // Expresión regular para validar nombres
+        const nameRegex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar nombres
         if (!nameRegex.test(customer.customerName) || customer.customerName === '') {
             setCustomerNameValid(false);
             return false;
@@ -190,77 +199,138 @@ export default function Ventas(props) {
     }//Validacion del formulario de crear cliente
     const saveCustomer = () => {
         setSubmittedCustomer(true);
-        if(validateCustomerForm()){
+        if (validateCustomerForm()) {
             customerService.save(customer).then((data) => {
                 //Muestra sms de confirmacion
-                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se creó el cliente correctamente", life: 2000});
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Atención!',
+                    detail: "Se creó el cliente correctamente",
+                    life: 2000
+                });
                 setCustomerDialog(false);
-                setCustomer(emptyCustomer);
                 //Actualiza la lista
                 customerService.getAll().then(data => setCustomers(data));
             }).catch((error) => {
-                toast.current.show({severity: 'danger', summary: 'Atención!', detail: "Error al crear el cliente", life: 2000});
+                toast.current.show({
+                    severity: 'danger',
+                    summary: 'Atención!',
+                    detail: "Error al crear el cliente",
+                    life: 2000
+                });
             });
         }
 
     } //Guarda la informacion de un nuevo cliente en caso de que no exista
+    const validSellForm = () => {
+
+        if(date === null || date === undefined ){
+            return false;
+        }
+
+        if(selectedCustomer === null || selectedCustomer === undefined ){
+            return false;
+        }
+
+        if(selectedProducts === null || selectedProducts === undefined){
+            return false;
+        }
+
+        const descriptionRegex = /^[.,a-zA-Z0-9À-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar las descripciones
+        const newDescriptions = [...descriptionsValid];
+        for (let i = 0; i < descriptions.length; i++) {
+            if (!descriptionRegex.test(descriptions[i]) || descriptions[i] === '') {
+                newDescriptions[i] = false;
+                setDescriptionsValid(newDescriptions);
+                return false;
+            } else {
+                newDescriptions[i] = true;
+            }
+        }
+        setDescriptionsValid(newDescriptions);
+
+        const newSalePrices = [...salePricesValid];
+        for (let i = 0; i < prices.length; i++) {
+            const minPrice = selectedProducts[i].price;
+            if (prices[i] < minPrice || prices[i] === undefined) {
+                newSalePrices[i] = false;
+                setSalePricesValid(newSalePrices);
+                return false;
+            } else {
+                newSalePrices[i] = true;
+            }
+        }
+        setSalePricesValid(newSalePrices);
+
+        const newQuantities = [...quantitiesValid];
+        for (let i = 0; i < quantities.length; i++) {
+            if (quantities[i] < 0 || quantities[i] === undefined) {
+                newQuantities[i] = false;
+                setQuantitiesValid(newQuantities);
+                return false;
+            } else {
+                newQuantities[i] = true;
+            }
+        }
+        setQuantitiesValid(newQuantities);
+
+
+        return true;
+    }
     const saveSale = () => {
+
         setSubmittedSale(true);
 
-        let sellRequest = {
-            descriptions: descriptions,
-            prices: prices,
-            customer: selectedCustomer,
-            tallerName: props.taller,
-            date: date,
-            products: selectedProducts,
-            quantities: quantities
-        };
+        if (validSellForm()) {
+            let sellRequest = {
+                descriptions: descriptions,
+                prices: prices,
+                customer: selectedCustomer,
+                tallerName: props.taller,
+                date: date,
+                products: selectedProducts,
+                quantities: quantities
+            };
 
-        sellService.save(sellRequest).then(data => {
-            setSaleDialog(false);
-            setSubmittedSale(false);
-            setDescriptions(null);
-            setPrices(null);
-            setDate(null);
-            setSelectedCustomer(null);
-            setSelectedProducts(null);
-            setQuantities(null);
-            toast.current.show({
-                severity: 'success',
-                summary: 'Atención!',
-                detail: "Se registró la venta correctamente",
-                life: 2000
+            sellService.save(sellRequest).then(data => {
+                setSaleDialog(false);
+                 setSubmittedSale(false);
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Atención!',
+                    detail: "Se registró la venta correctamente",
+                    life: 2000
+                });
+
+                if (props.taller === 'Taller MJ') {
+                    productService.getAllProductsMJ().then((data) => setProductsTable(data));
+                    productService.getAllProductsCantThanCero("Taller MJ").then((data) => setProductsForm(data));
+                } else if (props.taller === 'Taller 2M') {
+                    productService.getAllProducts2M().then((data) => setProductsTable(data));
+                    productService.getAllProductsCantThanCero("Taller 2M").then((data) => setProductsForm(data));
+                }
+                customerService.getAll().then((data) => setCustomers(data));
+
+                sellService.getPDFVenta(props.taller, data).then(d => {
+                    // Descargar el archivo PDF generado
+                    const url = window.URL.createObjectURL(new Blob([d]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', 'venta.pdf');
+                    document.body.appendChild(link);
+                    link.click();
+                });
+
+            }).catch((error) => {
+                toast.current.show({
+                    error: error,
+                    severity: 'danger',
+                    summary: 'Atención!',
+                    detail: "Error al registrar la venta",
+                    life: 2000
+                });
             });
-
-            if (props.taller === 'Taller MJ') {
-                productService.getAllProductsMJ().then((data) => setProductsTable(data));
-                productService.getAllProductsCantThanCero("Taller MJ").then((data) => setProductsForm(data));
-            } else if (props.taller === 'Taller 2M') {
-                productService.getAllProducts2M().then((data) => setProductsTable(data));
-                productService.getAllProductsCantThanCero("Taller 2M").then((data) => setProductsForm(data));
-            }
-            customerService.getAll().then((data) => setCustomers(data));
-
-            sellService.getPDFVenta(props.taller, data).then(d => {
-                // Descargar el archivo PDF generado
-                const url = window.URL.createObjectURL(new Blob([d]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'venta.pdf');
-                document.body.appendChild(link);
-                link.click();
-            });
-
-        }).catch((error) => {
-            toast.current.show({
-                severity: 'danger',
-                summary: 'Atención!',
-                detail: "Error al registrar la venta",
-                life: 2000
-            });
-        });
-
+        }
     }//Guarda toda la informaciond de una venta
     const confirmDeleteSell = (sell) => {
         setSell(sell);
@@ -295,13 +365,24 @@ export default function Ventas(props) {
                 }
                 customerService.getAll().then((data) => setCustomers(data));
                 //Muestra sms de confirmacion
-                toast.current.show({severity: 'success', summary: 'Atención!', detail: "Se eliminó la venta correctamente", life: 2000});
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Atención!',
+                    detail: "Se eliminó la venta correctamente",
+                    life: 2000
+                });
                 setDeleteSellDialog(false);
                 setSelectedSales(false);
                 setSell(emtpySell);
             }
         ).catch(error => {
-            toast.current.show({error: error, severity: 'danger', summary: '!Atención', detail: 'Error al eliminar la venta', life: 2000});
+            toast.current.show({
+                error: error,
+                severity: 'danger',
+                summary: '!Atención',
+                detail: 'Error al eliminar la venta',
+                life: 2000
+            });
         });
     };/*Elimnar un Objeto*/
     const deleteSelectedSales = () => {
@@ -383,7 +464,9 @@ export default function Ventas(props) {
                 handleQuantityChange={handleQuantityChange}
                 handlePriceChange={handlePriceChange}
                 handleDescriptionChange={handleDescriptionChange}
-
+                descriptionsValid={descriptionsValid}
+                pricesValid={salePricesValid}
+                quantitiesValid={quantitiesValid}
             />
 
             <DialogFormCustomer

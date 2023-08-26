@@ -33,6 +33,8 @@ export default function SaleInfo(props) {
                                 onChange={(e) => props.handleQuantityChange(index, e.value)}
                                 min={1} max={product.cant}
                                 className="w-full"/>
+                            {props.submitted && !props.quantities[index] && <small className="p-error">Campo obligatorio.</small>}
+                            {props.submitted && !props.quantitiesValid[index] && <small className="p-error"> Cantidad incorrecta.</small>}
                         </div>
                         <div className="field col">
                             <label htmlFor="price" className="font-bold">
@@ -48,6 +50,8 @@ export default function SaleInfo(props) {
                                 max={1000}
                                 onChange={(e) => props.handlePriceChange(index, e.value)}
                                 className="w-full"/>
+                            {props.submitted && !props.prices[index] && <small className="p-error">Campo obligatorio.</small>}
+                            {props.submitted && !props.pricesValid[index] && <small className="p-error"> Precio incorrecto.</small>}
                         </div>
                     </div>
                     <div className="field">
@@ -57,6 +61,8 @@ export default function SaleInfo(props) {
                         <InputTextarea value={props.descriptions[index]}
                                        onChange={(e) => props.handleDescriptionChange(index, e.target.value)}
                                        rows={5} cols={30} />
+                        {props.submitted && !props.descriptions[index] && <small className="p-error">Campo obligatorio.</small>}
+                        {props.submitted && !props.descriptionsValid[index] && <small className="p-error"> Descripción incorrecta.</small>}
                     </div>
                 </>
             ))}

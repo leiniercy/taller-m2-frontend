@@ -1,12 +1,6 @@
 import React from "react";
 import {Dialog} from "primereact/dialog";
-import {FileUpload} from "primereact/fileupload";
-import {InputText} from "primereact/inputtext";
-import {classNames} from "primereact/utils";
-import {InputNumber} from "primereact/inputnumber";
-import {Slider} from "primereact/slider";
 import {Button} from "primereact/button";
-import FieldsMovile from "@components/pages/Product/Movile/FieldsMovile";
 
 //Components
 import PickListSale from "@components/pages/Ventas/PickListSale";
@@ -43,7 +37,7 @@ export default function DialogFormSale(props) {
                         date={props.date}
                         onChangeCalendar={props.onChangeCalendar}
                     />
-
+                    {props.submitted && !props.date && <small className="p-error">Campo obligatorio.</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="customer" className="font-bold">
@@ -54,6 +48,8 @@ export default function DialogFormSale(props) {
                         selectedCustomer={props.selectedCustomer}
                         onChangeSelectedBoxCustomer={props.onChangeSelectedBoxCustomer}
                     />
+                    {props.submitted && !props.selectedCustomer &&
+                        <small className="p-error">Campo obligatorio.</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="products" className="font-bold">
@@ -68,6 +64,7 @@ export default function DialogFormSale(props) {
                 {((props.selectedProducts !== null) && (props.selectedProducts.length > 0)) &&
                     <div className="field">
                         <SaleInfo
+                            submitted={props.submitted}
                             selectedProducts={props.selectedProducts}
                             quantities={props.quantities}
                             prices={props.prices}
@@ -75,6 +72,9 @@ export default function DialogFormSale(props) {
                             handleQuantityChange={props.handleQuantityChange}
                             handlePriceChange={props.handlePriceChange}
                             handleDescriptionChange={props.handleDescriptionChange}
+                            descriptionsValid={props.descriptionsValid}
+                            pricesValid={props.pricesValid}
+                            quantitiesValid={props.quantitiesValid}
                         />
                     </div>}
             </form>
