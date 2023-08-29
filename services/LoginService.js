@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 export default class LoginService {
-    baseUrl = "http://localhost:8080/api/v1/auth/";
+    baseUrl = process.env.NEXT_PUBLIC_API_URL+'/auth/';
+
     login(signInRequest){
         return axios.post(this.baseUrl+"signin",signInRequest).then(res => res.data);
     }

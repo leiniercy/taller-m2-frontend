@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default class CustomerService {
-    baseUrl = "http://localhost:8080/api/v1/customer/";
+    baseUrl =  process.env.NEXT_PUBLIC_API_URL+ '/customer/';
 
     getAll() {
         return axios.get(this.baseUrl + "all").then(res => res.data);

@@ -14,8 +14,7 @@ export const authOptions = {
             },
             async authorize(credentials) {
 
-
-                const res = await fetch("http://localhost:8080/api/v1/auth/signin", {
+                const res = await fetch(process.env.NEXT_PUBLIC_API_URL+'/auth/signin', {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

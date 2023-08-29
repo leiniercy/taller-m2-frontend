@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default class SellService {
-    baseUrl = "http://localhost:8080/api/v1/sell/";
+    baseUrl = process.env.NEXT_PUBLIC_API_URL+'/sell/';
 
     getAll() {
         return axios.get(this.baseUrl + "all").then(res => res.data);
