@@ -10,7 +10,7 @@ const TotalUsuarios = (props) => {
        props.service.then((data) => setTotal(data.length))
     });
 
-    return(<div className="bg-gray-items card mb-0 p-3 border-round">
+    return(<div className="">
         <div className="flex justify-content-between mb-3">
             <div>
                 <span className="block text-500 font-medium mb-3">Usuarios</span>

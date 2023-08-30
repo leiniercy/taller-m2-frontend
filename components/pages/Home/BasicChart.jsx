@@ -30,7 +30,7 @@ export default function BasicChart(props) {
                         ],
                         borderWidth: 1
                     }
-                ]
+                ],
             };
             const options = {
                 scales: {
@@ -46,8 +46,8 @@ export default function BasicChart(props) {
     }, []);
 
     return (
-        <div className="card bg-gray-items mb-0 p-3 border-round">
-            <Chart className="w-full" type="bar" data={chartData} options={chartOptions}/>
+        <div className="card relative h-full w-full flex">
+            <Chart className="h-full w-full flex flex-grow-1" type="bar" data={chartData} options={chartOptions}/>
         </div>
     )
 }

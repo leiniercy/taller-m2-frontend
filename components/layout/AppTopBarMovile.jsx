@@ -23,14 +23,6 @@ export default function AppTopbarMovile(props) {
             <div className="bg-gray-items text-center border-round-sm font-bold">
                 <Button className="topbar-items" icon="pi pi pi-bars" onClick={props.handleSidebar}/>
             </div>
-            <Sidebar visible={props.visible} onHide={props.handleSidebar} >
-                <AppMenu/>
-            </Sidebar>
-        </>);
-    }
-
-    const centerToolbarTemplate = () => {
-        return(<>
             <div className="" style={{height: '80px', width: '80px'}}>
                 <Image
                     src="/assets/images/tallerM2-logo.png" alt="Logo"
@@ -39,13 +31,15 @@ export default function AppTopbarMovile(props) {
                     className="object-contain"
                 />
             </div>
+            <Sidebar visible={props.visible} onHide={props.handleSidebar} >
+                <AppMenu/>
+            </Sidebar>
         </>);
     }
 
     return (<Toolbar
         className="bg-gray-items md:hidden  w-full fixed z-1"
         left={leftToolbarTemplate}
-        center={centerToolbarTemplate}
         right={rightToolbarTemplate}
     />);
 }

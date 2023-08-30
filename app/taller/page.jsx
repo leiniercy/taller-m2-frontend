@@ -21,7 +21,6 @@ import TotalUsuarios from "@components/pages/Home/TotalUsuarios";
 import TotalClientes from "@components/pages/Home/TotalClientes";
 
 
-
 export default function Home() {
 
     const productService = new ProductService();
@@ -33,47 +32,50 @@ export default function Home() {
     const customerService = new CustomerService();
 
     return (<RenderLayout>
-        <div className="col-12 lg:col-6 xl:col-3">
-            <TotalVentas service={sellService.getAllByMonth()}/>
+        <div className="flex flex-row flex-wrap w-full gap-2">
+            <div className="bg-gray-items lg:flex-1 col-12 lg:col-6 xl:col-3 p-3 border-round">
+                <TotalVentas service={sellService.getAllByMonth()}/>
+            </div>
+            <div className="bg-gray-items lg:flex-1 col-12 lg:col-6 xl:col-3 p-3 border-round">
+                <TotalProductos
+                    productService={productService.getCant()}
+                    chargerService={chargerService.getCant()}
+                    movileService={movileService.getCant()}
+                    relojService={relojService.getCant()}
+                />
+            </div>
+            <div className="bg-gray-items p-3 border-round lg:flex-1 col-12 lg:col-6 xl:col-3 ">
+                <TotalUsuarios service={userService.getAll()}/>
+            </div>
+            <div className="bg-gray-items p-3 border-round lg:flex-1 col-12 lg:col-6 xl:col-3">
+                <TotalClientes service={customerService.getAll()}/>
+            </div>
         </div>
-        <div className="col-12 lg:col-6 xl:col-3">
-            <TotalProductos
-                productService={productService.getCant()}
-                chargerService={chargerService.getCant()}
-                movileService={movileService.getCant()}
-                relojService={relojService.getCant()}
-            />
-        </div>
-        <div className="col-12 lg:col-6 xl:col-3">
-            <TotalUsuarios service={userService.getAll()}/>
-        </div>
-        <div className="col-12 lg:col-6 xl:col-3">
-            <TotalClientes service={customerService.getAll()}/>
-        </div>
-
-        <div className="col-12 xl:col-6">
+        <div className="flex flex-row flex-wrap w-full gap-2">
+            <div className="bg-gray-items p-3 border-round flex-grow-1 w-full h-30rem sm:w-full lg:w-5 flex-shrink-0">
                 <DoughnutChart
                     productService={productService.getCant()}
                     chargerService={chargerService.getCant()}
                     movileService={movileService.getCant()}
                     relojService={relojService.getCant()}
                 />
-        </div>
+            </div>
 
-        <div className="col-12 xl:col-6">
-            <BasicChart service={sellService.getAllByWeek()}/>
-        </div>
+            <div className="bg-gray-items p-3 border-round flex-grow-1 h-30rem w-full sm:w-full lg:w-5 flex-shrink-0">
+                <BasicChart service={sellService.getAllByWeek()}/>
+            </div>
 
-        <div className="col-12 xl:col-6">
-            <HorizontalBarChart
-                service={sellService.getAllByMonth()}
-            />
-        </div>
+            <div className="bg-gray-items p-3 border-round flex-grow-1 h-30rem w-full sm:w-full lg:w-5 flex-shrink-0">
+                <HorizontalBarChart
+                    service={sellService.getAllByMonth()}
+                />
+            </div>
 
-        <div className="col-12 xl:col-6">
-            <StackedBarChart
-                service={sellService.getAllByMonthAndProduct()}
-            />
+            <div className="bg-gray-items p-3 border-round flex-grow-1 h-30rem w-full sm:w-full lg:w-5 flex-shrink-0">
+                <StackedBarChart
+                    service={sellService.getAllByMonthAndProduct()}
+                />
+            </div>
         </div>
     </RenderLayout>);
 

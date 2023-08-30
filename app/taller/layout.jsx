@@ -1,5 +1,6 @@
 "use client"
 
+import '@styles/global.css';
 import React, {useEffect, useState} from "react";
 import {useSession} from "next-auth/react";
 
@@ -28,7 +29,7 @@ const HomeLayout = ({children}) => {
         <>
             <AppTopbarMovile visible={visible} handleSidebar={handleSidebar} />
             <AppTopbarDesktop handleClick={handleClick}/>
-            <div className="relative top-8rem sm:top-8rem md:top-100px grid col-12" style={{height: '100%'}}>
+            <div className="relative top-120px sm:top-120px md:top-100px  flex flex-row flex-wrap  flex-grow-0 flex-shrink-0 w-full" style={{height: '100%', flexBasis: 'auto'}}>
                 {appSidebarVisible && <AppSidebar/>}
                    {children}
             </div>

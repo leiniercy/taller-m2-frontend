@@ -49,11 +49,11 @@ export default function DoughnutChart(props) {
     }, []);
 
     return (
-        <div className="card flex justify-content-center bg-gray-items mb-0 p-3 border-round">
+        <div className="card relative h-full w-full flex justify-content-center">
             <Chart type="doughnut"
                    data={chartData}
                    options={chartOptions}
-                   className="w-full md:w-30rem"/>
+                   className="relative h-full w-full flex justify-content-center flex-grow-1"/>
         </div>
     )
 }

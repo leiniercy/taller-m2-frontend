@@ -72,7 +72,7 @@ export default function HorizontalBarChart(props) {
     }, []);
 
     return (
-        <div className="card bg-gray-items mb-0 p-3 border-round">
+        <div className="card">
             <Chart type="bar" data={chartData} options={chartOptions} />
         </div>
     )
