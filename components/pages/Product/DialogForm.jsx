@@ -55,6 +55,7 @@ export default function DialogForm(props) {
                             label={'Precio'}
                             error={'Precio incorrecto'}
                             name={'price'}
+                            prefix={"$ "}
                             object={props.object.price}
                             onInputNumberChange={props.onInputNumberChange}
                             valid={props.priceValid}

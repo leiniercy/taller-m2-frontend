@@ -13,6 +13,7 @@ export default function FieldsMovile(props) {
                     label={'Almacenamiento'}
                     error={'Almacenamiento incorrecto'}
                     name={'sizeStorage'}
+                    suffix={' GB'}
                     object={props.object.sizeStorage}
                     onInputNumberChange={props.onInputNumberChange}
                     valid={props.sizeStorageValid}
@@ -26,6 +27,7 @@ export default function FieldsMovile(props) {
                     label={'Ram'}
                     error={'Ram incorrecta'}
                     name={'ram'}
+                    suffix={' GB'}
                     object={props.object.ram}
                     onInputNumberChange={props.onInputNumberChange}
                     valid={props.ramValid}
@@ -49,6 +51,7 @@ export default function FieldsMovile(props) {
                     label={'Cámara Trasera'}
                     error={'Cámara trasera incorrecta'}
                     name={'camaraTrasera'}
+                    suffix={' px'}
                     object={props.object.camaraTrasera}
                     onInputNumberChange={props.onInputNumberChange}
                     valid={props.camaraTraseraValid}
@@ -62,6 +65,7 @@ export default function FieldsMovile(props) {
                     label={'Cámara Frontal'}
                     error={'Cámara frontal incorrecta'}
                     name={'camaraFrontal'}
+                    suffix={' px'}
                     object={props.object.camaraFrontal}
                     onInputNumberChange={props.onInputNumberChange}
                     valid={props.camaraFrontalValid}
@@ -75,6 +79,7 @@ export default function FieldsMovile(props) {
                     label={'Batería'}
                     error={'Batería incorrecta'}
                     name={'bateria'}
+                    suffix={ props.object.bateria === 1 ? 'día' : ' días'}
                     object={props.object.bateria}
                     onInputNumberChange={props.onInputNumberChange}
                     valid={props.bateriaValid}

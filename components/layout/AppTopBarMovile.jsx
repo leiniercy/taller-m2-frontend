@@ -38,7 +38,7 @@ export default function AppTopbarMovile(props) {
     }
 
     return (<Toolbar
-        className="bg-gray-items md:hidden  w-full fixed z-1"
+        className="bg-gray-items lg:hidden  w-full fixed z-1"
         left={leftToolbarTemplate}
         right={rightToolbarTemplate}
     />);

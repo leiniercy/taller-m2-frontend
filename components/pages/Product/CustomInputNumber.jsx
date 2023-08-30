@@ -11,7 +11,8 @@ const CustomInputNumber = (props) => {
             {props.label}
         </label>
         <InputNumber id={props.name}
-                     suffix=" px"
+                     suffix={props.suffix}
+                     prefix={props.prefix}
                      min={props.min} max={props.max}
                      value={props.object}
                      onValueChange={(e) => props.onInputNumberChange(e, props.name)}

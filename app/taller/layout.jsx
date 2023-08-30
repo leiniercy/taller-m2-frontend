@@ -29,7 +29,7 @@ const HomeLayout = ({children}) => {
         <>
             <AppTopbarMovile visible={visible} handleSidebar={handleSidebar} />
             <AppTopbarDesktop handleClick={handleClick}/>
-            <div className="relative top-120px sm:top-120px md:top-100px  flex flex-row flex-wrap  flex-grow-0 flex-shrink-0 w-full" style={{height: '100%', flexBasis: 'auto'}}>
+            <div className="relative top-120px sm:top-120px md:top-120px lg:top-100px  flex flex-row flex-wrap  flex-grow-0 flex-shrink-0 w-full" style={{height: '100%', flexBasis: 'auto'}}>
                 {appSidebarVisible && <AppSidebar/>}
                    {children}
             </div>

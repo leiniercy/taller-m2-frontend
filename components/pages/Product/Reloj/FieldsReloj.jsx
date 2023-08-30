@@ -33,6 +33,7 @@ export default function FieldsReloj(props) {
                 label={'Duración de la batería'}
                 error={'Duración de la batería incorrecta'}
                 name={'bateryLife'}
+                suffix={ props.object.bateryLife === 1 ? 'día' : ' días'}
                 object={props.object.bateryLife}
                 onInputNumberChange={props.onInputNumberChange}
                 valid={props.bateryLifeValid}
