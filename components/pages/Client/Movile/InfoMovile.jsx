@@ -50,26 +50,24 @@ export default function InfoMovile(props) {
     ];
 
     const itemTemplate = (item) => {
-        return <img className="h-20rem sm:h-20rem w-full  border-round "
+        return <img className="h-full sm:h-30rem lg:h-25rem  w-full  border-round "
                     src={item.url}
                     alt={item.name}
-            // style={{ height: '640px', width: '640px' }}
         />
-    }
-
-    const thumbnailTemplate = (item) => {
-        return <img className="" src={item.url} alt={item.name} style={{height: '100px', display: 'block'}}/>
     }
 
 
     return (
         <RenderLayout>
-            <div className="col-12">
-                <div className="bg-gray-items card grid h-full sm:h-full md:h-30rem">
-                    <div className="col-12 sm:col-12 md:col-6 flex justify-content-center align-items-center">
-                        <div className="card w-10 sm:w-10 md:w-12 lg:w-10 xl:w-6">
+            <div className="bg-gray-items border-round card flex flex-row flex-wrap w-full h-full sm:h-full">
+                <div className="flex flex-row flex-wrap w-full gap-2 sm:gap-2 lg:gap-0 p-3">
+                    <div className="w-full h-6rem flex align-items-center justify-content-center ">
+                        <h1 className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl font-rm_19-20">{movile.name}</h1>
+                    </div>
+                    <div className="w-full sm:w-full md:w-full lg:flex-1 lg:w-5 lg:h-30rem">
+                        <div className="card w-full h-full sm:w-full flex">
                             <Galleria
-                                className="bg-gray-items h-20rem sm:h-20rem"
+                                className="bg-gray-items w-full h-full"
                                 value={movile.files}
                                 responsiveOptions={responsiveOptions}
                                 numVisible={3}
@@ -77,41 +75,41 @@ export default function InfoMovile(props) {
                                 showItemNavigators
                                 showItemNavigatorsOnHover
                                 item={itemTemplate}
-                                // showIndicatorsOnItem={true}
                                 showThumbnails={false}
                                 showIndicators
-                                // thumbnailsPosition={'left'}
-                                //       thumbnail={thumbnailTemplate}
                             />
                         </div>
                     </div>
-                    <div className="col-12 sm:col-12 md:col-6 md:flex md:justify-content-center md:align-items-center">
-                        <div className="card grid">
+                    <div className="w-full sm:w-full md:w-full lg:flex-1 lg:w-5 lg:h-30rem">
+                        <div className="card m-2 grid">
                             <div className="col-12">
-                                <h1 className="text-6x1 sm:text-6x1 font-rm_19-20">{movile.name}</h1>
+                                <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-rm_19-20">Propiedades</h1>
                             </div>
                             <div className="col-7 ">
-                                <span
-                                    className="block text-base sm:text-base lg:text-lg xl:text-2xl font-bold mb-2">Almacenamiento:</span>
-                                <span className="block text-base sm:text-base lg:text-lg xl:text-2xl font-bold mb-2">Memoria Ram:</span>
-                                <span className="block text-base sm:text-base lg:text-lg xl:text-2xl font-bold mb-2">Cámara Forntal:</span>
-                                <span className="block text-base sm:text-base lg:text-lg xl:text-2xl font-bold mb-2">Cámara Trasera:</span>
-                                <span className="block text-base sm:text-base lg:text-lg xl:text-2xl font-bold mb-2">Redes disponibles:</span>
-                                <span className="block text-base sm:text-base lg:text-lg xl:text-2xl font-bold">Duración de la batería:</span>
+                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Cantidad disponible:</span>
+                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Precio:</span>
+                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Almacenamiento:</span>
+                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Memoria Ram:</span>
+                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Cámara Forntal:</span>
+                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Cámara Trasera:</span>
+                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Redes disponibles:</span>
+                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Duración de la batería:</span>
                             </div>
                             <div className="col-5">
+                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {movile.cant}</span>
+                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> ${movile.price}</span>
                                 <span
-                                    className="block text-base sm:text-base lg:text-lg xl:text-2xl mb-2"> {movile.sizeStorage}GB</span>
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {movile.sizeStorage} GB</span>
                                 <span
-                                    className="block text-base sm:text-base lg:text-lg xl:text-2xl mb-2"> {movile.ram}GB</span>
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {movile.ram} GB</span>
                                 <span
-                                    className="block text-base sm:text-base lg:text-lg xl:text-2xl mb-2"> {movile.camaraFrontal}px</span>
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {movile.camaraFrontal} px</span>
                                 <span
-                                    className="block text-base sm:text-base lg:text-lg xl:text-2xl mb-2"> {movile.camaraTrasera}px</span>
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {movile.camaraTrasera} px</span>
                                 <span
-                                    className="block text-base sm:text-base lg:text-lg xl:text-2xl mb-2"> {movile.banda2G && 'GSM'}/{movile.banda3G && '3G'}/{movile.banda4G && 'LTE'}/{movile.banda5G && '5G'}</span>
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {movile.banda2G && '2G'}{movile.banda3G && '/3G'}{movile.banda4G && '/4G'}{movile.banda5G && '/5G'}</span>
                                 <span
-                                    className="block text-base sm:text-base lg:text-lg xl:text-2xl"> {movile.bateria}días</span>
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {movile.bateria} días</span>
                             </div>
                         </div>
                     </div>

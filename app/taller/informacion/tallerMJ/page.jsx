@@ -25,11 +25,11 @@ export default class TallerMJProducts extends Component {
         return (
             <Cliente
                 moviles={this.movileService.getAllMJ()}
-                movilPath={'/taller/cliente/tallerMJ/movil/?id='}
+                movilPath={'/taller/informacion/tallerMJ/movil/?id='}
                 chargers={this.chargerService.getAllMJ()}
-                chargerPath={'/taller/cliente/tallerMJ/charger/?id='}
+                chargerPath={'/taller/informacion/tallerMJ/charger/?id='}
                 relojes={this.relojService.getAllMJ()}
-                relojPath={'/taller/cliente/tallerMJ/reloj/?id='}
+                relojPath={'/taller/informacion/tallerMJ/reloj/?id='}
                 products={this.productService.getAllAccesoriosMJ()}
             />
         );
