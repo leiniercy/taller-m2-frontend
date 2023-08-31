@@ -1,13 +1,32 @@
+"use client"
 
-
+import {useEffect, useState} from "react";
 import React from "react";
 import {useRouter} from "next/navigation";
 import {Button} from "primereact/button";
+import {useSession} from "next-auth/react";
 
 
 const AccessDenied = (props) => {
 
     const router = useRouter();
+    const [url, setUrl] = useState('');
+    const {data: session, status} = useSession();
+
+    useEffect(() => {
+        if (status === "authenticated" && session?.user !== undefined) {
+            if (session?.user.rol === 'ROLE_ADMIN') {
+                setUrl('/');
+            } else if (session?.user.rol === 'ROLE_MODERATOR' && session?.user.taller === 'Taller 2M') {
+                setUrl('/taller/informacion/taller2M');
+            } else if (session?.user.rol === 'ROLE_MODERATOR' && session?.user.taller === 'Taller 2M') {
+                setUrl('/taller/informacion/tallerMJ');
+            }
+        }else{
+            setUrl('/');
+        }
+
+    }, []);
 
     return (
         <div className="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
@@ -22,7 +41,7 @@ const AccessDenied = (props) => {
                         <div className="text-600 mb-5 text-base lg:text-xl text-center sm:text-center">{props.error.message || 'Algo va mal'}</div>
                         <img src="/assets/images/error-403.png" alt="Error" className="mb-5 h-16rem w-full" width="80%" />
                         <Button icon="pi pi-arrow-left" label="Regresar a inicio" text
-                                onClick={() => router.push('/')}/>
+                                onClick={() => router.push(url)}/>
                     </div>
                 </div>
             </div>

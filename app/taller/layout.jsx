@@ -1,17 +1,15 @@
 "use client"
 
 import '@styles/global.css';
-import React, {useEffect, useState} from "react";
-import {useSession} from "next-auth/react";
-
+import React, { useState} from "react";
+//Components
 import AppTopbarMovile from "@components/layout/AppTopBarMovile";
 import AppSidebar from "@components/layout/AppSidebar";
 import AppTopbarDesktop from "@components/layout/AppTopbarDesktop";
 
 
-const HomeLayout = ({children}) => {
 
-    const { data: session } = useSession();
+const HomeLayout = ({children}) => {
 
     const [appSidebarVisible, setAppSidebarVisible] = useState(true);
     const [visible, setVisible] = useState(false);

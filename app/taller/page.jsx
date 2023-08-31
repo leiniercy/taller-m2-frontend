@@ -19,9 +19,18 @@ import TotalVentas from "@components/pages/Home/TotalVentas";
 import TotalProductos from "@components/pages/Home/TotalProductos";
 import TotalUsuarios from "@components/pages/Home/TotalUsuarios";
 import TotalClientes from "@components/pages/Home/TotalClientes";
+import {useSession} from "next-auth/react";
 
 
 export default function Home() {
+
+    const {data: session, status} = useSession({
+        required: true
+    });
+
+    if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_ADMIN") {
+        throw new Error('Access denied')
+    }
 
     const productService = new ProductService();
     const chargerService = new ChargerService();

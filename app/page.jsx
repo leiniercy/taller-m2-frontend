@@ -4,7 +4,7 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {useRouter} from "next/navigation";
 import {setCookie} from 'cookies-next';
-import {signIn, signOut, useSession} from "next-auth/react";
+import {signIn, getSession} from "next-auth/react";
 
 import {Button} from "primereact/button";
 import {InputText} from "primereact/inputtext"
@@ -16,7 +16,6 @@ import AppLogin from "@components/layout/AppLogin";
 export default function Login() {
 
     const router = useRouter();
-    const {data: session, status} = useSession();
 
     const signInResponseEmpty = {
         username: '',
@@ -34,15 +33,23 @@ export default function Login() {
             username: signInResponse.username,
             password: signInResponse.password,
             redirect: false
-            // redirect: true,
-            // callbackUrl: "/taller",
-        });
-
+        })
         if (res.ok) {
+            let session = await getSession();
             setCookie('logged', 'true');
             setSubmitted(false);
             setloginFailed(false);
-            router.push('/taller');
+            if (session.user !== undefined) {
+                setCookie('rol', session.user.rol);
+                setCookie('taller', session.user.taller);
+                if(session.user.rol === 'ROLE_ADMIN'){
+                    router.push('/taller');
+                }else if (session.user.rol === 'ROLE_MODERATOR' && session.user.taller === 'Taller 2M') {
+                    router.push('/taller/informacion/taller2M');
+                } else if (session.user.rol === 'ROLE_MODERATOR' && session.user.taller === 'Taller 2M') {
+                    router.push('/taller/informacion/tallerMJ');
+                }
+            }
         } else {
             setloginFailed(true);
             router.push('/?error=authentication')

@@ -32,6 +32,8 @@ const LoginButton = () => {
             icon: 'pi pi-fw pi-power-off',
             command: () => {
                 deleteCookie('logged');
+                deleteCookie('rol');
+                deleteCookie('taller');
                 signOut({
                     redirect: true,
                     callbackUrl: "/"
