@@ -47,7 +47,7 @@ export default function DataViewGridItem(props) {
         <div className="card m-3 border-1 surface-border p-3">
             <div className="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
                 <div className="flex align-items-center">
-                    <span className="text-base sm:text-base  font-semibold">Precio: ${props.data.price}</span>
+                    <span className="text-base sm:text-base  font-semibold">Cantidad: {props.data.cant}</span>
                 </div>
                 <Tag severity={props.getSeverity(props.data)} value={props.getValue(props.data)}></Tag>
             </div>
@@ -68,6 +68,7 @@ export default function DataViewGridItem(props) {
                     //       thumbnail={thumbnailTemplate}
                 />
                 <div className="text-2xl font-bold">{props.data.name}</div>
+                <div className="text-base sm:text-base  font-semibold">Precio: ${props.data.price}</div>
             </div>
             { !props.isMovile && <div className="flex align-items-center">
                 <Button className="w-full" label="Ver más" icon="pi pi-amazon" onClick={(e) => handleClick(e, props.data)}/>
