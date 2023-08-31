@@ -18,9 +18,12 @@ import VentasFieldSet from "@components/pages/Ventas/VentasFieldSet";
 import CustomerService from "@services/CustomerService";
 import ProductService from "@services/ProductService";
 import SellService from "@services/SellService";
+import {useSession} from "next-auth/react";
 
 
 export default function Ventas(props) {
+
+    const {data: session} = useSession();
 
     let emptyCustomer = {
         id: null,
@@ -224,15 +227,15 @@ export default function Ventas(props) {
     } //Guarda la informacion de un nuevo cliente en caso de que no exista
     const validSellForm = () => {
 
-        if(date === null || date === undefined ){
+        if (date === null || date === undefined) {
             return false;
         }
 
-        if(selectedCustomer === null || selectedCustomer === undefined ){
+        if (selectedCustomer === null || selectedCustomer === undefined) {
             return false;
         }
 
-        if(selectedProducts === null || selectedProducts === undefined){
+        if (selectedProducts === null || selectedProducts === undefined) {
             return false;
         }
 
@@ -294,7 +297,7 @@ export default function Ventas(props) {
 
             sellService.save(sellRequest).then(data => {
                 setSaleDialog(false);
-                 setSubmittedSale(false);
+                setSubmittedSale(false);
                 toast.current.show({
                     severity: 'success',
                     summary: 'Atención!',
@@ -311,7 +314,7 @@ export default function Ventas(props) {
                 }
                 customerService.getAll().then((data) => setCustomers(data));
 
-                sellService.getPDFVenta(props.taller, data).then(d => {
+                sellService.getPDFVenta(props.taller, session?.user.name, data).then(d => {
                     // Descargar el archivo PDF generado
                     const url = window.URL.createObjectURL(new Blob([d]));
                     const link = document.createElement('a');

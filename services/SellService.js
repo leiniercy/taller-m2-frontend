@@ -29,8 +29,8 @@ export default class SellService {
         return axios.post(this.baseUrl + "pdf/diario/" + taller, ventas, {responseType: 'arraybuffer'}).then(res => res.data);
     }
 
-    getPDFVenta(taller, ventas) {
-        return axios.post(this.baseUrl + "pdf/venta/"+taller, ventas, {responseType: 'arraybuffer'}).then(res => res.data);
+    getPDFVenta(taller, name, ventas) {
+        return axios.post(this.baseUrl + "pdf/venta/"+taller+"/"+name, ventas, {responseType: 'arraybuffer'}).then(res => res.data);
     }
 
     save(sell) {
