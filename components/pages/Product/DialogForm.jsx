@@ -60,7 +60,7 @@ export default function DialogForm(props) {
                             onInputNumberChange={props.onInputNumberChange}
                             valid={props.priceValid}
                             min={0}
-                            max={1000}
+                            max={1000000}
                             submitted={props.submitted}
                         />
                     </div>

@@ -42,12 +42,12 @@ export default function SaleInfo(props) {
                             </label>
                             <InputNumber id={'price' - {index}}
                                          value={props.prices[index]}
-                                         max={1000}
+                                         max={1000000}
                                          onValueChange={(e) => props.handlePriceChange(index, e.value)}
                                          mode="currency" currency="USD" locale="en-US"/>
                             <Slider
                                 value={props.prices[index]}
-                                max={1000}
+                                max={1000000}
                                 onChange={(e) => props.handlePriceChange(index, e.value)}
                                 className="w-full"/>
                             {props.submitted && !props.prices[index] && <small className="p-error">Campo obligatorio.</small>}
