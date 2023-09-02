@@ -32,16 +32,11 @@ export default function DataViewGridItem(props) {
 
     const itemTemplate = (item) => {
         return <img className="h-20rem sm:h-20rem w-full  border-round "
-                    src={item.url}
+                    src={process.env.NEXT_PUBLIC_API_URL+'/product/image/'+item.name}
                     alt={item.name}
             // style={{ height: '640px', width: '640px' }}
         />
     }
-
-    const thumbnailTemplate = (item) => {
-        return <img className="" src={item.url} alt={item.name} style={{height: '100px', display: 'block'}}/>
-    }
-
 
     return(<div className="col-12 sm:col-12 md:col-6 lg:col-4">
         <div className="card m-3 border-1 surface-border p-3">

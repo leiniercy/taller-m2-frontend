@@ -8,7 +8,7 @@ export default function DataViewListItem(props) {
 
     return(<div className="col-12">
         <div className="flex flex-column md:flex-row align-items-center p-3 w-full">
-            <img src={props.data.files[0].url} alt={props.data.name}
+            <img src={process.env.NEXT_PUBLIC_API_URL+'/product/image/'+props.data.files[0].name} alt={props.data.name}
                  className="my-4 md:my-0 w-9 md:w-10rem shadow-2 mr-5"/>
             <div className="flex-1 flex flex-column align-items-center text-center md:text-left">
                 <div className="font-bold text-2xl">{props.data.name}</div>

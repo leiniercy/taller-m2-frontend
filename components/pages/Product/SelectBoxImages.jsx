@@ -15,7 +15,7 @@ const SelectBoxImages = (props) => {
             return <img className="h-20rem sm:h-20rem w-full  border-round"
                         alt={item.name} role="presentation" src={item.objectURL}/>;
         }
-        return <img className="h-20rem sm:h-20rem w-full  border-round" src={item.url} alt={item.name}/>
+        return <img className="h-20rem sm:h-20rem w-full  border-round" src={process.env.NEXT_PUBLIC_API_URL+'/product/image/'+item.name} alt={item.name}/>
     }
 
     const responsiveOptions = [

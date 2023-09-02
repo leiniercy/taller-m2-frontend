@@ -31,7 +31,7 @@ export default function ColletionsImages(props) {
     }
 
     const thumbnailTemplate = (item) => {
-        return <img className="" src={item.url} alt={item.name} style={{height: '100px', display: 'block'}}/>
+        return <img className="" src={process.env.NEXT_PUBLIC_API_URL+'/product/image/'+item.name} alt={item.name} style={{height: '100px', display: 'block'}}/>
     }
 
     return (

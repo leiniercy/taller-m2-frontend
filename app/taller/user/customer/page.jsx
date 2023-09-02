@@ -72,10 +72,12 @@ export default function Customers() {
         setSubmitted(false);
         setCustomer(emptyCustomer);
         setCustomerDialog(true);
+        setEditActive(false);
     }/*Abrir nueva ventana para crear un objeto*/
     const hideDialog = () => {
         setCustomerDialog(false);
         setSubmitted(false);
+        setEditActive(false);
     }; /*Ocultar dialog de anadir*/
     const confirmDeleteSelected = () => {
         if (selectedCustomers.length > 1) {
@@ -136,7 +138,6 @@ export default function Customers() {
                         life: 2000
                     });
                     setCustomerDialog(false);
-                    setCustomer(emptyCustomer);
                     //Actualiza la lista
                     customerService.getAll().then(data => setCustomers(data));
                     setEditActive(false);
@@ -160,7 +161,6 @@ export default function Customers() {
                         life: 2000
                     });
                     setCustomerDialog(false);
-                    setCustomer(emptyCustomer);
                     //Actualiza la lista
                     customerService.getAll().then(data => setCustomers(data));
                 }).catch((error) => {

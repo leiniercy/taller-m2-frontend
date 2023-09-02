@@ -45,7 +45,7 @@ export default function TableVentas(props) {
     const header = renderHeader();/*Header de la tabla*/
 
     const imageBodyTemplate = (rowData) => {
-        return <img src={rowData.files[0].url} alt={rowData.name}
+        return <img src={process.env.NEXT_PUBLIC_API_URL+'/product/image/'+rowData.files[0].name} alt={rowData.name}
                     className="shadow-2 border-round" style={{width: '64px'}}/>;
         //return <img src={"data:image/jpeg;base64," + urlBase} alt={rowData.name} className="shadow-2 border-round" style={{ width: '64px' }} />;
     }; /*Formato con que se muestra la imagen del accesorio en la tabla*/

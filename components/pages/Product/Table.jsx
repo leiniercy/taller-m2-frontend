@@ -50,7 +50,7 @@ export default function Table(props) {
         if(rowData.files[0] === undefined){
             return <span> Sin imagenes </span>;
         }
-        return <img src={rowData.files[0].url} alt={rowData.name}
+        return <img src={ process.env.NEXT_PUBLIC_API_URL+'/product/image/'+rowData.files[0].name} alt={rowData.name}
                     className="shadow-2 border-round" style={{width: '64px'}}/>;
     }; /*Formato con que se muestra la imagen del accesorio en la tabla*/
     const priceBodyTemplate = (rowData) => {
