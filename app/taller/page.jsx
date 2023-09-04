@@ -1,5 +1,5 @@
 "use client"
-import {Suspense} from "react";
+import {Suspense, useMemo, useState, useEffect} from "react";
 
 import ChargerService from "@services/ChargerService";
 import MovileService from "@services/MovileServie";
@@ -40,49 +40,132 @@ export default function Home() {
     const userService = new UserService();
     const customerService = new CustomerService();
 
+    const [cantAccesorios, setCantAccesorios] = useState(0);
+    const [cantMoviles, setCantMoviles] = useState(0);
+    const [cantRelojes, setCantRelojes] = useState(0);
+    const [cantCargadores, setCantCargadores] = useState(0);
+
+
+    const [totalVentas, setTotalVentas] = useState(0);
+    const [totalProductos, setTotalProductos] = useState(0);
+    const [totalUsuarios, setTotalUsuarios] = useState(0);
+    const [totalClientes, setTotalClientes] = useState(0);
+
+    const [salesWeek, setSalesWeek] = useState([]);
+    const [salesMonth, setSalesMonth] = useState([]);
+    const [salesProducts, setSalesProducts] = useState([]);
+
+    const calcularTotalVentas = (token) => {
+        sellService.getAllByMonth(token).then(data => {
+            let _total = 0;
+            for (let i = 0; i < 12; i++) {
+                _total += data[i];
+            }
+            setTotalVentas(_total);
+        });
+    }//Calculando el total obtenido por ventas
+    const calcularTotalProductos = (token) => {
+        productService.getCant(token).then(accesorios => {
+            setCantAccesorios(accesorios);
+            chargerService.getCant(token).then(chargers => {
+                setCantCargadores(chargers);
+                movileService.getCant(token).then(moviles => {
+                    setCantMoviles(moviles);
+                    relojService.getCant(token).then(relojes => {
+                        setCantRelojes(relojes);
+                        setTotalProductos(accesorios + chargers + moviles + relojes);
+                    });
+                });
+            });
+        });
+    }//Calculando el total productos actual
+    const calcularTotalUsuarios = (token) => {
+        userService.getAll(token).then((data) => setTotalUsuarios(data.length));
+    }//Calculando el total de usuarios
+    const calcularTotalClientes = (token) => {
+        customerService.getAll(token).then((data) => {
+            setTotalClientes(data.length)
+        });
+    }//Calculando el total de clientes
+    const getAllByWeek = (token) => {
+        sellService.getAllByWeek(token).then((sales) => setSalesWeek(sales));
+    }// obtener listado de ganancias diarias en la semana actual
+    const getAllByMonth = (token) => {
+        sellService.getAllByMonth(token).then((sales) => setSalesMonth(sales));
+    }// obtener listado de ganancias diarias por mes
+
+    const getAllProductsByMonth = (token) => {
+        sellService.getAllByMonthAndProduct(token).then((products) => setSalesProducts(products));
+    }// obtener listado productos vendidos por mes
+
+
+    //ComponentdidMount
+    useEffect(() => {
+        if (status === 'authenticated' && session?.user !== undefined) {
+            calcularTotalVentas(session?.user.token);
+            calcularTotalProductos(session?.user.token);
+            calcularTotalUsuarios(session?.user.token);
+            calcularTotalClientes(session?.user.token);
+            getAllByWeek(session?.user.token);
+            getAllByMonth(session?.user.token);
+        }
+    }, [session?.user]);
+
+
+    //Informacion en memoria
+    const totalVentasMemo = useMemo(() => totalVentas, [totalVentas]);
+    const totalProductsMemo = useMemo(() => totalProductos, [totalProductos]);
+    const totalUsuariosMemo = useMemo(() => totalUsuarios, [totalUsuarios]);
+    const totalClientesMemo = useMemo(() => totalClientes, [totalClientes]);
+
+    const cantAccesoriosMemo = useMemo(() => cantAccesorios, [cantAccesorios]);
+    const cantMovilesMemo = useMemo(() => cantMoviles, [cantMoviles]);
+    const cantRelojesMemo = useMemo(() => cantRelojes, [cantRelojes]);
+    const cantCargadoresMemo = useMemo(() => cantCargadores, [cantCargadores]);
+
+    const salesWeekMemo = useMemo(() => salesWeek, [salesWeek]);
+    const salesMonthMemo = useMemo(() => salesMonth, [salesMonth]);
+    const productMonthMemo = useMemo(() => salesProducts, [salesProducts]);
+
+
     return (<RenderLayout>
         <div className="flex flex-row flex-wrap w-full gap-2">
             <div className="bg-gray-items lg:flex-1 col-12 lg:col-6 xl:col-3 p-3 border-round">
-                <TotalVentas service={sellService.getAllByMonth()}/>
+                <TotalVentas total={totalVentasMemo}/>
             </div>
             <div className="bg-gray-items lg:flex-1 col-12 lg:col-6 xl:col-3 p-3 border-round">
                 <TotalProductos
-                    productService={productService.getCant()}
-                    chargerService={chargerService.getCant()}
-                    movileService={movileService.getCant()}
-                    relojService={relojService.getCant()}
+                    total={totalProductsMemo}
                 />
             </div>
             <div className="bg-gray-items p-3 border-round lg:flex-1 col-12 lg:col-6 xl:col-3 ">
-                <TotalUsuarios service={userService.getAll()}/>
+                <TotalUsuarios total={totalUsuariosMemo}/>
             </div>
             <div className="bg-gray-items p-3 border-round lg:flex-1 col-12 lg:col-6 xl:col-3">
-                <TotalClientes service={customerService.getAll()}/>
+                <TotalClientes total={totalClientesMemo}/>
             </div>
         </div>
         <div className="flex flex-row flex-wrap w-full gap-2">
             <div className="bg-gray-items p-3 border-round flex-grow-1 w-full h-30rem sm:w-full lg:w-5 flex-shrink-0">
                 <DoughnutChart
-                    productService={productService.getCant()}
-                    chargerService={chargerService.getCant()}
-                    movileService={movileService.getCant()}
-                    relojService={relojService.getCant()}
+                    products={cantAccesoriosMemo}
+                    chargers={cantCargadoresMemo}
+                    moviles={cantMovilesMemo}
+                    relojes={cantRelojesMemo}
                 />
             </div>
 
             <div className="bg-gray-items p-3 border-round flex-grow-1 h-30rem w-full sm:w-full lg:w-5 flex-shrink-0">
-                <BasicChart service={sellService.getAllByWeek()}/>
+                <BasicChart sales={salesWeekMemo}/>
             </div>
-
             <div className="bg-gray-items p-3 border-round flex-grow-1 h-30rem w-full sm:w-full lg:w-5 flex-shrink-0">
                 <HorizontalBarChart
-                    service={sellService.getAllByMonth()}
+                    sales={salesMonthMemo}
                 />
             </div>
-
             <div className="bg-gray-items p-3 border-round flex-grow-1 h-30rem w-full sm:w-full lg:w-5 flex-shrink-0">
                 <StackedBarChart
-                    service={sellService.getAllByMonthAndProduct()}
+                    products={productMonthMemo}
                 />
             </div>
         </div>

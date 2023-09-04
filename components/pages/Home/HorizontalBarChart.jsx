@@ -11,8 +11,6 @@ export default function HorizontalBarChart(props) {
 
     useEffect(() => {
 
-        props.service.then((sales) => {
-
             const documentStyle = getComputedStyle(document.documentElement);
             const textColor = documentStyle.getPropertyValue('--text-color');
             const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
@@ -25,7 +23,7 @@ export default function HorizontalBarChart(props) {
                         backgroundColor: documentStyle.getPropertyValue('--blue-500'),
                         borderColor: documentStyle.getPropertyValue('--blue-500'),
                         // data: [sales[0], sales[1], sales[2], sales[3], sales[4], sales[5], sales[6], sales[7], sales[8], sales[9], sales[10], sales[11]]
-                        data: sales
+                        data: props.sales
                     }
                 ]
             };
@@ -67,9 +65,8 @@ export default function HorizontalBarChart(props) {
 
             setChartData(data)
             setChartOptions(options);
-        });
 
-    }, []);
+    }, [props.sales]);
 
     return (
         <div className="card">

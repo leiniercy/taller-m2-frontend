@@ -21,10 +21,10 @@ import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
 
 
-
 export default function Movile(props) {
 
     const {data: session, status} = useSession();
+    const [token, setToken] = useState('');
 
     if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_ADMIN") {
         throw new Error('Access denied')
@@ -95,8 +95,11 @@ export default function Movile(props) {
     const movileService = new MovileService();
 
     useEffect(() => {
-        movileService.getAll().then((data) => setMoviles(data));
-    }, []);
+        if (status === 'authenticated' && session?.user !== undefined) {
+            movileService.getAll(session?.user.token).then((data) => setMoviles(data));
+            setToken(session?.user.token);
+        }
+    }, [session?.user]);
 
     const openNew = () => {
         setSubmitted(false);
@@ -231,7 +234,7 @@ export default function Movile(props) {
                 }
 
                 //Guardar en la BD y actualiza el estado de la informacion
-                movileService.update(formData, movile.id).then(data => {
+                movileService.update(formData, movile.id, token).then(data => {
                     //Muestra sms de confirmacion
                     toast.current.show({
                         severity: 'success',
@@ -240,7 +243,7 @@ export default function Movile(props) {
                         life: 2000
                     });
                     //Actualiza la lista
-                    movileService.getAll().then(data => setMoviles(data));
+                    movileService.getAll(token).then(data => setMoviles(data));
                     setMovileDialog(false);
                     setEditActive(false);
                     setImageSelected(false);
@@ -260,7 +263,7 @@ export default function Movile(props) {
                     formData.append('files', file);
                 });
                 //Guardar en la BD y actualiza el estado de la informacion
-                movileService.save(formData).then(data => {
+                movileService.save(formData, token).then(data => {
                     //Muestra sms de confirmacion
                     toast.current.show({
                         severity: 'success',
@@ -269,7 +272,7 @@ export default function Movile(props) {
                         life: 2000
                     });
                     //Actualiza la lista
-                    movileService.getAll().then(data => setMoviles(data));
+                    movileService.getAll(token).then(data => setMoviles(data));
                     setMovileDialog(false);
                     setEditActive(false);
                     setSelectedMoviles(null);
@@ -337,9 +340,9 @@ export default function Movile(props) {
     const deleteMovile = () => {
         let _moviles = moviles.filter((val) => val.id === movile.id);
 
-        movileService.delete(_moviles[0].id).then(data => {
+        movileService.delete(_moviles[0].id, token).then(data => {
             //Actualiza la lista de productos
-            movileService.getAll().then(data => setMoviles(data));
+            movileService.getAll(token).then(data => setMoviles(data));
             setDeleteMovileDialog(false);
             setSelectedMoviles(false);
             setMovile(emptyMovile);
@@ -368,7 +371,7 @@ export default function Movile(props) {
     };/*Ocultar dialog de eliminar varios objetos*/
     const deleteSelectedMoviles = () => {
 
-        movileService.deleteAll(selectedMoviles).then((data) => {
+        movileService.deleteAll(selectedMoviles, token).then((data) => {
             setMoviles(data);
             setDeleteMovilesDialog(false);
             setSelectedMoviles(false);

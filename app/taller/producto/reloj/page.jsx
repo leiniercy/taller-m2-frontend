@@ -23,6 +23,7 @@ import {Toast} from 'primereact/toast';
 export default function Reloj(props) {
 
     const {data: session, status} = useSession();
+    const [token, setToken] = useState('');
 
     if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_ADMIN") {
         throw new Error('Access denied')
@@ -85,8 +86,11 @@ export default function Reloj(props) {
     const relojService = new RelojService();
 
     useEffect(() => {
-        relojService.getAll().then((data) => setRelojes(data));
-    }, []);
+        if (status === 'authenticated' && session?.user !== undefined) {
+        relojService.getAll(session?.user.token).then((data) => setRelojes(data));
+            setToken(session?.user.token);
+        }
+    }, [session?.user]);
     const openNew = () => {
         setSubmitted(false);
         setReloj(emptyReloj);
@@ -208,7 +212,7 @@ export default function Reloj(props) {
                 }
 
                 //Guardar en la BD y actualiza el estado de la informacion
-                relojService.update(formData, reloj.id).then(data => {
+                relojService.update(formData, reloj.id,token).then(data => {
                     //Muestra sms de confirmacion
                     toast.current.show({
                         severity: 'success',
@@ -217,7 +221,7 @@ export default function Reloj(props) {
                         life: 2000
                     });
                     //Actualiza la lista
-                    relojService.getAll().then(data => setRelojes(data));
+                    relojService.getAll(token).then(data => setRelojes(data));
                     setRelojDialog(false);
                     setImageSelected(false);
                     setEditActive(false);
@@ -239,7 +243,7 @@ export default function Reloj(props) {
                 });
 
                 //Guardar en la BD y actualiza el estado de la informacion
-                relojService.save(formData).then(data => {
+                relojService.save(formData,token).then(data => {
                     //Muestra sms de confirmacion
                     toast.current.show({
                         severity: 'success',
@@ -248,7 +252,7 @@ export default function Reloj(props) {
                         life: 2000
                     });
                     //Actualiza la lista
-                    relojService.getAll().then(data => setRelojes(data));
+                    relojService.getAll(token).then(data => setRelojes(data));
                     setRelojDialog(false);
                     setEditActive(false);
                     setSelectedRelojes(null);
@@ -310,9 +314,9 @@ export default function Reloj(props) {
     const deleteReloj = () => {
         let _relojes = relojes.filter((val) => val.id === reloj.id);
 
-        relojService.delete(_relojes[0].id).then(data => {
+        relojService.delete(_relojes[0].id,token).then(data => {
             //Actualiza la lista de productos
-            relojService.getAll().then(data => setRelojes(data));
+            relojService.getAll(token).then(data => setRelojes(data));
             setDeleteRelojDialog(false);
             setSelectedRelojes(false);
             setReloj(emptyReloj);
@@ -341,7 +345,7 @@ export default function Reloj(props) {
     };/*Ocultar dialog de eliminar varios objetos*/
     const deleteSelectedRelojes = () => {
 
-        relojService.deleteAll(selectedRelojes).then((data) => {
+        relojService.deleteAll(selectedRelojes,token).then((data) => {
             setRelojes(data);
             setDeleteRelojesDialog(false);
             setSelectedRelojes(false);

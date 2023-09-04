@@ -4,9 +4,14 @@ import React, {useEffect, useState} from "react";
 import MovileService from "@services/MovileServie";
 import {Galleria} from 'primereact/galleria';
 import RenderLayout from "@components/layout/RenderLayout";
+import {useSession} from "next-auth/react";
 
 
 export default function InfoMovile(props) {
+
+    const { data: session,status } = useSession();
+    const [token, setToken] = useState('');
+
 
     let emptyMovile = {
         id: null,
@@ -28,10 +33,13 @@ export default function InfoMovile(props) {
     const [movile, setMovile] = useState(emptyMovile);
 
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get("id");
-        movileService.getById(id).then((data) => setMovile(data));
-    })
+        if(status === 'authenticated' && session?.user !== undefined){
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get("id");
+            movileService.getById(id, session?.user.token).then((data) => setMovile(data));
+            setToken(session?.user.token);
+        }
+    },[session?.user])
 
 
     const responsiveOptions = [

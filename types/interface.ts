@@ -5,4 +5,5 @@ export interface User {
     email?: string | null | undefined;
     taller?: string | null | undefined;
     rol?: string | null  | undefined;
+    token?: string | null | undefined;
 }

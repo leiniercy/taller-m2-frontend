@@ -38,7 +38,8 @@ export const authOptions = {
                         name: tokenUser.name,
                         email: tokenUser.email,
                         taller: tokenUser.taller,
-                        rol: tokenUser.roles[0]
+                        rol: tokenUser.roles[0],
+                        token: user.token
                     }
 
                 } else {

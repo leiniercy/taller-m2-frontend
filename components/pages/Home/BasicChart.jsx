@@ -7,13 +7,12 @@ export default function BasicChart(props) {
     const [chartOptions, setChartOptions] = useState({});
 
     useEffect(() => {
-        props.service.then((sales) => {
             const data = {
                 labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
                 datasets: [
                     {
                         label: 'Ganacia diaria por ventas',
-                        data: sales,
+                        data: props.sales,
                         backgroundColor: [
                             'rgba(255, 159, 64, 0.2)', //Lunes
                             'rgba(75, 192, 192, 0.2)', //Martes
@@ -39,11 +38,9 @@ export default function BasicChart(props) {
                     }
                 }
             };
-
             setChartData(data);
             setChartOptions(options);
-        });
-    }, []);
+    }, [props.sales]);
 
     return (
         <div className="card relative h-full w-full flex">

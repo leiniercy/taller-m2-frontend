@@ -18,9 +18,9 @@ export default function DataViewProduct(props) {
     const [sortField, setSortField] = useState(null);
 
     useEffect(() => {
-        props.service.then((data) => setDataViewValue(data));
+        setDataViewValue(props.products);
         setGlobalFilterValue('');
-    }, []);
+    }, [props.products]);
 
     /*Disponibilidad de los objetos*/
     const getValue = (data) => {

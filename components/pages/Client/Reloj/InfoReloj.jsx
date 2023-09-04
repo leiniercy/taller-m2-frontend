@@ -4,9 +4,13 @@ import React, {useEffect, useState} from "react";
 import {Galleria} from 'primereact/galleria';
 import RelojService from "@services/RelojService";
 import RenderLayout from "@components/layout/RenderLayout";
+import {useSession} from "next-auth/react";
 
 
 export default function InfoReloj(props) {
+
+    const { data: session, status } = useSession();
+    const [token, setToken] = useState('');
 
     let emptyReloj = {
         id: null,
@@ -23,11 +27,13 @@ export default function InfoReloj(props) {
     const [reloj, setReloj] = useState(emptyReloj);
 
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get("id");
-        relojService.getById(id).then((data) => setReloj(data));
-    })
-
+        if(status === 'authenticated' && session?.user !== undefined){
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get("id");
+            relojService.getById(id, session?.user.token).then((data) => setReloj(data));
+            setToken(session?.user.token);
+        }
+    },[session?.user])
 
     const responsiveOptions = [
         {

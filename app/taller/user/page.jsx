@@ -22,7 +22,7 @@ import DialogEditUser from "@components/pages/User/DialogEditUser";
 export default function Usuarios() {
 
     const {data: session, status} = useSession();
-
+    const [token, setToken] = useState('');
     if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_ADMIN") {
         throw new Error('Access denied')
     }
@@ -73,8 +73,11 @@ export default function Usuarios() {
     const userService = new UserService();
 
     useEffect(() => {
-        userService.getAll().then((data) => setUsers(data));
-    });
+        if(status === 'authenticated' && session?.user !== undefined ) {
+            userService.getAll(session?.user.token).then((data) => setUsers(data));
+            setToken(session?.user.token);
+        }
+    }, [session?.user]);
 
     const openNew = () => {
         setSubmitted(false);
@@ -159,7 +162,7 @@ export default function Usuarios() {
                 password: password,
                 rol: rol.code
             }
-            userService.save(user).then((data) => {
+            userService.save(user,token).then((data) => {
                 toast.current.show({
                     severity: 'success',
                     summary: 'Atención!',
@@ -167,6 +170,7 @@ export default function Usuarios() {
                     life: 2000
                 });
                 hideSaveDialog();
+                userService.getAll(token).then((data)=>setUsers(data));
             }).catch((error) => {
                 toast.current.show({ error: error, severity: 'danger',summary: 'Error!',
                     detail: "El usuario ya existe", life: 3000});
@@ -219,13 +223,14 @@ export default function Usuarios() {
                 taller: taller.name,
                 rol: rol.code
             }
-            userService.update(user,id).then((data) => {
+            userService.update(user,id, token).then((data) => {
                 toast.current.show({
                     severity: 'success',
                     summary: 'Atención!',
                     detail: "Se actualizó el usuario correctamente",
                     life: 2000
                 });
+                userService.getAll(token).then((data)=>setUsers(data));
                 hideEditDialog();
             }).catch((error) => {
                 toast.current.show({ error: error, severity: 'danger',summary: 'Error!',
@@ -264,9 +269,9 @@ export default function Usuarios() {
     const deleteUser = () => {
         let _users = users.filter((val) => val.id === user.id);
 
-        userService.delete(_users[0].id).then(data => {
+        userService.delete(_users[0].id,token).then(data => {
             //Actualiza la lista de usuarios
-            userService.getAll().then(data => setUsers(data));
+            userService.getAll(token).then(data => setUsers(data));
             setDeleteUserDialog(false);
             setSelectedUsers(false);
             setUser(emptyUser);
@@ -290,7 +295,7 @@ export default function Usuarios() {
         setDeleteUsersDialog(false);
     }
     const deleteSelectedUsers = () => {
-        userService.deleteAll(selectedUsers).then((data) => {
+        userService.deleteAll(selectedUsers,token).then((data) => {
             setUsers(data);
             setDeleteUsersDialog(false);
             setSelectedUsers(false);
@@ -300,6 +305,7 @@ export default function Usuarios() {
                 detail: 'Usuarios eliminados correctamente',
                 life: 2000
             });
+            userService.getAll(token).then((data)=>setUsers(data));
         }).catch(error => {
             toast.current.show({
                 severity: 'danger',

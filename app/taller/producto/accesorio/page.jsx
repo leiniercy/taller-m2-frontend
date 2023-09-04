@@ -24,6 +24,7 @@ import {useSession} from "next-auth/react";
 export default function Accesorio(props) {
 
     const {data: session, status} = useSession();
+    const [token, setToken] = useState('');
 
     if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_ADMIN") {
         throw new Error('Access denied')
@@ -51,7 +52,6 @@ export default function Accesorio(props) {
     ];
 
     const toast = useRef(null);
-
     const dt = useRef(null);
 
     const [submitted, setSubmitted] = useState(false);
@@ -72,8 +72,11 @@ export default function Accesorio(props) {
     const productService = new ProductService();
 
     useEffect(() => {
-        productService.getAllProducts().then((data) => setProducts(data));
-    }, []);
+        if(status === 'authenticated' && session?.user !== undefined ){
+            productService.getAllProducts(session?.user.token).then((data) => setProducts(data));
+            setToken(session?.user.token);
+        }
+    }, [session?.user]);
     const openNew = () => {
         setSubmitted(false);
         setProduct(emptyProduct);
@@ -170,7 +173,7 @@ export default function Accesorio(props) {
                     });
                 }
                 //Guardar en la BD y actualiza el estado de la informacion
-                productService.update(formData, product.id).then(data => {
+                productService.update(formData, product.id, token).then(data => {
                     //Muestra sms de confirmacion
                     toast.current.show({
                         severity: 'success',
@@ -179,7 +182,7 @@ export default function Accesorio(props) {
                         life: 2000
                     });
                     setProductDialog(false);
-                    productService.getAllProducts().then(data => setProducts(data));
+                    productService.getAllProducts(token).then(data => setProducts(data));
                     //Actualiza la lista
                     setEditActive(false);
                     setImageSelected(false);
@@ -200,7 +203,7 @@ export default function Accesorio(props) {
                 });
 
                 //Guardar en la BD y actualiza el estado de la informacion
-                productService.save(formData).then(data => {
+                productService.save(formData, token).then(data => {
                     //Muestra sms de confirmacion
                     toast.current.show({
                         severity: 'success',
@@ -209,7 +212,7 @@ export default function Accesorio(props) {
                         life: 2000
                     });
                     //Actualiza la lista
-                    productService.getAllProducts().then(data => setProducts(data));
+                    productService.getAllProducts(token).then(data => setProducts(data));
                     setProductDialog(false);
                     setEditActive(false);
                     setSelectedProducts(null);
@@ -271,9 +274,9 @@ export default function Accesorio(props) {
     const deleteProduct = () => {
         let _products = products.filter((val) => val.id === product.id);
 
-        productService.delete(_products[0].id).then(data => {
+        productService.delete(_products[0].id, token).then(data => {
             //Actualiza la lista de productos
-            productService.getAllProducts().then(data => setProducts(data));
+            productService.getAllProducts(token).then(data => setProducts(data));
             setDeleteProductDialog(false);
             setSelectedProducts(false);
             setProduct(emptyProduct);
@@ -302,7 +305,7 @@ export default function Accesorio(props) {
     };/*Ocultar dialog de eliminar varios objetos*/
     const deleteSelectedProducts = () => {
 
-        productService.deleteAll(selectedProducts).then((data) => {
+        productService.deleteAll(selectedProducts, token).then((data) => {
             setProducts(data);
             setDeleteProductsDialog(false);
             setSelectedProducts(false);

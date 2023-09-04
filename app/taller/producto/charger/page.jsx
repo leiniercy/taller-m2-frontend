@@ -23,6 +23,7 @@ import {Toast} from 'primereact/toast';
 export default function Charger(props) {
 
     const {data: session, status} = useSession();
+    const [token, setToken] = useState('');
 
     if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_ADMIN") {
         throw new Error('Access denied')
@@ -82,9 +83,11 @@ export default function Charger(props) {
     const chargerService = new ChargerService();
 
     useEffect(() => {
-        chargerService.getAll().then((data) => setChargers(data));
-    }, []);
-
+        if (status === 'authenticated' && session?.user !== undefined) {
+            chargerService.getAll(session?.user.token).then((data) => setChargers(data));
+            setToken(session?.user.token);
+        }
+    }, [session?.user]);
     const openNew = () => {
         setSubmitted(false);
         setCharger(emptyCharger);
@@ -203,7 +206,7 @@ export default function Charger(props) {
                 }
 
                 //Guardar en la BD y actualiza el estado de la informacion
-                chargerService.update(formData, charger.id).then(data => {
+                chargerService.update(formData, charger.id, token).then(data => {
                     //Muestra sms de confirmacion
                     toast.current.show({
                         severity: 'success',
@@ -213,7 +216,7 @@ export default function Charger(props) {
                     });
                     setChargerDialog(false);
                     //Actualiza la lista
-                    chargerService.getAll().then(data => setChargers(data));
+                    chargerService.getAll(token).then(data => setChargers(data));
                     setEditActive(false);
                     setImageSelected(false);
                     setSelectedChargers(null);
@@ -232,7 +235,7 @@ export default function Charger(props) {
                     formData.append('files', file);
                 });
                 //Guardar en la BD y actualiza el estado de la informacion
-                chargerService.save(formData).then(data => {
+                chargerService.save(formData, token).then(data => {
                     //Muestra sms de confirmacion
                     toast.current.show({
                         severity: 'success',
@@ -242,7 +245,7 @@ export default function Charger(props) {
                     });
                     setChargerDialog(false);
                     //Actualiza la lista
-                    chargerService.getAll().then(data => setChargers(data));
+                    chargerService.getAll(token).then(data => setChargers(data));
                     setChargerDialog(false);
                     setEditActive(false);
                     setSelectedChargers(null);
@@ -304,9 +307,9 @@ export default function Charger(props) {
     const deleteCharger = () => {
         let _chargers = chargers.filter((val) => val.id === charger.id);
 
-        chargerService.delete(_chargers[0].id).then(data => {
+        chargerService.delete(_chargers[0].id, token).then(data => {
             //Actualiza la lista de productos
-            chargerService.getAll().then(data => setChargers(data));
+            chargerService.getAll(token).then(data => setChargers(data));
             setDeleteChargerDialog(false);
             setSelectedChargers(false);
             setCharger(emptyCharger);
@@ -335,7 +338,7 @@ export default function Charger(props) {
     };/*Ocultar dialog de eliminar varios objetos*/
     const deleteSelectedChargers = () => {
 
-        chargerService.deleteAll(selectedChargers).then((data) => {
+        chargerService.deleteAll(selectedChargers, token).then((data) => {
             setChargers(data);
             setDeleteChargersDialog(false);
             setSelectedChargers(false);

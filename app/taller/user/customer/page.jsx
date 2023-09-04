@@ -21,7 +21,7 @@ import CustomerService from "@services/CustomerService";
 export default function Customers() {
 
     const {data: session, status} = useSession();
-
+    const [token, setToken] = useState('');
     if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_ADMIN") {
         throw new Error('Access denied')
     }
@@ -66,8 +66,12 @@ export default function Customers() {
     const customerService = new CustomerService();
 
     useEffect(() => {
-        customerService.getAll().then((data) => setCustomers(data));
-    });
+        if(status === 'authenticated' && session?.user !== undefined ) {
+        customerService.getAll(session?.user.token).then((data) => setCustomers(data));
+            setToken(session?.user.token);
+        }
+    }, [session?.user]);
+
     const openNew = () => {
         setSubmitted(false);
         setCustomer(emptyCustomer);
@@ -129,7 +133,7 @@ export default function Customers() {
 
         if (validateForm()) {
             if (editActive) {
-                customerService.update(customer).then((data) => {
+                customerService.update(customer,token).then((data) => {
                     //Muestra sms de confirmacion
                     toast.current.show({
                         severity: 'success',
@@ -139,7 +143,7 @@ export default function Customers() {
                     });
                     setCustomerDialog(false);
                     //Actualiza la lista
-                    customerService.getAll().then(data => setCustomers(data));
+                    customerService.getAll(token).then(data => setCustomers(data));
                     setEditActive(false);
                 }).catch((error) => {
                     toast.current.show({
@@ -152,7 +156,7 @@ export default function Customers() {
 
                 });
             } else {
-                customerService.save(customer).then((data) => {
+                customerService.save(customer,token).then((data) => {
                     //Muestra sms de confirmacion
                     toast.current.show({
                         severity: 'success',
@@ -162,7 +166,7 @@ export default function Customers() {
                     });
                     setCustomerDialog(false);
                     //Actualiza la lista
-                    customerService.getAll().then(data => setCustomers(data));
+                    customerService.getAll(token).then(data => setCustomers(data));
                 }).catch((error) => {
                     toast.current.show({
                         error: error,
@@ -187,8 +191,8 @@ export default function Customers() {
     }//Ocultar el dialog de eliminar cliente
     const deleteCustomer = () => {
         let _customers = customers.filter((val) => val.id === customer.id);
-        customerService.delete(_customers[0].id).then(data => {
-            customerService.getAll().then((data) => setCustomers(data));
+        customerService.delete(_customers[0].id,token).then(data => {
+            customerService.getAll(token).then((data) => setCustomers(data));
             toast.current.show({
                 severity: 'success',
                 summary: 'Atención!',
@@ -213,8 +217,8 @@ export default function Customers() {
         setDeleteCustomersDialog(false);
     } //Ocultar el dialog de elimnar clientes
     const deleteSelectedCustomers = () => {
-        customerService.deleteAll(selectedCustomers).then((data) => {
-            customerService.getAll().then((data) => setCustomers(data));
+        customerService.deleteAll(selectedCustomers,token).then((data) => {
+            customerService.getAll(token).then((data) => setCustomers(data));
             toast.current.show({
                 severity: 'success',
                 summary: '!Atención',

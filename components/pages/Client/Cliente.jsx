@@ -12,7 +12,7 @@ const Cliente = (props) => {
                 <div className="card">
                     <Fieldset legend="Dispositivos de carga" toggleable>
                         <DataViewProduct
-                            service={props.chargers}
+                            products={props.chargers}
                              path={props.chargerPath}
                             isMovile={false}
                         />
@@ -23,7 +23,7 @@ const Cliente = (props) => {
                 <div className="card">
                     <Fieldset legend="Dispositivos móviles" toggleable>
                         <DataViewProduct
-                            service={props.moviles}
+                            products={props.moviles}
                             path={props.movilPath}
                             isMovile={false}
                         />
@@ -34,7 +34,7 @@ const Cliente = (props) => {
                 <div className="card">
                     <Fieldset legend="Relojes inteligentes" toggleable>
                         <DataViewProduct
-                            service={props.relojes}
+                            products={props.relojes}
                             path={props.relojPath}
                             isMovile={false}
                         />
@@ -45,7 +45,7 @@ const Cliente = (props) => {
                 <div className="card">
                     <Fieldset legend="Otros productos" toggleable>
                         <DataViewProduct
-                            service={props.products}
+                            products={props.products}
                             isMovile={true}
                         />
                     </Fieldset>
