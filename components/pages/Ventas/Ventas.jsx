@@ -436,6 +436,7 @@ export default function Ventas(props) {
                         selectedReportDate={selectedReportDate}
                         onChangeReportCalendar={onChangeReportCalendar}
                         taller={props.taller}
+                        token={token}
                     /> {/*barra de herramientas*/}
                 </div>
                 <div className="col-12">
