@@ -28,7 +28,7 @@ export default function ToolsBarSales(props) {
     };/*Barra de herramientas*/
 
     const handleClick = () => {
-        sellService.getByDate(props.selectedReportDate.toISOString().slice(0, 10), props.taller).then((data) => {
+        sellService.getByDate(props.selectedReportDate.toISOString().slice(0, 10), props.taller,props.token).then((data) => {
             if (data === null || data.length === 0) {
                 props.toast.current.show({
                     severity: 'info',
