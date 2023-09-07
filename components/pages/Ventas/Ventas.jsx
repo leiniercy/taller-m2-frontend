@@ -293,6 +293,7 @@ export default function Ventas(props) {
                 descriptions: descriptions,
                 prices: prices,
                 customer: selectedCustomer,
+                username: session?.user.name,
                 tallerName: props.taller,
                 date: date,
                 products: selectedProducts,
