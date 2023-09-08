@@ -93,13 +93,8 @@ export default function Ventas(props) {
 
     useEffect(() => {
         if (status === 'authenticated' && session?.user !== undefined) {
-            if (props.taller === 'Taller MJ') {
-                productService.getAllProductsMJ(session?.user.token).then((data) => setProductsTable(data));
-                productService.getAllProductsCantThanCero("Taller MJ", session?.user.token).then((data) => setProductsForm(data));
-            } else if (props.taller === 'Taller 2M') {
-                productService.getAllProducts2M(session?.user.token).then((data) => setProductsTable(data));
-                productService.getAllProductsCantThanCero("Taller 2M", session?.user.token).then((data) => setProductsForm(data));
-            }
+            productService.getAll(session?.user.token, session?.user.taller).then((data) => setProductsTable(data));
+            productService.getAllProductsCantThanCero(session?.user.token,session?.user.taller ).then((data) => setProductsForm(data));
             customerService.getAll(session?.user.token).then((data) => setCustomers(data));
             sellService.getAll(session?.user.token).then((data) => setSales(data));
             setToken(session?.user.token);
@@ -120,14 +115,14 @@ export default function Ventas(props) {
         setCustomerDialog(true);
         setCustomer(emptyCustomer);
     }  //Ocultar dialog de anadir cliente
-    const hideDialogSale = (e) => {
+    const hideDialogSale = () => {
         setSaleDialog(false);
         setSubmittedSale(false);
         setDate(null);
         setSelectedCustomer(null);
         setSelectedProducts(null);
     }; //Ocultar dialog de anadir venta
-    const hideDialogCustomer = (e) => {
+    const hideDialogCustomer = () => {
         setCustomerDialog(false);
         setSubmittedCustomer(false);
     }//Ocultar dialog de anadir cliente
@@ -309,16 +304,9 @@ export default function Ventas(props) {
                     detail: "Se registró la venta correctamente",
                     life: 2000
                 });
-
-                if (props.taller === 'Taller MJ') {
-                    productService.getAllProductsMJ(token).then((data) => setProductsTable(data));
-                    productService.getAllProductsCantThanCero("Taller MJ", token).then((data) => setProductsForm(data));
-                } else if (props.taller === 'Taller 2M') {
-                    productService.getAllProducts2M(token).then((data) => setProductsTable(data));
-                    productService.getAllProductsCantThanCero("Taller 2M",token).then((data) => setProductsForm(data));
-                }
+                productService.getAll(session?.user.token, session?.user.taller).then((data) => setProductsTable(data));
+                productService.getAllProductsCantThanCero(session?.user.token,session?.user.taller ).then((data) => setProductsForm(data));
                 customerService.getAll(token).then((data) => setCustomers(data));
-
                 sellService.getPDFVenta(props.taller, session?.user.name, data,token).then(d => {
                     // Descargar el archivo PDF generado
                     const url = window.URL.createObjectURL(new Blob([d]));
@@ -364,13 +352,8 @@ export default function Ventas(props) {
 
         sellService.delete(_sales[0].id,token).then(data => {
                 //Actualiza la lista de ventas
-                if (props.taller === 'Taller MJ') {
-                    productService.getAllProductsMJ(token).then((data) => setProductsTable(data));
-                    productService.getAllProductsCantThanCero("Taller MJ",token).then((data) => setProductsForm(data));
-                } else if (props.taller === 'Taller 2M') {
-                    productService.getAllProducts2M(token).then((data) => setProductsTable(data));
-                    productService.getAllProductsCantThanCero("Taller 2M",token).then((data) => setProductsForm(data));
-                }
+            productService.getAll(session?.user.token, session?.user.taller).then((data) => setProductsTable(data));
+            productService.getAllProductsCantThanCero(session?.user.token,session?.user.taller ).then((data) => setProductsForm(data));
                 customerService.getAll(token).then((data) => setCustomers(data));
                 //Muestra sms de confirmacion
                 toast.current.show({
@@ -396,13 +379,8 @@ export default function Ventas(props) {
     const deleteSelectedSales = () => {
 
         sellService.deleteAll(selectedSales,token).then((data) => {
-            if (props.taller === 'Taller MJ') {
-                productService.getAllProductsMJ(token).then((data) => setProductsTable(data));
-                productService.getAllProductsCantThanCero("Taller MJ",token).then((data) => setProductsForm(data));
-            } else if (props.taller === 'Taller 2M') {
-                productService.getAllProducts2M(token).then((data) => setProductsTable(data));
-                productService.getAllProductsCantThanCero("Taller 2M",token).then((data) => setProductsForm(data));
-            }
+            productService.getAll(session?.user.token, session?.user.taller).then((data) => setProductsTable(data));
+            productService.getAllProductsCantThanCero(session?.user.token,session?.user.taller ).then((data) => setProductsForm(data));
             customerService.getAll(token).then((data) => setCustomers(data));
             setSales(data);
             setDeleteSalesDialog(false);
@@ -444,6 +422,7 @@ export default function Ventas(props) {
                     <TableVentas
                         headerLabel={'ventas'}
                         objects={productsTable}
+                        rol={session?.user.rol}
                         selectedObjects={selectedSales}
                         setSelectedObject={onSelectionChangeSelectedObjects}
                         emptyFilters={emptyFilters}

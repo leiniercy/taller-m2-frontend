@@ -3,24 +3,8 @@ import axios from 'axios';
 export default class ProductService {
     baseUrl = process.env.NEXT_PUBLIC_API_URL + '/product/';
 
-    getAll(token) {
-        return axios.get(this.baseUrl + "all", {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        }).then(res => res.data);
-    }
-
-    getAllProducts2M(token) {
-        return axios.get(this.baseUrl + "all/products/2M", {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        }).then(res => res.data);
-    }
-
-    getAllProductsMJ(token) {
-        return axios.get(this.baseUrl + "all/products/MJ", {
+    getAll(token,taller) {
+        return axios.get(this.baseUrl + "all/"+taller, {
             headers: {
                 "Authorization": "Bearer " + token
             }
@@ -35,7 +19,7 @@ export default class ProductService {
         }).then(res => res.data);
     }
 
-    getAllProductsCantThanCero(taller, token) {
+    getAllProductsCantThanCero(token,taller) {
         return axios.get(this.baseUrl + "all/product/cant/" + taller, {
             headers: {
                 "Authorization": "Bearer " + token

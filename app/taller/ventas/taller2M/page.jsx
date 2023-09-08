@@ -7,7 +7,7 @@ import {useSession} from "next-auth/react";
 export default function Taller2MVentas() {
 
     const {data: session, status} = useSession();
-    if (status === 'authenticated' && session?.user !== undefined && session?.user.rol === "ROLE_MODERATOR") {
+    if (status === 'authenticated' && session?.user !== undefined) {
         if(session?.user.taller !== 'Taller 2M') throw new Error('Access denied')
     }
 

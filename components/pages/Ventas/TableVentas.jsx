@@ -88,7 +88,7 @@ export default function TableVentas(props) {
                     <Column selectionMode="multiple" exportable={false}></Column>
                     <Column field="customer.customerName" header="Nombre del cliente" sortable></Column>
                     <Column field="customer.customerMovile" header="Teléfono del cliente" sortable></Column>
-                    <Column field="username" header="Usuario" sortable></Column>
+                    {props.rol === 'ROLE_ADMIN' && <Column field="username" header="Usuario" sortable></Column>}
                     <Column field="description" header="Descripción" sortable></Column>
                     <Column field="sellDate" header="Fecha de venta" sortable></Column>
                     <Column field="salePrice" header="Precio de venta" sortable body={salePriceBodyTemplate}></Column>
