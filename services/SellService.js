@@ -19,24 +19,24 @@ export default class SellService {
         }).then(res => res.data);
     }
 
-    getAllByWeek(token) {
-        return axios.get(this.baseUrl + "all/date/week", {
+    getAllByWeek(token,taller) {
+        return axios.get(this.baseUrl + "all/date/week/"+taller, {
             headers: {
                 "Authorization": "Bearer " + token
             }
         }).then(res => res.data);
     }
 
-    getAllByMonth(token) {
-        return axios.get(this.baseUrl + "all/date/month", {
+    getAllByMonth(token,taller) {
+        return axios.get(this.baseUrl + "all/date/month/"+taller, {
             headers: {
                 "Authorization": "Bearer " + token
             }
         }).then(res => res.data);
     }
 
-    getAllByMonthAndProduct(token) {
-        return axios.get(this.baseUrl + "all/date/month/product", {
+    getAllByMonthAndProduct(token,taller) {
+        return axios.get(this.baseUrl + "all/date/month/product/"+taller, {
             headers: {
                 "Authorization": "Bearer " + token
             }

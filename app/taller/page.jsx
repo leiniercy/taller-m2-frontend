@@ -55,8 +55,8 @@ export default function Home() {
     const [salesMonth, setSalesMonth] = useState([]);
     const [salesProducts, setSalesProducts] = useState([]);
 
-    const calcularTotalVentas = (token) => {
-        sellService.getAllByMonth(token).then(data => {
+    const calcularTotalVentas = (token, taller) => {
+        sellService.getAllByMonth(token, taller).then(data => {
             let _total = 0;
             for (let i = 0; i < 12; i++) {
                 _total += data[i];
@@ -64,14 +64,14 @@ export default function Home() {
             setTotalVentas(_total);
         });
     }//Calculando el total obtenido por ventas
-    const calcularTotalProductos = (token) => {
-        productService.getCant(token).then(accesorios => {
+    const calcularTotalProductos = (token, taller) => {
+        productService.getCant(token, taller).then(accesorios => {
             setCantAccesorios(accesorios);
-            chargerService.getCant(token).then(chargers => {
+            chargerService.getCant(token, taller).then(chargers => {
                 setCantCargadores(chargers);
-                movileService.getCant(token).then(moviles => {
+                movileService.getCant(token, taller).then(moviles => {
                     setCantMoviles(moviles);
-                    relojService.getCant(token).then(relojes => {
+                    relojService.getCant(token, taller).then(relojes => {
                         setCantRelojes(relojes);
                         setTotalProductos(accesorios + chargers + moviles + relojes);
                     });
@@ -87,27 +87,27 @@ export default function Home() {
             setTotalClientes(data.length)
         });
     }//Calculando el total de clientes
-    const getAllByWeek = (token) => {
-        sellService.getAllByWeek(token).then((sales) => setSalesWeek(sales));
+    const getAllByWeek = (token, taller) => {
+        sellService.getAllByWeek(token, taller).then((sales) => setSalesWeek(sales));
     }// obtener listado de ganancias diarias en la semana actual
-    const getAllByMonth = (token) => {
-        sellService.getAllByMonth(token).then((sales) => setSalesMonth(sales));
+    const getAllByMonth = (token, taller) => {
+        sellService.getAllByMonth(token, taller).then((sales) => setSalesMonth(sales));
     }// obtener listado de ganancias diarias por mes
-
-    const getAllProductsByMonth = (token) => {
-        sellService.getAllByMonthAndProduct(token).then((products) => setSalesProducts(products));
+    const getAllProductsByMonth = (token, taller) => {
+        sellService.getAllByMonthAndProduct(token, taller).then((products) => setSalesProducts(products));
     }// obtener listado productos vendidos por mes
 
 
     //ComponentdidMount
     useEffect(() => {
         if (status === 'authenticated' && session?.user !== undefined) {
-            calcularTotalVentas(session?.user.token);
-            calcularTotalProductos(session?.user.token);
+            calcularTotalVentas(session?.user.token, session?.user.taller);
+            calcularTotalProductos(session?.user.token, session?.user.taller);
             calcularTotalUsuarios(session?.user.token);
             calcularTotalClientes(session?.user.token);
-            getAllByWeek(session?.user.token);
-            getAllByMonth(session?.user.token);
+            getAllByWeek(session?.user.token, session?.user.taller);
+            getAllByMonth(session?.user.token, session?.user.taller);
+            getAllProductsByMonth(session?.user.token, session?.user.taller)
         }
     }, [session?.user]);
 

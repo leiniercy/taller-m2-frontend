@@ -35,8 +35,8 @@ export default class RelojService {
         }).then(res => res.data);
     }
 
-    getCant(token) {
-        return axios.get(this.baseUrl + "getCant", {
+    getCant(token,taller) {
+        return axios.get(this.baseUrl + "getCant/"+taller, {
             headers: {
                 "Authorization": "Bearer " + token
             }
