@@ -12,13 +12,13 @@ import DialogFormCustomer from "@components/pages/Ventas/DialogFormCustomer";
 import DeleteSellDialog from "@components/pages/Ventas/DeleteSellDialog";
 import DeleteSalesDialog from "@components/pages/Ventas/DeleteSalesDialog";
 import RenderLayout from "@components/layout/RenderLayout";
-import VentasFieldSet from "@components/pages/Ventas/VentasFieldSet";
 
 //Service
 import CustomerService from "@services/CustomerService";
 import ProductService from "@services/ProductService";
 import SellService from "@services/SellService";
 import {useSession} from "next-auth/react";
+import CustomFieldset from "@components/layout/CustomFieldSet";
 
 
 export default function Ventas(props) {
@@ -426,7 +426,7 @@ export default function Ventas(props) {
 
     return (
         <RenderLayout>
-            <VentasFieldSet label={"Ventas " + props.taller}>
+            <CustomFieldset label={"Ventas " + props.taller} icon={'pi-shopping-cart'}>
                 <div className="col-12">
                     <ToolsBarSales
                         toast={toast}
@@ -451,7 +451,7 @@ export default function Ventas(props) {
                         confirmDeleteSell={confirmDeleteSell}
                     />
                 </div>
-            </VentasFieldSet>
+            </CustomFieldset>
             <Toast ref={toast}/>
 
             <DialogFormSale

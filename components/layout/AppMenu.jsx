@@ -50,41 +50,25 @@ const AppMenu = () => {
 
 
     if (status === "authenticated" && session?.user.rol === 'ROLE_MODERATOR') {
-        if(session?.user.taller === "Taller 2M"){
+        if (session?.user.taller === "Taller 2M") {
             return (<ul className="menu">
-                    <li className="mt-2">
-                        <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                           href="/taller/informacion/taller2M"><i
-                            className="pi pi-home"></i> Inicio</a>
-                    </li>
-                    <li className="mt-2">
-                        <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                           href="/taller/informacion/tallerMJ"><i
-                            className="pi pi-box"></i> Taller MJ</a>
-                    </li>
-                    <li className="dropdown">
-                        <div className="w-full flex flex-row justify-content-between"
-                             onClick={() => handleMenuClickVentas(0)}>
-                            <span className="text-xl pl-3 py-3">Ventas</span>
-                            <i className={!openMenusVentas.includes(0) ? 'py-4 pi pi-angle-down' : 'py-4 pi pi-angle-up'}></i>
-                        </div>
-                        {openMenusVentas.includes(0) && (
-                            <ul className="submenu">
-                                <li className="">
-                                    <a className="block no-underline text-xl pl-3 py-3 pr-2  border-round link-hover text-color-blue-2m"
-                                       href="/taller/ventas/taller2M"><i
-                                        className="pi pi-shopping-cart"></i> Taller 2M</a>
-                                </li>
-                                <li className="">
-                                    <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                                       href="/taller/ventas/tallerMJ"><i
-                                        className="pi pi-shopping-cart"></i> Taller MJ</a>
-                                </li>
-                            </ul>
-                        )}
-                    </li>
-                </ul>);
-        }else{
+                <li className="mt-2">
+                    <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                       href="/taller/informacion/taller2M"><i
+                        className="pi pi-home"></i> Inicio</a>
+                </li>
+                <li className="mt-2">
+                    <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                       href="/taller/informacion/tallerMJ"><i
+                        className="pi pi-box"></i> Taller MJ</a>
+                </li>
+                <li className="">
+                    <a className="block no-underline text-xl pl-3 py-3 pr-2  border-round link-hover text-color-blue-2m"
+                       href="/taller/ventas/taller2M"><i
+                        className="pi pi-shopping-cart"></i> Ventas</a>
+                </li>
+            </ul>);
+        } else {
             // Taller MJ
             return (<ul className="menu">
                     <li className="mt-2">
@@ -97,136 +81,121 @@ const AppMenu = () => {
                            href="/taller/informacion/taller2M"><i
                             className="pi pi-box"></i> Taller 2M</a>
                     </li>
-                    <li className="dropdown">
-                        <div className="w-full flex flex-row justify-content-between"
-                             onClick={() => handleMenuClickVentas(0)}>
-                            <span className="text-xl pl-3 py-3">Ventas</span>
-                            <i className={!openMenusVentas.includes(0) ? 'py-4 pi pi-angle-down' : 'py-4 pi pi-angle-up'}></i>
-                        </div>
-                        {openMenusVentas.includes(0) && (
-                            <ul className="submenu">
-                                <li className="">
-                                    <a className="block no-underline text-xl pl-3 py-3 pr-2  border-round link-hover text-color-blue-2m"
-                                       href="/taller/ventas/taller2M"><i
-                                        className="pi pi-shopping-cart"></i> Taller 2M</a>
-                                </li>
-                                <li className="">
-                                    <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                                       href="/taller/ventas/tallerMJ"><i
-                                        className="pi pi-shopping-cart"></i> Taller MJ</a>
-                                </li>
-                            </ul>
-                        )}
+                    <li className="">
+                        <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                           href="/taller/ventas/tallerMJ"><i
+                            className="pi pi-shopping-cart"></i> Ventas</a>
                     </li>
                 </ul>
             );
         }
-    }else if(status === "authenticated" && session?.user.rol === 'ROLE_ADMIN'){
+    } else if (status === "authenticated" && session?.user.rol === 'ROLE_ADMIN') {
         return (<ul className="menu">
-                <li className="mt-2">
-                    <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                       href="/taller"><i
-                        className="pi pi-home"></i> Inicio</a>
-                </li>
+            <li className="mt-2">
+                <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                   href="/taller"><i
+                    className="pi pi-home"></i> Inicio</a>
+            </li>
 
 
-                <li className="dropdown">
-                    <div className="w-full flex flex-row justify-content-between" onClick={() => handleMenuClickUsers(0)}>
-                        <span className="text-xl pl-3 py-3">Usuarios</span>
-                        <i className={!openMenusUsers.includes(0) ? 'py-4 pi pi-angle-down' : 'py-4 pi pi-angle-up'}></i>
-                    </div>
-                    {openMenusUsers.includes(0) && (
-                        <ul className="submenu">
-                            <li className="">
-                                <a className="block no-underline text-xl pl-3 py-3 pr-2  border-round link-hover text-color-blue-2m"
-                                   href="/taller/user"><i
-                                    className="pi pi-user"></i> Usuario</a>
-                            </li>
-                            <li className="">
-                                <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                                   href="/taller/user/customer"><i
-                                    className="pi pi-user"></i> Cliente</a>
-                            </li>
-                        </ul>
-                    )}
-                </li>
+            <li className="dropdown">
+                <div className="w-full flex flex-row justify-content-between" onClick={() => handleMenuClickUsers(0)}>
+                    <span className="text-xl pl-3 py-3">Usuarios</span>
+                    <i className={!openMenusUsers.includes(0) ? 'py-4 pi pi-angle-down' : 'py-4 pi pi-angle-up'}></i>
+                </div>
+                {openMenusUsers.includes(0) && (
+                    <ul className="submenu">
+                        <li className="">
+                            <a className="block no-underline text-xl pl-3 py-3 pr-2  border-round link-hover text-color-blue-2m"
+                               href="/taller/user"><i
+                                className="pi pi-user"></i> Usuario</a>
+                        </li>
+                        <li className="">
+                            <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                               href="/taller/user/customer"><i
+                                className="pi pi-user"></i> Cliente</a>
+                        </li>
+                    </ul>
+                )}
+            </li>
 
 
-                <li className="dropdown">
-                    <div className="w-full flex flex-row justify-content-between" onClick={() => handleMenuClickCliente(0)}>
-                        <span className="text-xl pl-3 py-3">Información</span>
-                        <i className={!openMenusCliente.includes(0) ? 'py-4 pi pi-angle-down' : 'py-4 pi pi-angle-up'}></i>
-                    </div>
-                    {openMenusCliente.includes(0) && (
-                        <ul className="submenu">
-                            <li className="">
-                                <a className="block no-underline text-xl pl-3 py-3 pr-2  border-round link-hover text-color-blue-2m"
-                                   href="/taller/informacion/taller2M"><i
-                                    className="pi pi-box"></i> Taller 2M</a>
-                            </li>
-                            <li className="">
-                                <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                                   href="/taller/informacion/tallerMJ"><i
-                                    className="pi pi-box"></i> Taller MJ</a>
-                            </li>
-                        </ul>
-                    )}
-                </li>
+            <li className="dropdown">
+                <div className="w-full flex flex-row justify-content-between" onClick={() => handleMenuClickCliente(0)}>
+                    <span className="text-xl pl-3 py-3">Información</span>
+                    <i className={!openMenusCliente.includes(0) ? 'py-4 pi pi-angle-down' : 'py-4 pi pi-angle-up'}></i>
+                </div>
+                {openMenusCliente.includes(0) && (
+                    <ul className="submenu">
+                        <li className="">
+                            <a className="block no-underline text-xl pl-3 py-3 pr-2  border-round link-hover text-color-blue-2m"
+                               href="/taller/informacion/taller2M"><i
+                                className="pi pi-box"></i> Taller 2M</a>
+                        </li>
+                        <li className="">
+                            <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                               href="/taller/informacion/tallerMJ"><i
+                                className="pi pi-box"></i> Taller MJ</a>
+                        </li>
+                    </ul>
+                )}
+            </li>
 
-                <li className="dropdown">
-                    <div className="w-full flex flex-row justify-content-between"
-                         onClick={() => handleMenuClickProducts(0)}>
-                        <span className="text-xl pl-3 py-3">Productos</span>
-                        <i className={!openMenusProduct.includes(0) ? 'py-4 pi pi-angle-down' : 'py-4 pi pi-angle-up'}></i>
-                    </div>
-                    {openMenusProduct.includes(0) && (
-                        <ul className="submenu">
-                            <li className="">
-                                <a className="block no-underline text-xl pl-3 py-3 pr-2  border-round link-hover text-color-blue-2m"
-                                   href="/taller/producto/accesorio"><i
-                                    className="pi pi-amazon"></i> Accesorios</a>
-                            </li>
-                            <li className="">
-                                <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                                   href="/taller/producto/charger"><i
-                                    className="pi pi-amazon"></i> Cargadores</a>
-                            </li>
-                            <li className="">
-                                <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                                   href="/taller/producto/movile"><i
-                                    className="pi pi-amazon"></i> Moviles</a>
-                            </li>
-                            <li className="">
-                                <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                                   href="/taller/producto/reloj"><i
-                                    className="pi pi-amazon"></i> Relojes</a>
-                            </li>
-                        </ul>
-                    )}
-                </li>
-                <li className="dropdown">
-                    <div className="w-full flex flex-row justify-content-between" onClick={() => handleMenuClickVentas(0)}>
-                        <span className="text-xl pl-3 py-3">Ventas</span>
-                        <i className={!openMenusVentas.includes(0) ? 'py-4 pi pi-angle-down' : 'py-4 pi pi-angle-up'}></i>
-                    </div>
-                    {openMenusVentas.includes(0) && (
-                        <ul className="submenu">
-                            <li className="">
-                                <a className="block no-underline text-xl pl-3 py-3 pr-2  border-round link-hover text-color-blue-2m"
-                                   href="/taller/ventas/taller2M"><i
-                                    className="pi pi-shopping-cart"></i> Taller 2M</a>
-                            </li>
-                            <li className="">
-                                <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
-                                   href="/taller/ventas/tallerMJ"><i
-                                    className="pi pi-shopping-cart"></i> Taller MJ</a>
-                            </li>
-                        </ul>
-                    )}
-                </li>
-            </ul>);
-    }else{
-        return <span className='block no-underline text-xl pl-3 py-3 pr-2 border-round text-color-blue-2m'>Cargando</span>
+            <li className="dropdown">
+                <div className="w-full flex flex-row justify-content-between"
+                     onClick={() => handleMenuClickProducts(0)}>
+                    <span className="text-xl pl-3 py-3">Productos</span>
+                    <i className={!openMenusProduct.includes(0) ? 'py-4 pi pi-angle-down' : 'py-4 pi pi-angle-up'}></i>
+                </div>
+                {openMenusProduct.includes(0) && (
+                    <ul className="submenu">
+                        <li className="">
+                            <a className="block no-underline text-xl pl-3 py-3 pr-2  border-round link-hover text-color-blue-2m"
+                               href="/taller/producto/accesorio"><i
+                                className="pi pi-amazon"></i> Accesorios</a>
+                        </li>
+                        <li className="">
+                            <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                               href="/taller/producto/charger"><i
+                                className="pi pi-amazon"></i> Cargadores</a>
+                        </li>
+                        <li className="">
+                            <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                               href="/taller/producto/movile"><i
+                                className="pi pi-amazon"></i> Moviles</a>
+                        </li>
+                        <li className="">
+                            <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                               href="/taller/producto/reloj"><i
+                                className="pi pi-amazon"></i> Relojes</a>
+                        </li>
+                    </ul>
+                )}
+            </li>
+            <li className="dropdown">
+                <div className="w-full flex flex-row justify-content-between" onClick={() => handleMenuClickVentas(0)}>
+                    <span className="text-xl pl-3 py-3">Ventas</span>
+                    <i className={!openMenusVentas.includes(0) ? 'py-4 pi pi-angle-down' : 'py-4 pi pi-angle-up'}></i>
+                </div>
+                {openMenusVentas.includes(0) && (
+                    <ul className="submenu">
+                        <li className="">
+                            <a className="block no-underline text-xl pl-3 py-3 pr-2  border-round link-hover text-color-blue-2m"
+                               href="/taller/ventas/taller2M"><i
+                                className="pi pi-shopping-cart"></i> Taller 2M</a>
+                        </li>
+                        <li className="">
+                            <a className="block no-underline text-xl pl-3 py-3 pr-2 border-round link-hover text-color-blue-2m"
+                               href="/taller/ventas/tallerMJ"><i
+                                className="pi pi-shopping-cart"></i> Taller MJ</a>
+                        </li>
+                    </ul>
+                )}
+            </li>
+        </ul>);
+    } else {
+        return <span
+            className='block no-underline text-xl pl-3 py-3 pr-2 border-round text-color-blue-2m'>Cargando</span>
     }
 
 
