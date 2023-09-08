@@ -87,7 +87,7 @@ export default function Reloj(props) {
 
     useEffect(() => {
         if (status === 'authenticated' && session?.user !== undefined) {
-        relojService.getAll(session?.user.token).then((data) => setRelojes(data));
+        relojService.getAll(session?.user.token, session?.user.taller).then((data) => setRelojes(data));
             setToken(session?.user.token);
         }
     }, [session?.user]);
@@ -154,11 +154,6 @@ export default function Reloj(props) {
             setCantValid(true);
         }
 
-        //Si no se selecciono algun taller
-        if (reloj.taller === '') {
-            return false;
-        }
-
         const specialFeatureRegex = /^[,.a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar las funcionalidades del reloj
         if (!specialFeatureRegex.test(reloj.specialFeature) || reloj.specialFeature === '') {
             setSpecialFeatureValid(false);
@@ -193,7 +188,7 @@ export default function Reloj(props) {
             formData.append('name', reloj.name);
             formData.append('price', reloj.price);
             formData.append('cant', reloj.cant);
-            formData.append('taller', reloj.taller.name);
+            formData.append('taller', session?.user.taller);
             formData.append('specialFeature', reloj.specialFeature);
             formData.append('compatibleDevice', reloj.compatibleDevice);
             formData.append('bateryLife', reloj.bateryLife);
@@ -221,7 +216,7 @@ export default function Reloj(props) {
                         life: 2000
                     });
                     //Actualiza la lista
-                    relojService.getAll(token).then(data => setRelojes(data));
+                    relojService.getAll(token, session?.user.taller).then(data => setRelojes(data));
                     setRelojDialog(false);
                     setImageSelected(false);
                     setEditActive(false);
@@ -252,7 +247,7 @@ export default function Reloj(props) {
                         life: 2000
                     });
                     //Actualiza la lista
-                    relojService.getAll(token).then(data => setRelojes(data));
+                    relojService.getAll(token, session?.user.taller).then(data => setRelojes(data));
                     setRelojDialog(false);
                     setEditActive(false);
                     setSelectedRelojes(null);
@@ -272,15 +267,6 @@ export default function Reloj(props) {
         setEditActive(true);
         setImageSelected(false);
         setReloj(reloj);
-        if (reloj.taller === 'Taller 2M') {
-            let _reloj = {...reloj};
-            _reloj[`${'taller'}`] = {name: 'Taller 2M', code: '2M'};
-            setReloj(_reloj);
-        } else {
-            let _reloj = {...reloj};
-            _reloj[`${'taller'}`] = {name: 'Taller MJ', code: 'MJ'};
-            setReloj(_reloj);
-        }
         setRelojDialog(true);
     };/*Editar la informacion de un objeto existente*/
     const onTemplateSelect = (e) => {
@@ -302,12 +288,6 @@ export default function Reloj(props) {
         _reloj[`${name}`] = val;
         setReloj(_reloj);
     }; /*Modifica el valor de un numero especificado del objeto*/
-    const onChangeSelectedBoxTaller = (e) => {
-        const val = e.value || '';
-        let _reloj = {...reloj};
-        _reloj[`${'taller'}`] = val;
-        setReloj(_reloj);
-    } //Modifica el estado de seleccion del selectbox del taller
     const hideDeleteRelojDialog = () => {
         setDeleteRelojDialog(false);
     };/*Ocultar dialog de eliminar un objeto*/
@@ -316,7 +296,7 @@ export default function Reloj(props) {
 
         relojService.delete(_relojes[0].id,token).then(data => {
             //Actualiza la lista de productos
-            relojService.getAll(token).then(data => setRelojes(data));
+            relojService.getAll(token, session?.user.taller).then(data => setRelojes(data));
             setDeleteRelojDialog(false);
             setSelectedRelojes(false);
             setReloj(emptyReloj);
@@ -412,7 +392,6 @@ export default function Reloj(props) {
                 onTemplateSelect={onTemplateSelect}
                 onInputTextChange={onInputTextChange}
                 onInputNumberChange={onInputNumberChange}
-                onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
                 otherfields={formFields}
                 imageSelected={imageSelected}
                 nameValid={nameValid}

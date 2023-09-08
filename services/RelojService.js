@@ -3,24 +3,8 @@ import axios from 'axios';
 export default class RelojService {
     baseUrl = process.env.NEXT_PUBLIC_API_URL + '/reloj/';
 
-    getAll(token) {
-        return axios.get(this.baseUrl + "all", {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        }).then(res => res.data);
-    }
-
-    getAll2M(token) {
-        return axios.get(this.baseUrl + "all/2M",{
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        }).then(res => res.data);
-    }
-
-    getAllMJ(token) {
-        return axios.get(this.baseUrl + "all/MJ",{
+    getAll(token,taller) {
+        return axios.get(this.baseUrl + "all/"+taller, {
             headers: {
                 "Authorization": "Bearer " + token
             }

@@ -24,25 +24,25 @@ export default function Taller2MProducts(){
         const [chargers, setChargers] = useState([]);
         const [products, setProducts] = useState([]);
 
-        const getAllMovile2M = (token) => {
-            movileService.getAll2M(token).then((data)=>setMoviles(data));
+        const getAllMovile2M = (token,taller) => {
+            movileService.getAll(token,taller).then((data)=>setMoviles(data));
         }
-        const getAllChargers2M = (token) => {
-            chargerService.getAll2M(token).then((data)=>setChargers(data));
+        const getAllChargers2M = (token,taller) => {
+            chargerService.getAll(token,taller).then((data)=>setChargers(data));
         }
-        const getAllRelojs2M = (token) => {
-            relojService.getAll2M(token).then((data)=>setRelojs(data));
+        const getAllRelojs2M = (token,taller) => {
+            relojService.getAll(token,taller).then((data)=>setRelojs(data));
         }
-        const getAllProducts2M = (token) => {
-            productService.getAllAccesorios2M(token).then((data)=>setProducts(data));
+        const getAllProducts2M = (token,taller) => {
+            productService.getAllProducts(token,taller).then((data)=>setProducts(data));
         }
 
         useEffect(()=>{
             if (status === 'authenticated' && session?.user !== undefined) {
-                getAllMovile2M(session?.user.token);
-                getAllChargers2M(session?.user.token);
-                getAllRelojs2M(session?.user.token);
-                getAllProducts2M(session?.user.token);
+                getAllMovile2M(session?.user.token, session?.user.taller);
+                getAllChargers2M(session?.user.token, session?.user.taller);
+                getAllRelojs2M(session?.user.token, session?.user.taller);
+                getAllProducts2M(session?.user.token, session?.user.taller);
             }
         },[session?.user]);
 

@@ -84,7 +84,7 @@ export default function Charger(props) {
 
     useEffect(() => {
         if (status === 'authenticated' && session?.user !== undefined) {
-            chargerService.getAll(session?.user.token).then((data) => setChargers(data));
+            chargerService.getAll(session?.user.token, session?.user.taller).then((data) => setChargers(data));
             setToken(session?.user.token);
         }
     }, [session?.user]);
@@ -154,11 +154,6 @@ export default function Charger(props) {
             setCantValid(true);
         }
 
-        //Si no se selecciono algun taller
-        if (charger.taller === '') {
-            return false;
-        }
-
         const connectorTypeRegex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar tipos de conectores
         if (!connectorTypeRegex.test(charger.connectorType) || charger.connectorType === '') {
             setConnectorTypeValid(false);
@@ -187,7 +182,7 @@ export default function Charger(props) {
             formData.append('name', charger.name);
             formData.append('price', charger.price);
             formData.append('cant', charger.cant);
-            formData.append('taller', charger.taller.name);
+            formData.append('taller', session?.user.taller);
             formData.append('connectorType', charger.connectorType);
             formData.append('compatibleDevice', charger.compatibleDevice);
 
@@ -216,7 +211,7 @@ export default function Charger(props) {
                     });
                     setChargerDialog(false);
                     //Actualiza la lista
-                    chargerService.getAll(token).then(data => setChargers(data));
+                    chargerService.getAll(token,session?.user.taller).then(data => setChargers(data));
                     setEditActive(false);
                     setImageSelected(false);
                     setSelectedChargers(null);
@@ -245,7 +240,7 @@ export default function Charger(props) {
                     });
                     setChargerDialog(false);
                     //Actualiza la lista
-                    chargerService.getAll(token).then(data => setChargers(data));
+                    chargerService.getAll(token,session?.user.taller).then(data => setChargers(data));
                     setChargerDialog(false);
                     setEditActive(false);
                     setSelectedChargers(null);
@@ -265,15 +260,6 @@ export default function Charger(props) {
         setEditActive(true);
         setCharger(charger);
         setImageSelected(false);
-        if (charger.taller === 'Taller 2M') {
-            let _charger = {...charger};
-            _charger[`${'taller'}`] = {name: 'Taller 2M', code: '2M'};
-            setCharger(_charger);
-        } else {
-            let _charger = {...charger};
-            _charger[`${'taller'}`] = {name: 'Taller MJ', code: 'MJ'};
-            setCharger(_charger);
-        }
         setChargerDialog(true);
     };/*Editar la informacion de un objeto existente*/
     const onTemplateSelect = (e) => {
@@ -295,12 +281,6 @@ export default function Charger(props) {
         _charger[`${name}`] = val;
         setCharger(_charger);
     }; /*Modifica el valor de un numero especificado del objeto*/
-    const onChangeSelectedBoxTaller = (e) => {
-        const val = e.value || '';
-        let _charger = {...charger};
-        _charger[`${'taller'}`] = val;
-        setCharger(_charger);
-    } //Modifica el estado de seleccion del selectbox del taller
     const hideDeleteChargerDialog = () => {
         setDeleteChargerDialog(false);
     };/*Ocultar dialog de eliminar un objeto*/
@@ -309,7 +289,7 @@ export default function Charger(props) {
 
         chargerService.delete(_chargers[0].id, token).then(data => {
             //Actualiza la lista de productos
-            chargerService.getAll(token).then(data => setChargers(data));
+            chargerService.getAll(token,session?.user.taller).then(data => setChargers(data));
             setDeleteChargerDialog(false);
             setSelectedChargers(false);
             setCharger(emptyCharger);
@@ -406,7 +386,6 @@ export default function Charger(props) {
                 onTemplateSelect={onTemplateSelect}
                 onInputTextChange={onInputTextChange}
                 onInputNumberChange={onInputNumberChange}
-                onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
                 otherfields={formFields}
                 imageSelected={imageSelected}
                 nameValid={nameValid}

@@ -73,7 +73,7 @@ export default function Accesorio(props) {
 
     useEffect(() => {
         if(status === 'authenticated' && session?.user !== undefined ){
-            productService.getAllProducts(session?.user.token).then((data) => setProducts(data));
+            productService.getAllProducts(session?.user.token, session?.user.taller).then((data) => setProducts(data));
             setToken(session?.user.token);
         }
     }, [session?.user]);
@@ -140,12 +140,6 @@ export default function Accesorio(props) {
             setCantValid(true);
         }
 
-        //Si no se selecciono algun taller
-        if (product.taller === '') {
-            return false;
-        }
-
-
         return true;
     } //Validacion de los campos del formulario
     const save = () => {
@@ -157,7 +151,7 @@ export default function Accesorio(props) {
             formData.append('name', product.name);
             formData.append('price', product.price);
             formData.append('cant', product.cant);
-            formData.append('taller', product.taller.name);
+            formData.append('taller', session?.user.taller);
 
             if (editActive) {
                 //Actualizar
@@ -182,7 +176,7 @@ export default function Accesorio(props) {
                         life: 2000
                     });
                     setProductDialog(false);
-                    productService.getAllProducts(token).then(data => setProducts(data));
+                    productService.getAllProducts(token,session?.user.taller).then(data => setProducts(data));
                     //Actualiza la lista
                     setEditActive(false);
                     setImageSelected(false);
@@ -212,7 +206,7 @@ export default function Accesorio(props) {
                         life: 2000
                     });
                     //Actualiza la lista
-                    productService.getAllProducts(token).then(data => setProducts(data));
+                    productService.getAllProducts(token,session?.user.taller).then(data => setProducts(data));
                     setProductDialog(false);
                     setEditActive(false);
                     setSelectedProducts(null);
@@ -232,15 +226,6 @@ export default function Accesorio(props) {
         setEditActive(true);
         setImageSelected(false);
         setProduct(product);
-        if (product.taller === 'Taller 2M') {
-            let _product = {...product};
-            _product[`${'taller'}`] = {name: 'Taller 2M', code: '2M'};
-            setProduct(_product);
-        } else {
-            let _product = {...product};
-            _product[`${'taller'}`] = {name: 'Taller MJ', code: 'MJ'};
-            setProduct(_product);
-        }
         setProductDialog(true);
     };/*Editar la informacion de un objeto existente*/
     const onTemplateSelect = (e) => {
@@ -262,12 +247,6 @@ export default function Accesorio(props) {
         _product[`${name}`] = val;
         setProduct(_product);
     }; /*Modifica el valor de un numero especificado del objeto*/
-    const onChangeSelectedBoxTaller = (e) => {
-        const val = e.value || '';
-        let _product = {...product};
-        _product[`${'taller'}`] = val;
-        setProduct(_product);
-    } //Modifica el estado de seleccion del selectbox del taller
     const hideDeleteProductDialog = () => {
         setDeleteProductDialog(false);
     };/*Ocultar dialog de eliminar un objeto*/
@@ -276,7 +255,7 @@ export default function Accesorio(props) {
 
         productService.delete(_products[0].id, token).then(data => {
             //Actualiza la lista de productos
-            productService.getAllProducts(token).then(data => setProducts(data));
+            productService.getAllProducts(token,session?.user.taller).then(data => setProducts(data));
             setDeleteProductDialog(false);
             setSelectedProducts(false);
             setProduct(emptyProduct);
@@ -359,7 +338,6 @@ export default function Accesorio(props) {
                 onTemplateSelect={onTemplateSelect}
                 onInputTextChange={onInputTextChange}
                 onInputNumberChange={onInputNumberChange}
-                onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
                 imageSelected={imageSelected}
                 nameValid={nameValid}
                 priceValid={priceValid}

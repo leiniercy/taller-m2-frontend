@@ -96,7 +96,7 @@ export default function Movile(props) {
 
     useEffect(() => {
         if (status === 'authenticated' && session?.user !== undefined) {
-            movileService.getAll(session?.user.token).then((data) => setMoviles(data));
+            movileService.getAll(session?.user.token, session?.user.taller).then((data) => setMoviles(data));
             setToken(session?.user.token);
         }
     }, [session?.user]);
@@ -164,11 +164,6 @@ export default function Movile(props) {
             setCantValid(true);
         }
 
-        //Si no se selecciono algun taller
-        if (movile.taller === '') {
-            return false;
-        }
-
         if (movile.sizeStorage < 0 || movile.sizeStorage === undefined) {
             setSizeStorageValid(false);
             return false;
@@ -208,7 +203,7 @@ export default function Movile(props) {
             formData.append('name', movile.name);
             formData.append('price', movile.price);
             formData.append('cant', movile.cant)
-            formData.append('taller', movile.taller.name);
+            formData.append('taller', session?.user.taller);
             formData.append('sizeStorage', movile.sizeStorage);
             formData.append('ram', movile.ram);
             formData.append('camaraTrasera', movile.camaraTrasera);
@@ -243,7 +238,7 @@ export default function Movile(props) {
                         life: 2000
                     });
                     //Actualiza la lista
-                    movileService.getAll(token).then(data => setMoviles(data));
+                    movileService.getAll(token, session?.user.taller).then(data => setMoviles(data));
                     setMovileDialog(false);
                     setEditActive(false);
                     setImageSelected(false);
@@ -272,7 +267,7 @@ export default function Movile(props) {
                         life: 2000
                     });
                     //Actualiza la lista
-                    movileService.getAll(token).then(data => setMoviles(data));
+                    movileService.getAll(token, session?.user.taller).then(data => setMoviles(data));
                     setMovileDialog(false);
                     setEditActive(false);
                     setSelectedMoviles(null);
@@ -291,15 +286,6 @@ export default function Movile(props) {
         setEditActive(true);
         setImageSelected(false);
         setMovile(movile);
-        if (movile.taller === 'Taller 2M') {
-            let _movile = {...movile};
-            _movile[`${'taller'}`] = {name: 'Taller 2M', code: '2M'};
-            setMovile(_movile);
-        } else {
-            let _movile = {...movile};
-            _movile[`${'taller'}`] = {name: 'Taller MJ', code: 'MJ'};
-            setMovile(_movile);
-        }
         setMovileDialog(true);
 
     };/*Editar la informacion de un objeto existente*/
@@ -322,12 +308,6 @@ export default function Movile(props) {
         _movile[`${name}`] = val;
         setMovile(_movile);
     }; /*Modifica el valor de un numero especificado del objeto*/
-    const onChangeSelectedBoxTaller = (e) => {
-        const val = e.value || '';
-        let _movile = {...movile};
-        _movile[`${'taller'}`] = val;
-        setMovile(_movile);
-    } //Modifica el estado de seleccion del selectbox del taller
     const onCheckBoxChange = (e, name) => {
         const val = e.checked || false;
         let _movile = {...movile};
@@ -342,7 +322,7 @@ export default function Movile(props) {
 
         movileService.delete(_moviles[0].id, token).then(data => {
             //Actualiza la lista de productos
-            movileService.getAll(token).then(data => setMoviles(data));
+            movileService.getAll(token, session?.user.taller).then(data => setMoviles(data));
             setDeleteMovileDialog(false);
             setSelectedMoviles(false);
             setMovile(emptyMovile);
@@ -442,7 +422,6 @@ export default function Movile(props) {
                 onTemplateSelect={onTemplateSelect}
                 onInputTextChange={onInputTextChange}
                 onInputNumberChange={onInputNumberChange}
-                onChangeSelectedBoxTaller={onChangeSelectedBoxTaller}
                 otherfields={formFields}
                 imageSelected={imageSelected}
                 nameValid={nameValid}

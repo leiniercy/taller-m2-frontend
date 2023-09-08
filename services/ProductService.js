@@ -27,24 +27,8 @@ export default class ProductService {
         }).then(res => res.data);
     }
 
-    getAllAccesorios2M(token) {
-        return axios.get(this.baseUrl + "all/accesorios/2M", {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        }).then(res => res.data);
-    }
-
-    getAllAccesoriosMJ(token) {
-        return axios.get(this.baseUrl + "all/accesorios/MJ", {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        }).then(res => res.data);
-    }
-
-    getAllProducts(token) {
-        return axios.get(this.baseUrl + "all/accesorio", {
+    getAllProducts(token, taller) {
+        return axios.get(this.baseUrl + "all/accesorio/"+taller, {
             headers: {
                 "Authorization": "Bearer " + token
             }

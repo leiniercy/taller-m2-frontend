@@ -78,14 +78,6 @@ export default function DialogForm(props) {
                         />
                     </div>
                 </div>
-                <div className="field">
-                    <SelectBoxTaller
-                        object={props.object}
-                        onChangeSelectedBoxTaller={props.onChangeSelectedBoxTaller}
-                        submitted={props.submitted}
-                    />
-                </div>
-
                 {props.otherfields}
 
             </form>
