@@ -18,7 +18,7 @@ export default function FieldsMovile(props) {
                     onInputNumberChange={props.onInputNumberChange}
                     valid={props.sizeStorageValid}
                     min={0}
-                    max={100}
+                    max={1024}
                     submitted={props.submitted}
                 />
             </div>
@@ -79,12 +79,12 @@ export default function FieldsMovile(props) {
                     label={'Batería'}
                     error={'Batería incorrecta'}
                     name={'bateria'}
-                    suffix={ props.object.bateria === 1 ? 'día' : ' días'}
+                    suffix={' amp'}
                     object={props.object.bateria}
                     onInputNumberChange={props.onInputNumberChange}
                     valid={props.bateriaValid}
                     min={0}
-                    max={100}
+                    max={8000}
                     submitted={props.submitted}
                 />
             </div>
