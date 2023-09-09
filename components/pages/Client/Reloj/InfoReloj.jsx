@@ -95,7 +95,7 @@ export default function InfoReloj(props) {
                                 <span
                                     className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Dispositivos compatibles:</span>
                                 <span
-                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Dispositivos compatibles:</span>
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Batería:</span>
                             </div>
                             <div className="col-5">
                                 <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {reloj.cant}</span>
@@ -105,7 +105,7 @@ export default function InfoReloj(props) {
                                 <span
                                     className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {reloj.compatibleDevice}</span>
                                 <span
-                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {reloj.bateryLife}{(reloj.bateryLife === 0 || reloj.bateryLife > 1) ? ' días' : ' día'}</span>
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {reloj.bateryLife} amp</span>
                             </div>
                         </div>
                     </div>

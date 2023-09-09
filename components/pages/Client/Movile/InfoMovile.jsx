@@ -101,7 +101,7 @@ export default function InfoMovile(props) {
                                 <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Cámara Forntal:</span>
                                 <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Cámara Trasera:</span>
                                 <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Redes disponibles:</span>
-                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Duración de la batería:</span>
+                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Batería:</span>
                             </div>
                             <div className="col-5">
                                 <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {movile.cant}</span>
@@ -117,7 +117,7 @@ export default function InfoMovile(props) {
                                 <span
                                     className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {movile.banda2G && '2G'}{movile.banda3G && '/3G'}{movile.banda4G && '/4G'}{movile.banda5G && '/5G'}</span>
                                 <span
-                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {movile.bateria} días</span>
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {movile.bateria} amp</span>
                             </div>
                         </div>
                     </div>
