@@ -238,7 +238,7 @@ export default function Ventas(props) {
             return false;
         }
 
-        const descriptionRegex = /^[.,a-zA-Z0-9À-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar las descripciones
+        const descriptionRegex = /^[a-zA-Z0-9À-ÿ.,+_""=@#$*%^&¿?!:\u00f1\u00d1\s]+$/; // Expresión regular para validar las descripciones
         const newDescriptions = [...descriptionsValid];
         for (let i = 0; i < descriptions.length; i++) {
             if (!descriptionRegex.test(descriptions[i]) || descriptions[i] === '') {
