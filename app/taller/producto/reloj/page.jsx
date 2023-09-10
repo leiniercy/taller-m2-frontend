@@ -154,7 +154,7 @@ export default function Reloj(props) {
             setCantValid(true);
         }
 
-        const specialFeatureRegex = /^[,.a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar las funcionalidades del reloj
+        const specialFeatureRegex = /^[,.a-zA-ZÀ-ÿ0-9\u00f1\u00d1\s]+$/; // Expresión regular para validar las funcionalidades del reloj
         if (!specialFeatureRegex.test(reloj.specialFeature) || reloj.specialFeature === '') {
             setSpecialFeatureValid(false);
             return false;
@@ -162,7 +162,7 @@ export default function Reloj(props) {
             setSpecialFeatureValid(true);
         }
 
-        const compatibleDeviceRegex = /^[,.a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar los dispositivos compatibles
+        const compatibleDeviceRegex = /^[,.a-zA-ZÀ-ÿ0-9\u00f1\u00d1\s]+$/; // Expresión regular para validar los dispositivos compatibles
         if (!compatibleDeviceRegex.test(reloj.compatibleDevice) || reloj.compatibleDevice === '') {
             setCompatibleDeviceValid(false);
             return false;

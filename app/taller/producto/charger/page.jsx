@@ -154,7 +154,7 @@ export default function Charger(props) {
             setCantValid(true);
         }
 
-        const connectorTypeRegex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar tipos de conectores
+        const connectorTypeRegex = /^[a-zA-ZÀ-ÿ0-9\u00f1\u00d1\s]+$/; // Expresión regular para validar tipos de conectores
         if (!connectorTypeRegex.test(charger.connectorType) || charger.connectorType === '') {
             setConnectorTypeValid(false);
             return false;
@@ -162,7 +162,7 @@ export default function Charger(props) {
             setConnectorTypeValid(true);
         }
 
-        const compatibleDeviceRegex = /^[,.a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/;// Expresión regular para validar los dispositivos compatibles
+        const compatibleDeviceRegex = /^[,.a-zA-ZÀ-ÿ0-9\u00f1\u00d1\s]+$/;// Expresión regular para validar los dispositivos compatibles
         if (!compatibleDeviceRegex.test(charger.compatibleDevice) || charger.compatibleDevice === '') {
             setCompatibleDeviceValid(false);
             return false;
