@@ -7,6 +7,7 @@ import {Dropdown} from "primereact/dropdown";
 const tallerNames = [
     { name: 'Administrador', code: 'ROLE_ADMIN' },
     { name: 'Moderador', code: 'ROLE_MODERATOR' },
+    { name: 'Usuario', code: 'ROLE_USER' },
 ];
 const SelectBoxRol = (props) => {
 

@@ -43,10 +43,12 @@ export default function Login() {
                 setCookie('rol', session.user.rol);
                 setCookie('taller', session.user.taller);
                 if(session.user.rol === 'ROLE_ADMIN'){
+                    router.push('/taller/user');
+                }else if(session.user.rol === 'ROLE_MODERATOR'){
                     router.push('/taller');
-                }else if (session.user.rol === 'ROLE_MODERATOR' && session.user.taller === 'Taller 2M') {
+                }else if (session.user.rol === 'ROLE_USER' && session.user.taller === 'Taller 2M') {
                     router.push('/taller/informacion/taller2M');
-                } else if (session.user.rol === 'ROLE_MODERATOR' && session.user.taller === 'Taller 2M') {
+                } else if (session.user.rol === 'ROLE_USER' && session.user.taller === 'Taller MJ') {
                     router.push('/taller/informacion/tallerMJ');
                 }
             }

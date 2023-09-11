@@ -14,10 +14,12 @@ const CustomError = (props) => {
     useEffect(() => {
         if (status === "authenticated" && session?.user !== undefined) {
             if (session?.user.rol === 'ROLE_ADMIN') {
+                setUrl('/taller/user');
+            }else if (session?.user.rol === 'ROLE_MODERATOR') {
                 setUrl('/');
-            } else if (session?.user.rol === 'ROLE_MODERATOR' && session?.user.taller === 'Taller 2M') {
+            } else if (session?.user.rol === 'ROLE_USER' && session?.user.taller === 'Taller 2M') {
                 setUrl('/taller/informacion/taller2M');
-            } else if (session?.user.rol === 'ROLE_MODERATOR' && session?.user.taller === 'Taller 2M') {
+            } else if (session?.user.rol === 'ROLE_USER' && session?.user.taller === 'Taller MJ') {
                 setUrl('/taller/informacion/tallerMJ');
             }
         }else{

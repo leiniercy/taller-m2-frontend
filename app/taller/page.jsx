@@ -28,7 +28,7 @@ export default function Home() {
         required: true
     });
 
-    if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_ADMIN") {
+    if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_MODERATOR") {
         throw new Error('Access denied')
     }
 

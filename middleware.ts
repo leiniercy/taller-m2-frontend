@@ -1,28 +1,35 @@
-
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import {NextResponse} from 'next/server'
+import type {NextRequest} from 'next/server'
 
 export function middleware(request: NextRequest) {
 
-    const url  = request.nextUrl.clone();
+    const url = request.nextUrl.clone();
 
     let isLogin = request.cookies.get('logged');
 
-    if( isLogin !== undefined && isLogin.value === 'false'){
-        if(request.nextUrl.pathname.startsWith("/taller") ){
+    if (isLogin !== undefined && isLogin.value === 'false') {
+        if (request.nextUrl.pathname.startsWith("/taller")) {
             return NextResponse.rewrite(new URL('/', request.url))
         }
-    }else{
+    } else {
         let rol = request.cookies.get('rol');
-        if(rol !== undefined && rol.value === 'ROLE_ADMIN' && url.pathname === '/' ){
+        if (rol !== undefined && rol.value === 'ROLE_ADMIN' &&
+            (url.pathname === '/' || url.pathname.startsWith("/taller/producto")
+                || url.pathname.startsWith("/taller/informacion")
+                || url.pathname.startsWith("/taller/ventas"))) {
+            url.pathname = '/taller/user';
+            return NextResponse.redirect(url);
+        } else if (rol !== undefined && rol.value === 'ROLE_MODERATOR' &&
+            (url.pathname === '/' || url.pathname.startsWith("/taller/user"))) {
             url.pathname = '/taller';
             return NextResponse.redirect(url);
-        }else if(rol !== undefined && rol.value === 'ROLE_MODERATOR' && (url.pathname === '/' || url.pathname === '/taller' )){
+        } else if (rol !== undefined && rol.value === 'ROLE_USER' &&
+            (url.pathname === '/' || url.pathname === '/taller' || url.pathname.startsWith("/taller/user"))) {
             let taller = request.cookies.get('taller');
-            if(taller !== undefined && taller.value === "Taller 2M"){
+            if (taller !== undefined && taller.value === "Taller 2M") {
                 url.pathname = '/taller/informacion/taller2M';
                 return NextResponse.redirect(url);
-            }else if(taller !== undefined && taller.value === "Taller MJ"){
+            } else if (taller !== undefined && taller.value === "Taller MJ") {
                 url.pathname = '/taller/informacion/tallerMJ';
                 return NextResponse.redirect(url);
             }

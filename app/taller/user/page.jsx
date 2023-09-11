@@ -183,7 +183,13 @@ export default function Usuarios() {
         setUserName(user.username);
         setEmail(user.email);
         setTaller(user.taller === 'Taller 2M' ? { name: 'Taller 2M', code: '2M' } : { name: 'Taller MJ', code: 'MJ' });
-        setRol(user.roles[0].name === 'ROLE_ADMIN' ? { name: 'Administrador', code: 'ROLE_ADMIN' } : { name: 'Moderador', code: 'ROLE_MODERATOR' });
+        if(user.roles[0].name === 'ROLE_ADMIN'){
+            setRol({ name: 'Administrador', code: 'ROLE_ADMIN' });
+        }else if(user.roles[0].name === 'ROLE_MODERATOR'){
+            setRol({ name: 'Moderador', code: 'ROLE_MODERATOR' });
+        }else if(user.roles[0].name === 'ROLE_USER'){
+            setRol( { name: 'Usuario', code: 'ROLE_USER' });
+        }
     }
     const validateEditForm = () => {
         const nameRegex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; // Expresión regular para validar nombres

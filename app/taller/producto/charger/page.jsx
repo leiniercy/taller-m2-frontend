@@ -25,7 +25,7 @@ export default function Charger(props) {
     const {data: session, status} = useSession();
     const [token, setToken] = useState('');
 
-    if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_ADMIN") {
+    if (status === 'authenticated' && session?.user !== undefined && session?.user.rol !== "ROLE_MODERATOR") {
         throw new Error('Access denied')
     }
 

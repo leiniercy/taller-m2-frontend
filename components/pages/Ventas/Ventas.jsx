@@ -316,7 +316,7 @@ export default function Ventas(props) {
                     document.body.appendChild(link);
                     link.click();
                 });
-
+                sellService.getAll(token).then((data) => setSales(data));
             }).catch((error) => {
                 toast.current.show({
                     error: error,
