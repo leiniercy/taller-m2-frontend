@@ -1,11 +1,12 @@
 "use client"
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Dialog} from "primereact/dialog";
 import {Button} from "primereact/button";
 
 
-export default function DeleteProductDialog(props) {
+const DeleteProductDialog = (props) =>{
 
     const footer = (
         <React.Fragment>
@@ -29,3 +30,11 @@ export default function DeleteProductDialog(props) {
     </Dialog>)
 
 }
+
+DeleteProductDialog.propType={
+    hideDialog: PropTypes.func.isRequired,
+    delete: PropTypes.func.isRequired,
+    visible: PropTypes.bool.isRequired,
+    object: PropTypes.object.isRequired,
+}
+export default DeleteProductDialog;

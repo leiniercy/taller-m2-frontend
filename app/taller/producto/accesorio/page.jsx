@@ -21,7 +21,7 @@ import {Toast} from 'primereact/toast';
 import {useSession} from "next-auth/react";
 
 
-export default function Accesorio(props) {
+export default function Accesorio() {
 
     const {data: session, status} = useSession();
     const [token, setToken] = useState('');
@@ -52,7 +52,6 @@ export default function Accesorio(props) {
     ];
 
     const toast = useRef(null);
-    const dt = useRef(null);
 
     const [submitted, setSubmitted] = useState(false);
     const [editActive, setEditActive] = useState(false);
@@ -108,7 +107,7 @@ export default function Accesorio(props) {
             </React.Fragment>
         );
     }; /*Acciones de cada columna de la tabla Update, Delete*/
-    const hideDialog = (e) => {
+    const hideDialog = () => {
         setProductDialog(false);
         setSubmitted(false);
     }; /*Ocultar dialog de anadir*/
@@ -156,18 +155,18 @@ export default function Accesorio(props) {
             if (editActive) {
                 //Actualizar
                 if (!imageSelected) {
-                    product.files.forEach((file, i) => {
+                    product.files.forEach((file) => {
                         let blob = new Blob([file.url], {type: 'image/png'});
                         let f = new File([blob], file.name, {type: 'image/png'});
                         formData.append('files', f);
                     });
                 } else {
-                    product.files.forEach((file, i) => {
+                    product.files.forEach((file) => {
                         formData.append('files', file);
                     });
                 }
                 //Guardar en la BD y actualiza el estado de la informacion
-                productService.update(formData, product.id, token).then(data => {
+                productService.update(formData, product.id, token).then((data) => {
                     //Muestra sms de confirmacion
                     toast.current.show({
                         severity: 'success',
@@ -192,7 +191,7 @@ export default function Accesorio(props) {
                 });
 
             } else {
-                product.files.forEach((file, i) => {
+                product.files.forEach((file) => {
                     formData.append('files', file);
                 });
 
@@ -268,6 +267,7 @@ export default function Accesorio(props) {
             });
         }).catch(error => {
             toast.current.show({
+                error: error,
                 severity: 'danger',
                 summary: '!Atención',
                 detail: 'Error al eliminar el producto',
@@ -296,6 +296,7 @@ export default function Accesorio(props) {
             });
         }).catch(error => {
             toast.current.show({
+                error: error,
                 severity: 'danger',
                 summary: '!Atención',
                 detail: 'Error al eliminar los productos seleccionados',
@@ -317,7 +318,6 @@ export default function Accesorio(props) {
                 <div className="col-12">
                     <Table
                         headerLabel={'accesorios'}
-                        dt={dt}
                         objects={products}
                         selectedObjects={selectedProducts}
                         setSelectedObject={onSelectionChangeSelectedObjects}

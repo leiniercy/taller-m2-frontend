@@ -1,14 +1,14 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import {Dialog} from "primereact/dialog";
 import {Button} from "primereact/button";
 
 import SelectBoxImages from "@components/pages/Product/SelectBoxImages";
-import SelectBoxTaller from "@components/pages/Product/SelectBoxTaller";
 import CustomInputNumber from "@components/pages/Product/CustomInputNumber";
 import CustomInputText from "@components/pages/Product/CustomInputText";
 
 
-export default function DialogForm(props) {
+const DialogForm = (props) => {
 
     const dialogFooter = (<div className="flex flex-row justify-content-between w-full p-3">
         <Button label="Cancelar" icon="pi pi-times" outlined onClick={props.hideDialog}/>
@@ -85,3 +85,22 @@ export default function DialogForm(props) {
     );
 
 }
+
+DialogForm.propType = {
+    save: PropTypes.func.isRequired,
+    hideDialog: PropTypes.func.isRequired,
+    onTemplateSelect: PropTypes.func.isRequired,
+    onInputTextChange: PropTypes.func.isRequired,
+    onInputNumberChange: PropTypes.func.isRequired,
+    object: PropTypes.object.isRequired,
+    visible: PropTypes.bool.isRequired,
+    submitted: PropTypes.bool.isRequired,
+    editActive: PropTypes.bool.isRequired,
+    imageSelected: PropTypes.bool.isRequired,
+    nameValid: PropTypes.bool.isRequired,
+    priceValid: PropTypes.bool.isRequired,
+    cantValid: PropTypes.bool.isRequired,
+    otherfields: PropTypes.element.isRequired
+}
+
+export default DialogForm;

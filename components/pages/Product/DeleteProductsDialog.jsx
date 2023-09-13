@@ -4,9 +4,10 @@
 import React from 'react';
 import {Dialog} from "primereact/dialog";
 import {Button} from "primereact/button";
+import PropTypes from "prop-types";
+import DeleteProductDialog from "@components/pages/Product/DeleteProductDialog";
 
-export default function DeleteProductsDialog(props) {
-
+const DeleteProductsDialog = (props) => {
 
     const footer = (
         <React.Fragment>
@@ -25,3 +26,12 @@ export default function DeleteProductsDialog(props) {
         </div>
     </Dialog>);
 }
+
+DeleteProductsDialog.propType={
+    hideDialog: PropTypes.func.isRequired,
+    delete: PropTypes.func.isRequired,
+    visible: PropTypes.bool.isRequired,
+    object: PropTypes.object.isRequired,
+}
+
+export default DeleteProductsDialog;

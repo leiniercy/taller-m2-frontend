@@ -6,7 +6,6 @@ import {Column} from "primereact/column";
 import {DataTable} from "primereact/datatable";
 import {Button} from "primereact/button";
 import {InputText} from "primereact/inputtext";
-import Tools from "@components/pages/Product/Tools";
 
 
 const Table = (props) =>  {
@@ -62,7 +61,6 @@ const Table = (props) =>  {
 
     return(
         <DataTable
-            ref={props.dt}
             value={props.objects}
             selection={props.selectedObjects}
             onSelectionChange={props.setSelectedObject}
@@ -111,8 +109,11 @@ const Table = (props) =>  {
 
 Table.propType = {
     headerLabel: PropTypes.string.isRequired,
-    emptyFilters: PropTypes.array.isRequired
-
+    emptyFilters: PropTypes.object.isRequired,
+    globalFilterFields: PropTypes.arrayOf(PropTypes.string).isRequired,
+    objects: PropTypes.arrayOf(PropTypes.object).isRequired,
+    selectedObjects: PropTypes.arrayOf(PropTypes.object).isRequired,
+    actionBodyTemplate: PropTypes.func.isRequired
 }
 
 export default Table;
