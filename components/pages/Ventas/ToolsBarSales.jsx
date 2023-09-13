@@ -1,12 +1,15 @@
+
+
 import React from "react";
 import {Toolbar} from "primereact/toolbar";
 import {Button} from "primereact/button";
 
 import ReportCalendar from "@components/pages/Ventas/ReportCalendar";
 import SellService from "@services/SellService";
+import PropTypes from "prop-types";
 
 
-export default function ToolsBarSales(props) {
+const ToolsBarSales = (props) => {
 
     const sellService = new SellService();
 
@@ -49,6 +52,7 @@ export default function ToolsBarSales(props) {
             }
         }).catch(error => {
             props.toast.current.show({
+                error: error,
                 severity: 'danger',
                 summary: 'Atención!',
                 detail: "Error al exportar el reporte",
@@ -75,7 +79,17 @@ export default function ToolsBarSales(props) {
 
     return (
         <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
-    )
+    );
+}
 
+ToolsBarSales.propTypes = {
+    selectedObjects: PropTypes.arrayOf(PropTypes.object).isRequired,
+    selectedReportDate: PropTypes.any.isRequired,
+    onChangeReportCalendar: PropTypes.func.isRequired,
+    confirmDeleteSelected: PropTypes.func.isRequired,
+    openNewDialogSale: PropTypes.func.isRequired,
+    openNewDialogCustomer: PropTypes.func.isRequired,
 
 }
+
+export default ToolsBarSales;

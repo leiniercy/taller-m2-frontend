@@ -19,9 +19,10 @@ import ProductService from "@services/ProductService";
 import SellService from "@services/SellService";
 import {useSession} from "next-auth/react";
 import CustomFieldset from "@components/layout/CustomFieldSet";
+import PropTypes from "prop-types";
 
 
-export default function Ventas(props) {
+const Ventas = (props) => {
 
     const {data: session, status} = useSession();
     const [token, setToken] = useState('');
@@ -487,3 +488,9 @@ export default function Ventas(props) {
     );
 
 }
+
+Ventas.propTypes = {
+    taller: PropTypes.string.isRequired,
+}
+
+export default Ventas;

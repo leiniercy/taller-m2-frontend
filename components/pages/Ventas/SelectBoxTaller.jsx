@@ -1,7 +1,8 @@
 
+import PropTypes from "prop-types";
 import { Dropdown } from 'primereact/dropdown';
 
-export default function SelectBoxTaller(props) {
+const SelectBoxTaller = (props) => {
 
 
     const tallerNames = [
@@ -21,3 +22,10 @@ export default function SelectBoxTaller(props) {
         </div>
     )
 }
+
+SelectBoxTaller.propTypes = {
+    selectedTaller: PropTypes.object.isRequired,
+    onChangeSelectedBoxTaller: PropTypes.func.isRequired,
+}
+
+export default SelectBoxTaller;

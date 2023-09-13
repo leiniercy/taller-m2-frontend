@@ -1,12 +1,12 @@
 "use client"
-
 import React, {useState} from "react";
+import PropTypes from "prop-types";
 import {Column} from "primereact/column";
 import {DataTable} from "primereact/datatable";
 import {InputText} from "primereact/inputtext";
 import {Button} from "primereact/button";
 
-export default function TableVentas(props) {
+const TableVentas = (props) => {
 
     const [expandedRows, setExpandedRows] = useState(null);
     const [filters, setFilters] = useState(null);
@@ -103,31 +103,20 @@ export default function TableVentas(props) {
 
     return (
         <DataTable
-            // ref={props.dt}
             value={props.objects}
-            // selection={props.selectedObjects}
-            // onSelectionChange={props.setSelectedObject}
             dataKey="id"
             removableSort
             filters={filters}
             globalFilterFields={props.globalFilterFields}
             globalFilter={globalFilter}
-            // paginator rows={5}
-            // rowsPerPageOptions={[5, 10, 25]}
-            // paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-            // currentPageReportTemplate="Muestra {first} de {last} de {totalRecords}"
             scrollable
             scrollHeight="800px"
-            // virtualScrollerOptions={{itemSize: 46}}
             tableStyle={{minWidth: '50rem'}}
             header={header}
             expandedRows={expandedRows}
             onRowToggle={(e) => setExpandedRows(e.data)}
-            // onRowExpand={onRowExpand}
-            // onRowCollapse={onRowCollapse}
             rowExpansionTemplate={rowExpansionTemplate}
         >
-            {/*<Column selectionMode="multiple" exportable={false}></Column>*/}
             <Column expander={allowExpansion} style={{width: '5rem'}}/>
             <Column field="image" header="Imagen" body={imageBodyTemplate}></Column>
             <Column field="name" header="Nombre" sortable filter
@@ -146,9 +135,18 @@ export default function TableVentas(props) {
                 filterClear={filterClearTemplate}
                 filterApply={filterApplyTemplate}
             />
-            {/*<Column body={props.actionBodyTemplate} exportable={false} style={{minWidth: '12rem'}}></Column>*/}
         </DataTable>
-
     );
-
 }
+
+TableVentas.propTypes = {
+    headerLabel: PropTypes.string.isRequired,
+    rol: PropTypes.string.isRequired,
+    objects: PropTypes.object.isRequired,
+    emptyFilters: PropTypes.object.isRequired,
+    globalFilterFields: PropTypes.arrayOf(PropTypes.string).isRequired,
+    selectedObjects: PropTypes.arrayOf(PropTypes.object).isRequired,
+    setSelectedObject: PropTypes.func.isRequired,
+    confirmDeleteSell: PropTypes.func.isRequired,
+}
+export default TableVentas;

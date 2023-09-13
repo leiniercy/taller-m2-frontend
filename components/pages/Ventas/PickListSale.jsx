@@ -1,6 +1,8 @@
+
+import PropTypes from 'prop-types';
 import {MultiSelect} from 'primereact/multiselect';
 
-export default function PickListSale(props) {
+const PickListSale = (props) =>{
 
     const panelFooterTemplate = () => {
         const length = props.selectedProducts ? props.selectedProducts.length : 0;
@@ -22,7 +24,14 @@ export default function PickListSale(props) {
             display="chip"
             placeholder="Seleccione los productos"
             panelFooterTemplate={panelFooterTemplate}
-            // maxSelectedLabels={}
             className="w-full"/>
     );
 }
+
+PickListSale.propTypes = {
+    products: PropTypes.arrayOf(PropTypes.object).isRequired,
+    selectedProducts: PropTypes.arrayOf(PropTypes.object).isRequired,
+    onChangeSelectedBoxProducts: PropTypes.func.isRequired,
+}
+
+export default PickListSale;

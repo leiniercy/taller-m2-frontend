@@ -1,11 +1,13 @@
 
+import PropTypes from "prop-types";
 import { InputTextarea } from "primereact/inputtextarea";
 import {InputText} from "primereact/inputtext";
 import {InputNumber} from 'primereact/inputnumber';
 import React from "react";
 import {Slider} from "primereact/slider";
 
-export default function SaleInfo(props) {
+
+const SaleInfo = (props) => {
 
 
     return (<>
@@ -70,3 +72,20 @@ export default function SaleInfo(props) {
     );
 
 }
+
+SaleInfo.propTypes = {
+    selectedProducts: PropTypes.arrayOf(PropTypes.object).isRequired,
+    quantities: PropTypes.arrayOf(PropTypes.number).isRequired,
+    prices: PropTypes.arrayOf(PropTypes.number).isRequired,
+    descriptions: PropTypes.arrayOf(PropTypes.string).isRequired,
+    submitted: PropTypes.bool.isRequired,
+    descriptionsValid: PropTypes.bool.isRequired,
+    pricesValid: PropTypes.bool.isRequired,
+    quantitiesValid: PropTypes.bool.isRequired,
+    handleQuantityChange: PropTypes.func.isRequired,
+    handlePriceChange: PropTypes.func.isRequired,
+    handleDescriptionChange: PropTypes.func.isRequired,
+
+}
+
+export default SaleInfo;

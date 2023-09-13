@@ -1,3 +1,5 @@
+
+import PropTypes from "prop-types";
 import React from "react";
 import {Dialog} from "primereact/dialog";
 import {Button} from "primereact/button";
@@ -9,7 +11,7 @@ import SaleInfo from "@components/pages/Ventas/SaleInfo";
 import SaleCalendar from "@components/pages/Ventas/SaleCalendar";
 
 
-export default function DialogFormSale(props) {
+const DialogFormSale = (props) => {
 
     const dialogFooter = (<div className="flex flex-row justify-content-between w-full p-3">
         <Button label="Cancelar" icon="pi pi-times" outlined onClick={props.hideDialog}/>
@@ -80,5 +82,29 @@ export default function DialogFormSale(props) {
             </form>
         </Dialog>
     );
-
 }
+
+DialogFormSale.propTypes = {
+    customers: PropTypes.arrayOf(PropTypes.object).isRequired,
+    products: PropTypes.arrayOf(PropTypes.object).isRequired,
+    selectedProducts: PropTypes.arrayOf(PropTypes.object).isRequired,
+    quantities: PropTypes.arrayOf(PropTypes.number).isRequired,
+    prices: PropTypes.arrayOf(PropTypes.number).isRequired,
+    descriptions: PropTypes.arrayOf(PropTypes.string).isRequired,
+    selectedCustomer: PropTypes.object.isRequired,
+    submitted: PropTypes.bool.isRequired,
+    editActive: PropTypes.bool.isRequired,
+    visible: PropTypes.bool.isRequired,
+    descriptionsValid: PropTypes.bool.isRequired,
+    pricesValid: PropTypes.bool.isRequired,
+    quantitiesValid: PropTypes.bool.isRequired,
+    save: PropTypes.func.isRequired,
+    hideDialog: PropTypes.func.isRequired,
+    onChangeCalendar: PropTypes.func.isRequired,
+    onChangeSelectedBoxCustomer: PropTypes.func.isRequired,
+    handleQuantityChange: PropTypes.func.isRequired,
+    handlePriceChange: PropTypes.func.isRequired,
+    handleDescriptionChange: PropTypes.func.isRequired,
+}
+
+export default DialogFormSale;

@@ -1,10 +1,11 @@
+
+import PropTypes from "prop-types";
 import {Dropdown} from 'primereact/dropdown';
 
-export default function SelectBoxCustomer(props) {
+const SelectBoxCustomer = (props) => {
     const selectedCustomerTemplate = (option, props) => {
         if (option) {
             return (<div className="flex align-items-center">
-                {/*<img alt={option.name} src="https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png" className={`mr-2 flag flag-${option.code.toLowerCase()}`} style={{ width: '18px' }} />*/}
                 <div>{option.customerName}</div>
             </div>);
         }
@@ -14,7 +15,6 @@ export default function SelectBoxCustomer(props) {
 
     const customerOptionTemplate = (option) => {
         return (<div className="flex align-items-center">
-            {/*<img alt={option.name} src="https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png" className={`mr-2 flag flag-${option.code.toLowerCase()}`} style={{ width: '18px' }} />*/}
             <div>{option.customerName}</div>
         </div>);
     };
@@ -33,3 +33,9 @@ export default function SelectBoxCustomer(props) {
             className="w-full"/>
     );
 }
+SelectBoxCustomer.propTypes = {
+    selectedCustomer: PropTypes.object.isRequired,
+    onChangeSelectedBoxCustomer: PropTypes.func.isRequired,
+    placeholder: PropTypes.string.isRequired,
+}
+export default SelectBoxCustomer;

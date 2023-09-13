@@ -1,8 +1,9 @@
 
-
+import PropTypes from "prop-types";
 import { Calendar } from 'primereact/calendar';
 import { addLocale } from 'primereact/api';
-export default function ReportCalendar(props) {
+
+const ReportCalendar = (props) =>  {
 
     addLocale('es', {
         firstDayOfWeek: 1,
@@ -27,3 +28,10 @@ export default function ReportCalendar(props) {
             />
     );
 }
+
+ReportCalendar.propType = {
+    date: PropTypes.any.isRequired,
+    onChangeCalendar: PropTypes.func.isRequired,
+}
+
+export default ReportCalendar;

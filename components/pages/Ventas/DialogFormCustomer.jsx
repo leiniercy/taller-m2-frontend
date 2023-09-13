@@ -1,10 +1,12 @@
+
+import PropTypes from "prop-types";
 import {Dialog} from "primereact/dialog";
 import {InputText} from "primereact/inputtext";
 import {classNames} from "primereact/utils";
 import {Button} from "primereact/button";
 import React from "react";
 
-export default function DialogFormCustomer(props) {
+const DialogFormCustomer = (props) => {
 
     const dialogFooter = (<div className="flex flex-row justify-content-between w-full p-3">
         <Button label="Cancelar" icon="pi pi-times" outlined onClick={props.hideDialog}/>
@@ -29,7 +31,8 @@ export default function DialogFormCustomer(props) {
                                required autoFocus
                                className={classNames({'p-invalid': props.submitted && !props.object.customerName})}
                     />
-                    {props.submitted && !props.object.customerName && <small className="p-error">Campo obligatorio.</small>}
+                    {props.submitted && !props.object.customerName &&
+                        <small className="p-error">Campo obligatorio.</small>}
                     {props.submitted && !props.nameValid && <small className="p-error">El nombre es incorrecto.</small>}
                 </div>
                 <div className="field">
@@ -41,11 +44,25 @@ export default function DialogFormCustomer(props) {
                                required autoFocus
                                className={classNames({'p-invalid': props.submitted && !props.object.customerMovile})}
                     />
-                    {props.submitted && !props.object.customerMovile && <small className="p-error">Campo obligatorio.</small>}
-                    {props.submitted && !props.phoneValid && <small className="p-error">El teléfono no es incorrecto.</small>}
+                    {props.submitted && !props.object.customerMovile &&
+                        <small className="p-error">Campo obligatorio.</small>}
+                    {props.submitted && !props.phoneValid &&
+                        <small className="p-error">El teléfono no es incorrecto.</small>}
                 </div>
             </form>
         </Dialog>
     )
 
 }
+DialogFormCustomer.propTypes = {
+    object: PropTypes.object.isRequired,
+    submitted: PropTypes.bool.isRequired,
+    editActive: PropTypes.bool.isRequired,
+    visible: PropTypes.bool.isRequired,
+    nameValid: PropTypes.bool.isRequired,
+    phoneValid: PropTypes.bool.isRequired,
+    save: PropTypes.func.isRequired,
+    hideDialog: PropTypes.func.isRequired,
+    onInputTextChange: PropTypes.func.isRequired,
+}
+export default DialogFormCustomer;

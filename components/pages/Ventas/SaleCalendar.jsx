@@ -1,9 +1,9 @@
 
-
+import PropTypes from "prop-types";
 import { Calendar } from 'primereact/calendar';
 import { addLocale } from 'primereact/api';
 
-export default function SaleCalendar(props) {
+const SaleCalendar = (props) => {
 
     addLocale('es', {
         firstDayOfWeek: 1,
@@ -32,3 +32,8 @@ export default function SaleCalendar(props) {
         </div>
     )
 }
+
+SaleCalendar.propType = {
+    onChangeCalendar: PropTypes.func.isRequired,
+}
+export default SaleCalendar;
