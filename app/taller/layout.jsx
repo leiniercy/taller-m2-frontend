@@ -26,20 +26,22 @@ const HomeLayout = ({children}) => {
     }
 
     useEffect(() => {
-        if (status === "authenticated" && session?.user !== undefined)
-        //Funcion para cerrar  la sesion dado un tiempo de expiracion del token
-        setInterval( () => {
-            const currentDate = new Date((new Date()).getTime());
-            if (currentDate > session?.user.exp) {
-                deleteCookie('logged');
-                deleteCookie('rol');
-                deleteCookie('taller');
-                signOut({
-                    redirect: true,
-                    callbackUrl: "/"
-                });
-            }
-        },60000); // actualiza cada 1 min
+        if (status === "authenticated" && session?.user !== undefined){
+            //Funcion para cerrar  la sesion dado un tiempo de expiracion del token
+            setInterval( () => {
+                const currentDate = new Date();
+                if (Math.floor(currentDate.getTime() / 1000) > session?.user.exp) {
+                    deleteCookie('logged');
+                    deleteCookie('rol');
+                    deleteCookie('taller');
+                    signOut({
+                        redirect: true,
+                        callbackUrl: "/"
+                    });
+                }
+            },10000); // actualiza cada 1 min
+        }
+
     }, [session?.user]);
 
     return (
