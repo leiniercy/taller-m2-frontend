@@ -1,3 +1,5 @@
+
+import PropTypes from "prop-types";
 import {Dialog} from "primereact/dialog";
 import PasswordUser from "@components/pages/User/PasswordUser";
 import {useState, useRef, useEffect} from "react";
@@ -154,5 +156,9 @@ const DialogChangePassword = (props) => {
 
 
 }
-
+DialogChangePassword.propTypes = {
+    user: PropTypes.object.isRequired,
+    visible: PropTypes.bool.isRequired,
+    hideDialog: PropTypes.func.isRequired,
+}
 export default DialogChangePassword;

@@ -7,11 +7,9 @@ import RenderLayout from "@components/layout/RenderLayout";
 import {useSession} from "next-auth/react";
 
 
-export default function InfoMovile(props) {
+export default function InfoMovile() {
 
-    const { data: session,status } = useSession();
-    const [token, setToken] = useState('');
-
+    const {data: session, status} = useSession();
 
     let emptyMovile = {
         id: null,
@@ -33,13 +31,12 @@ export default function InfoMovile(props) {
     const [movile, setMovile] = useState(emptyMovile);
 
     useEffect(() => {
-        if(status === 'authenticated' && session?.user !== undefined){
+        if (status === 'authenticated' && session?.user !== undefined) {
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get("id");
             movileService.getById(id, session?.user.token).then((data) => setMovile(data));
-            setToken(session?.user.token);
         }
-    },[session?.user])
+    }, [session?.user])
 
 
     const responsiveOptions = [
@@ -94,18 +91,28 @@ export default function InfoMovile(props) {
                                 <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-rm_19-20">Propiedades</h1>
                             </div>
                             <div className="col-7 ">
-                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Cantidad disponible:</span>
-                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Precio:</span>
-                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Almacenamiento:</span>
-                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Memoria Ram:</span>
-                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Cámara Forntal:</span>
-                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Cámara Trasera:</span>
-                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Redes disponibles:</span>
-                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Batería:</span>
+                                <span
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Cantidad disponible:</span>
+                                <span
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Precio:</span>
+                                <span
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Almacenamiento:</span>
+                                <span
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Memoria Ram:</span>
+                                <span
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Cámara Forntal:</span>
+                                <span
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Cámara Trasera:</span>
+                                <span
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Redes disponibles:</span>
+                                <span
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2">Batería:</span>
                             </div>
                             <div className="col-5">
-                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {movile.cant}</span>
-                                <span className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> ${movile.price}</span>
+                                <span
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {movile.cant}</span>
+                                <span
+                                    className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> ${movile.price}</span>
                                 <span
                                     className="block text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2"> {movile.sizeStorage} GB</span>
                                 <span

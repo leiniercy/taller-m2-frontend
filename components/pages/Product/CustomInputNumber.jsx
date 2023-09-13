@@ -1,8 +1,9 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {InputNumber} from "primereact/inputnumber";
 import {Slider} from "primereact/slider";
 import {classNames} from "primereact/utils";
-import PropTypes from "prop-types";
+
 
 const CustomInputNumber = (props) => {
 
@@ -26,7 +27,7 @@ const CustomInputNumber = (props) => {
     </>)
 
 }
-CustomInputNumber.propType = {
+CustomInputNumber.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     error: PropTypes.string.isRequired,

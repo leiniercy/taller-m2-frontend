@@ -5,13 +5,13 @@ import {Tag} from "primereact/tag";
 import {Button} from "primereact/button";
 import {useRouter} from "next/navigation";
 import {Galleria} from "primereact/galleria";
+import PropTypes from "prop-types";
 
 
-export default function DataViewGridItem(props) {
+const DataViewGridItem = (props) => {
 
     const router = useRouter();
     const handleClick = (e, rowData) => {
-        const product = rowData;
         router.push(props.path+rowData.id);
     }
 
@@ -70,6 +70,14 @@ export default function DataViewGridItem(props) {
             </div> }
         </div>
     </div>);
-
-
 }
+
+DataViewGridItem.propTypes = {
+    path: PropTypes.string.isRequired,
+    isMovile: PropTypes.bool.isRequired,
+    data: PropTypes.object.isRequired,
+    getValue: PropTypes.func.isRequired,
+    getSeverity: PropTypes.func.isRequired,
+}
+
+export default DataViewGridItem;

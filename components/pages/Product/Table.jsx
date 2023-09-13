@@ -107,7 +107,7 @@ const Table = (props) =>  {
 
 }
 
-Table.propType = {
+Table.propTypes = {
     headerLabel: PropTypes.string.isRequired,
     emptyFilters: PropTypes.object.isRequired,
     globalFilterFields: PropTypes.arrayOf(PropTypes.string).isRequired,

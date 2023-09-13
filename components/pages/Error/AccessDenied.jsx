@@ -5,6 +5,7 @@ import React from "react";
 import {useRouter} from "next/navigation";
 import {Button} from "primereact/button";
 import {useSession} from "next-auth/react";
+import PropTypes from "prop-types";
 
 
 const AccessDenied = (props) => {
@@ -48,6 +49,10 @@ const AccessDenied = (props) => {
         </div>
     );
 
+}
+
+AccessDenied.propTypes = {
+    error: PropTypes.string.isRequired,
 }
 
 export default AccessDenied;

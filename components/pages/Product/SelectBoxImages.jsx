@@ -70,7 +70,7 @@ const SelectBoxImages = (props) => {
     </>);
 }
 
-SelectBoxImages.propType = {
+SelectBoxImages.propTypes = {
     object: PropTypes.object.isRequired,
     editActive: PropTypes.bool.isRequired,
     imageSelected: PropTypes.bool.isRequired,

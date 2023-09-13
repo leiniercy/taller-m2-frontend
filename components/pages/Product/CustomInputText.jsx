@@ -19,7 +19,7 @@ const CustomInputText = (props) => {
         {props.submitted && !props.valid && <small className="p-error"> {props.error}</small>}
     </>);
 }
-CustomInputText.propType = {
+CustomInputText.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     error: PropTypes.string.isRequired,

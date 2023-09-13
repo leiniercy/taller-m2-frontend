@@ -27,7 +27,7 @@ const Tools = (props) => {
 
 }
 
-Tools.propType = {
+Tools.propTypes = {
     openNew: PropTypes.func.isRequired,
     confirmDeleteSelected: PropTypes.func.isRequired,
     selectedObjects: PropTypes.arrayOf(PropTypes.object).isRequired

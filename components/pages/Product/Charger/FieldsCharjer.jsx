@@ -31,7 +31,7 @@ const FieldsCharjer = (props) => {
     </>);
 }
 
-FieldsCharjer.propType = {
+FieldsCharjer.propTypes = {
     object: PropTypes.object.isRequired,
     submitted: PropTypes.bool.isRequired,
     connectorTypeValid: PropTypes.bool.isRequired,

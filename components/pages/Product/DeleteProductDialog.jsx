@@ -31,7 +31,7 @@ const DeleteProductDialog = (props) =>{
 
 }
 
-DeleteProductDialog.propType={
+DeleteProductDialog.propTypes={
     hideDialog: PropTypes.func.isRequired,
     delete: PropTypes.func.isRequired,
     visible: PropTypes.bool.isRequired,

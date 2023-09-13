@@ -1,9 +1,10 @@
 "use client"
 
 import React, {useState, useEffect, useMemo} from 'react';
+import PropTypes from 'prop-types';
 import {Chart} from 'primereact/chart';
 
-export default function DoughnutChart(props) {
+const DoughnutChart = (props) => {
 
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
@@ -46,3 +47,12 @@ export default function DoughnutChart(props) {
         </div>
     )
 }
+
+DoughnutChart.propTypes = {
+    products: PropTypes.number.isRequired,
+    chargers: PropTypes.number.isRequired,
+    moviles: PropTypes.number.isRequired,
+    relojes: PropTypes.number.isRequired,
+}
+
+export default DoughnutChart;

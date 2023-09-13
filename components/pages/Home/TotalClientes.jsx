@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types';
 const TotalClientes = (props) => {
 
     return(<div className="">
@@ -14,6 +15,10 @@ const TotalClientes = (props) => {
         </div>
     </div>);
 
+}
+
+TotalClientes.propTypes = {
+    total: PropTypes.number.isRequired
 }
 
 export default TotalClientes;

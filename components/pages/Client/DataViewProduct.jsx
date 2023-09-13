@@ -1,14 +1,14 @@
 "use client"
 
 import React, {useEffect, useState} from "react";
+import PropTypes from 'prop-types';
 import {Dropdown} from "primereact/dropdown";
 import {InputText} from "primereact/inputtext";
-import {DataView, DataViewLayoutOptions} from "primereact/dataview";
+import {DataView} from "primereact/dataview";
 import DataViewGridItem from "@components/pages/Client/DataViewGridItem";
-import DataViewListItem from "@components/pages/Client/DataViewListItem";
 
 
-export default function DataViewProduct(props) {
+const DataViewProduct = (props) => {
 
     const [dataViewValue, setDataViewValue] = useState(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -103,3 +103,11 @@ export default function DataViewProduct(props) {
 
 
 }
+
+DataViewProduct.propTypes = {
+    products: PropTypes.arrayOf(PropTypes.object).isRequired,
+    path: PropTypes.string.isRequired,
+    isMovile: PropTypes.bool.isRequired,
+}
+
+export default DataViewProduct;

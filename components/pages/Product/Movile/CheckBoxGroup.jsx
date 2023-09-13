@@ -1,5 +1,6 @@
 
 import React from "react";
+import PropTypes from 'prop-types';
 import {Checkbox} from "primereact/checkbox";
 
 const CheckBoxGroup = (props) => {
@@ -40,4 +41,8 @@ const CheckBoxGroup = (props) => {
 
 }
 
+CheckBoxGroup.propTypes = {
+    object: PropTypes.object.isRequired,
+    onCheckBoxChange: PropTypes.func.isRequired,
+}
 export default CheckBoxGroup;

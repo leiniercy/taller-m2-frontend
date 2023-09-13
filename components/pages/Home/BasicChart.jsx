@@ -1,8 +1,9 @@
 "use client"
 import React, {useState, useEffect} from 'react';
+import PropTypes from 'prop-types';
 import {Chart} from 'primereact/chart';
 
-export default function BasicChart(props) {
+ const BasicChart = (props) => {
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
 
@@ -48,3 +49,9 @@ export default function BasicChart(props) {
         </div>
     )
 }
+
+BasicChart.propTypes = {
+    sales: PropTypes.arrayOf(PropTypes.number).isRequired
+}
+
+export default BasicChart;

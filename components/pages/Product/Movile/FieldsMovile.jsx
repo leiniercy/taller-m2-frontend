@@ -94,7 +94,7 @@ import CustomInputNumber from "@components/pages/Product/CustomInputNumber";
 
 }
 
-FieldsMovile.propType = {
+FieldsMovile.propTypes = {
     object: PropTypes.object.isRequired,
     submitted: PropTypes.bool.isRequired,
     sizeStorageValid: PropTypes.bool.isRequired,

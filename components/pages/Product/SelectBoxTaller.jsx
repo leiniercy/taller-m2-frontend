@@ -1,5 +1,6 @@
 
 import React from "react";
+import PropTypes from 'prop-types';
 import {Dropdown} from "primereact/dropdown";
 
 const tallerNames = [
@@ -23,6 +24,12 @@ const SelectBoxTaller = (props) => {
         </>
     );
 
+}
+
+SelectBoxTaller.propTypes = {
+    object: PropTypes.object.isRequired,
+    submitted: PropTypes.bool.isRequired,
+    onChangeSelectedBoxTaller: PropTypes.func.isRequired,
 }
 
 export default SelectBoxTaller;

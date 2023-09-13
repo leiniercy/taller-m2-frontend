@@ -7,10 +7,9 @@ import RenderLayout from "@components/layout/RenderLayout";
 import {useSession} from "next-auth/react";
 
 
-export default function InfoReloj(props) {
+export default function InfoReloj() {
 
     const { data: session, status } = useSession();
-    const [token, setToken] = useState('');
 
     let emptyReloj = {
         id: null,
@@ -31,7 +30,6 @@ export default function InfoReloj(props) {
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get("id");
             relojService.getById(id, session?.user.token).then((data) => setReloj(data));
-            setToken(session?.user.token);
         }
     },[session?.user])
 

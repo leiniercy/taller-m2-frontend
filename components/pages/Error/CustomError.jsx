@@ -1,5 +1,6 @@
 "use client"
 import React, {useEffect, useState} from "react";
+import PropTypes from 'prop-types';
 import {useRouter} from "next/navigation";
 import {Button} from "primereact/button";
 import {useSession} from "next-auth/react";
@@ -58,5 +59,7 @@ const CustomError = (props) => {
 
 
 }
-
+CustomError.propTypes = {
+    error: PropTypes.string.isRequired,
+}
 export default CustomError;

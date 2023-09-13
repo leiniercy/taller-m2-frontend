@@ -1,6 +1,7 @@
 "use client"
 import React, {useState, useEffect} from 'react';
 import {Chart} from 'primereact/chart';
+import PropTypes from "prop-types";
 
 export default function StackedBarChart(props) {
     const [chartData, setChartData] = useState({});
@@ -86,4 +87,8 @@ export default function StackedBarChart(props) {
             <Chart type="bar" data={chartData} options={chartOptions}/>
         </div>
     )
+}
+
+StackedBarChart.propTypes = {
+    products: PropTypes.array.isRequired
 }

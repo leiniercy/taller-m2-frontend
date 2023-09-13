@@ -1,6 +1,7 @@
 "use client"
 
 import {Fieldset} from "primereact/fieldset";
+import PropTypes from 'prop-types';
 import DataViewProduct from "@components/pages/Client/DataViewProduct";
 import RenderLayout from "@components/layout/RenderLayout";
 
@@ -13,7 +14,7 @@ const Cliente = (props) => {
                     <Fieldset legend="Dispositivos de carga" toggleable>
                         <DataViewProduct
                             products={props.chargers}
-                             path={props.chargerPath}
+                            path={props.chargerPath}
                             isMovile={false}
                         />
                     </Fieldset>
@@ -55,4 +56,16 @@ const Cliente = (props) => {
 
 
 }
+
+Cliente.propTypes = {
+    chargers: PropTypes.arrayOf(PropTypes.object).isRequired,
+    relojes: PropTypes.arrayOf(PropTypes.object).isRequired,
+    moviles: PropTypes.arrayOf(PropTypes.object).isRequired,
+    products: PropTypes.arrayOf(PropTypes.object).isRequired,
+    chargerPath: PropTypes.string.isRequired,
+    movilPath: PropTypes.string.isRequired,
+    relojPath: PropTypes.string.isRequired,
+}
+
+
 export default Cliente;

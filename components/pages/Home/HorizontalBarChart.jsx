@@ -1,10 +1,10 @@
 "use client"
 import React, { useState, useEffect } from 'react';
+import PropTypes from "prop-types";
 import { Chart } from 'primereact/chart';
 
-import SellService from "@services/SellService";
 
-export default function HorizontalBarChart(props) {
+const HorizontalBarChart = (props) => {
 
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
@@ -22,7 +22,6 @@ export default function HorizontalBarChart(props) {
                         label: 'Ganancia mensual por ventas',
                         backgroundColor: documentStyle.getPropertyValue('--blue-500'),
                         borderColor: documentStyle.getPropertyValue('--blue-500'),
-                        // data: [sales[0], sales[1], sales[2], sales[3], sales[4], sales[5], sales[6], sales[7], sales[8], sales[9], sales[10], sales[11]]
                         data: props.sales
                     }
                 ]
@@ -74,3 +73,9 @@ export default function HorizontalBarChart(props) {
         </div>
     )
 }
+
+HorizontalBarChart.propTypes = {
+    sales: PropTypes.arrayOf(PropTypes.number).isRequired
+}
+
+export default HorizontalBarChart;

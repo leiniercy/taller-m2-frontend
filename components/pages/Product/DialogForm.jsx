@@ -86,7 +86,7 @@ const DialogForm = (props) => {
 
 }
 
-DialogForm.propType = {
+DialogForm.propTypes = {
     save: PropTypes.func.isRequired,
     hideDialog: PropTypes.func.isRequired,
     onTemplateSelect: PropTypes.func.isRequired,

@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 
 const TotalVentas = (props) => {
 
@@ -14,6 +15,9 @@ const TotalVentas = (props) => {
         </div>
     </div>)
 
+}
+TotalVentas.propTypes = {
+    total: PropTypes.number.isRequired
 }
 
 export default TotalVentas;

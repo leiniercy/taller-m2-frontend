@@ -46,7 +46,7 @@ const  FieldsReloj = (props) => {
     </>);
 }
 
-FieldsReloj.propType = {
+FieldsReloj.propTypes = {
     object: PropTypes.object.isRequired,
     submitted: PropTypes.bool.isRequired,
     specialFeatureValid: PropTypes.bool.isRequired,
