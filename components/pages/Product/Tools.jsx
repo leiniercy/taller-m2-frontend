@@ -1,8 +1,10 @@
+
 import React from "react";
+import PropTypes from 'prop-types';
 import {Toolbar} from "primereact/toolbar";
 import {Button} from "primereact/button";
 
-export default function Tools(props) {
+const Tools = (props) => {
 
     const leftToolbarTemplate = () => {
         return (
@@ -24,3 +26,11 @@ export default function Tools(props) {
 
 
 }
+
+Tools.propType = {
+    openNew: PropTypes.func.isRequired,
+    confirmDeleteSelected: PropTypes.func.isRequired,
+    selectedObjects: PropTypes.arrayOf(PropTypes.object).isRequired
+}
+
+export default Tools;

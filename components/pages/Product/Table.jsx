@@ -1,15 +1,15 @@
 "use client"
 
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState} from 'react';
+import PropTypes from 'prop-types';
 import {Column} from "primereact/column";
 import {DataTable} from "primereact/datatable";
 import {Button} from "primereact/button";
 import {InputText} from "primereact/inputtext";
+import Tools from "@components/pages/Product/Tools";
 
 
-
-
-export default function Table(props) {
+const Table = (props) =>  {
 
     const [filters, setFilters] = useState(null);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -108,3 +108,11 @@ export default function Table(props) {
     )
 
 }
+
+Table.propType = {
+    headerLabel: PropTypes.string.isRequired,
+    emptyFilters: PropTypes.array.isRequired
+
+}
+
+export default Table;
