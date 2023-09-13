@@ -39,7 +39,8 @@ export const authOptions = {
                         email: tokenUser.email,
                         taller: tokenUser.taller,
                         rol: tokenUser.roles[0],
-                        token: user.token
+                        token: user.token,
+                        exp: tokenExpirationDate
                     }
 
                 } else {

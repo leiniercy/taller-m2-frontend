@@ -6,4 +6,5 @@ export interface User {
     taller?: string | null | undefined;
     rol?: string | null  | undefined;
     token?: string | null | undefined;
+    exp?: number | null | undefined;
 }
