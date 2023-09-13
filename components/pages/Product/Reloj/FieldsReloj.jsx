@@ -1,9 +1,10 @@
 
 import React from "react";
+import PropTypes from 'prop-types';
 import CustomInputNumber from "@components/pages/Product/CustomInputNumber";
 import CustomInputText from "@components/pages/Product/CustomInputText";
 
-export default function FieldsReloj(props) {
+const  FieldsReloj = (props) => {
 
     return(<>
         <div className="field">
@@ -13,7 +14,7 @@ export default function FieldsReloj(props) {
                 object={props.object.specialFeature}
                 name={'specialFeature'}
                 onInputTextChange={props.onInputTextChange}
-                submitted={props.submitted}
+                submitted={props.submittedsubmitted}
                 valid={props.specialFeatureValid}
             />
         </div>
@@ -44,3 +45,14 @@ export default function FieldsReloj(props) {
         </div>
     </>);
 }
+
+FieldsReloj.propType = {
+    object: PropTypes.object.isRequired,
+    submitted: PropTypes.bool.isRequired,
+    specialFeatureValid: PropTypes.bool.isRequired,
+    compatibleDeviceValid: PropTypes.bool.isRequired,
+    bateryLifeValid: PropTypes.bool.isRequired,
+    onInputTextChange: PropTypes.func.isRequired,
+    onInputNumberChange: PropTypes.func.isRequired,
+}
+export default FieldsReloj;

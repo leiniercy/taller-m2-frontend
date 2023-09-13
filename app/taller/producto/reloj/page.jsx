@@ -20,7 +20,7 @@ import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
 
 
-export default function Reloj(props) {
+export default function Reloj() {
 
     const {data: session, status} = useSession();
     const [token, setToken] = useState('');
@@ -63,7 +63,6 @@ export default function Reloj(props) {
     ];
 
     const toast = useRef(null);
-    const dt = useRef(null);
 
     const [submitted, setSubmitted] = useState(false);
     const [editActive, setEditActive] = useState(false);
@@ -87,7 +86,7 @@ export default function Reloj(props) {
 
     useEffect(() => {
         if (status === 'authenticated' && session?.user !== undefined) {
-        relojService.getAll(session?.user.token, session?.user.taller).then((data) => setRelojes(data));
+            relojService.getAll(session?.user.token, session?.user.taller).then((data) => setRelojes(data));
             setToken(session?.user.token);
         }
     }, [session?.user]);
@@ -122,7 +121,7 @@ export default function Reloj(props) {
             </React.Fragment>
         );
     }; /*Acciones de cada columna de la tabla Update, Delete*/
-    const hideDialog = (e) => {
+    const hideDialog = () => {
         setRelojDialog(false);
         setSubmitted(false);
     }; /*Ocultar dialog de anadir*/
@@ -195,19 +194,19 @@ export default function Reloj(props) {
             if (editActive) {
                 //Actualizar
                 if (!imageSelected) {
-                    reloj.files.forEach((file, i) => {
+                    reloj.files.forEach((file) => {
                         let blob = new Blob([file.url], {type: 'image/png'});
                         let f = new File([blob], file.name, {type: 'image/png'});
                         formData.append('files', f);
                     });
                 } else {
-                    reloj.files.forEach((file, i) => {
+                    reloj.files.forEach((file) => {
                         formData.append('files', file);
                     });
                 }
 
                 //Guardar en la BD y actualiza el estado de la informacion
-                relojService.update(formData, reloj.id,token).then(data => {
+                relojService.update(formData, reloj.id, token).then(data => {
                     //Muestra sms de confirmacion
                     toast.current.show({
                         severity: 'success',
@@ -233,12 +232,12 @@ export default function Reloj(props) {
 
             } else {
                 //Crear Producto
-                reloj.files.forEach((file, i) => {
+                reloj.files.forEach((file) => {
                     formData.append('files', file);
                 });
 
                 //Guardar en la BD y actualiza el estado de la informacion
-                relojService.save(formData,token).then(data => {
+                relojService.save(formData, token).then(data => {
                     //Muestra sms de confirmacion
                     toast.current.show({
                         severity: 'success',
@@ -294,7 +293,7 @@ export default function Reloj(props) {
     const deleteReloj = () => {
         let _relojes = relojes.filter((val) => val.id === reloj.id);
 
-        relojService.delete(_relojes[0].id,token).then(data => {
+        relojService.delete(_relojes[0].id, token).then(data => {
             //Actualiza la lista de productos
             relojService.getAll(token, session?.user.taller).then(data => setRelojes(data));
             setDeleteRelojDialog(false);
@@ -309,6 +308,7 @@ export default function Reloj(props) {
             });
         }).catch(error => {
             toast.current.show({
+                error: error,
                 severity: 'danger',
                 summary: '!Atención',
                 detail: 'Error al eliminar el producto',
@@ -325,7 +325,7 @@ export default function Reloj(props) {
     };/*Ocultar dialog de eliminar varios objetos*/
     const deleteSelectedRelojes = () => {
 
-        relojService.deleteAll(selectedRelojes,token).then((data) => {
+        relojService.deleteAll(selectedRelojes, token).then((data) => {
             setRelojes(data);
             setDeleteRelojesDialog(false);
             setSelectedRelojes(false);
@@ -337,6 +337,7 @@ export default function Reloj(props) {
             });
         }).catch(error => {
             toast.current.show({
+                error: error,
                 severity: 'danger',
                 summary: '!Atención',
                 detail: 'Error al eliminar los productos seleccionados',
@@ -370,7 +371,6 @@ export default function Reloj(props) {
 
                     <Table
                         headerLabel={'cargadores'}
-                        dt={dt}
                         objects={relojes}
                         selectedObjects={selectedRelojes}
                         setSelectedObject={onSelectionChangeSelectedObjects}

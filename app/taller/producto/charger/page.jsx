@@ -20,7 +20,7 @@ import {Button} from "primereact/button";
 import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
 
-export default function Charger(props) {
+export default function Charger() {
 
     const {data: session, status} = useSession();
     const [token, setToken] = useState('');
@@ -61,7 +61,6 @@ export default function Charger(props) {
     ];
 
     const toast = useRef(null);
-    const dt = useRef(null);
 
     const [submitted, setSubmitted] = useState(false);
     const [editActive, setEditActive] = useState(false);
@@ -122,7 +121,7 @@ export default function Charger(props) {
             </React.Fragment>
         );
     }; /*Acciones de cada columna de la tabla Update, Delete*/
-    const hideDialog = (e) => {
+    const hideDialog = () => {
         setChargerDialog(false);
         setSubmitted(false);
     }; /*Ocultar dialog de anadir*/
@@ -189,13 +188,13 @@ export default function Charger(props) {
             if (editActive) {
                 //Actualizar
                 if (!imageSelected) {
-                    charger.files.forEach((file, i) => {
+                    charger.files.forEach((file) => {
                         let blob = new Blob([file.url], {type: 'image/png'});
                         let f = new File([blob], file.name, {type: 'image/png'});
                         formData.append('files', f);
                     });
                 } else {
-                    charger.files.forEach((file, i) => {
+                    charger.files.forEach((file) => {
                         formData.append('files', file);
                     });
                 }
@@ -226,7 +225,7 @@ export default function Charger(props) {
                 });
 
             } else {
-                charger.files.forEach((file, i) => {
+                charger.files.forEach((file) => {
                     formData.append('files', file);
                 });
                 //Guardar en la BD y actualiza el estado de la informacion
@@ -302,6 +301,7 @@ export default function Charger(props) {
             });
         }).catch(error => {
             toast.current.show({
+                error: error,
                 severity: 'danger',
                 summary: '!Atención',
                 detail: 'Error al eliminar el producto',
@@ -330,6 +330,7 @@ export default function Charger(props) {
             });
         }).catch(error => {
             toast.current.show({
+                error: error,
                 severity: 'danger',
                 summary: '!Atención',
                 detail: 'Error al eliminar los productos seleccionados',
@@ -364,7 +365,6 @@ export default function Charger(props) {
 
                     <Table
                         headerLabel={'cargadores'}
-                        dt={dt}
                         objects={chargers}
                         selectedObjects={selectedChargers}
                         setSelectedObject={onSelectionChangeSelectedObjects}

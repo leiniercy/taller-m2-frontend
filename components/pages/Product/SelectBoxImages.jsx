@@ -1,5 +1,6 @@
 
 import React from "react";
+import PropTypes from 'prop-types';
 import {FileUpload} from "primereact/fileupload";
 import {Galleria} from "primereact/galleria";
 
@@ -67,6 +68,13 @@ const SelectBoxImages = (props) => {
             showIndicators
         />}
     </>);
+}
+
+SelectBoxImages.propType = {
+    object: PropTypes.object.isRequired,
+    editActive: PropTypes.bool.isRequired,
+    imageSelected: PropTypes.bool.isRequired,
+    submitted: PropTypes.bool.isRequired,
 }
 
 export default SelectBoxImages;

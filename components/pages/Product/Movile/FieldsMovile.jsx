@@ -1,10 +1,10 @@
 
 import React from "react";
+import PropTypes from 'prop-types';
 import CheckBoxGroup from "@components/pages/Product/Movile/CheckBoxGroup";
 import CustomInputNumber from "@components/pages/Product/CustomInputNumber";
 
-
-export default function FieldsMovile(props) {
+ const FieldsMovile = (props) => {
 
     return (<>
         <div className="formgrid grid">
@@ -93,3 +93,16 @@ export default function FieldsMovile(props) {
     </>);
 
 }
+
+FieldsMovile.propType = {
+    object: PropTypes.object.isRequired,
+    submitted: PropTypes.bool.isRequired,
+    sizeStorageValid: PropTypes.bool.isRequired,
+    ramValid: PropTypes.bool.isRequired,
+    camaraTraseraValid: PropTypes.bool.isRequired,
+    camaraFrontalValid: PropTypes.bool.isRequired,
+    bateriaValid: PropTypes.bool.isRequired,
+    onCheckBoxChange: PropTypes.func.isRequired,
+    onInputNumberChange: PropTypes.func.isRequired,
+}
+export  default FieldsMovile;

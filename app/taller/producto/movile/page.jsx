@@ -21,7 +21,7 @@ import {FilterMatchMode, FilterOperator} from "primereact/api";
 import {Toast} from 'primereact/toast';
 
 
-export default function Movile(props) {
+export default function Movile() {
 
     const {data: session, status} = useSession();
     const [token, setToken] = useState('');
@@ -132,7 +132,7 @@ export default function Movile(props) {
             </React.Fragment>
         );
     }; /*Acciones de cada columna de la tabla Update, Delete*/
-    const hideDialog = (e) => {
+    const hideDialog = () => {
         setMovileDialog(false);
         setSubmitted(false);
     }; /*Ocultar dialog de anadir*/
@@ -169,6 +169,13 @@ export default function Movile(props) {
             return false;
         } else {
             setSizeStorageValid(true);
+        }
+
+        if (movile.ram < 0 || movile.ram === undefined) {
+            setRamValid(false);
+            return false;
+        } else {
+            setRamValid(true);
         }
 
         if (movile.camaraFrontal < 0 || movile.camaraFrontal === undefined) {
@@ -217,13 +224,13 @@ export default function Movile(props) {
             if (editActive) {
                 //Actualizar
                 if (!imageSelected) {
-                    movile.files.forEach((file, i) => {
+                    movile.files.forEach((file) => {
                         let blob = new Blob([file.url], {type: 'image/png'});
                         let f = new File([blob], file.name, {type: 'image/png'});
                         formData.append('files', f);
                     });
                 } else {
-                    movile.files.forEach((file, i) => {
+                    movile.files.forEach((file) => {
                         formData.append('files', file);
                     });
                 }
@@ -254,7 +261,7 @@ export default function Movile(props) {
                 });
 
             } else {
-                movile.files.forEach((file, i) => {
+                movile.files.forEach((file) => {
                     formData.append('files', file);
                 });
                 //Guardar en la BD y actualiza el estado de la informacion
@@ -273,6 +280,7 @@ export default function Movile(props) {
                     setSelectedMoviles(null);
                 }).catch((error) => {
                     toast.current.show({
+                        error: error,
                         severity: 'danger',
                         summary: 'Atención!',
                         detail: "Error el producto ya existe",
@@ -335,6 +343,7 @@ export default function Movile(props) {
             });
         }).catch(error => {
             toast.current.show({
+                error: error,
                 severity: 'danger',
                 summary: '!Atención',
                 detail: 'Error al eliminar el producto',
@@ -363,6 +372,7 @@ export default function Movile(props) {
             });
         }).catch(error => {
             toast.current.show({
+                error: error,
                 severity: 'danger',
                 summary: '!Atención',
                 detail: 'Error al eliminar los productos seleccionados',

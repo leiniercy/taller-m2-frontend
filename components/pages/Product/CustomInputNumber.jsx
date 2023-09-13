@@ -1,12 +1,12 @@
-
 import React from "react";
 import {InputNumber} from "primereact/inputnumber";
 import {Slider} from "primereact/slider";
 import {classNames} from "primereact/utils";
+import PropTypes from "prop-types";
 
 const CustomInputNumber = (props) => {
 
-    return(<>
+    return (<>
         <label htmlFor={props.name} className="font-bold">
             {props.label}
         </label>
@@ -26,5 +26,17 @@ const CustomInputNumber = (props) => {
     </>)
 
 }
-
+CustomInputNumber.propType = {
+    name: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    error: PropTypes.string.isRequired,
+    prefix: PropTypes.string.isRequired,
+    suffix: PropTypes.string.isRequired,
+    object: PropTypes.number.isRequired,
+    min: PropTypes.number.isRequired,
+    max: PropTypes.number.isRequired,
+    submitted: PropTypes.bool.isRequired,
+    valid: PropTypes.bool.isRequired,
+    onInputNumberChange: PropTypes.func.isRequired,
+}
 export default CustomInputNumber;

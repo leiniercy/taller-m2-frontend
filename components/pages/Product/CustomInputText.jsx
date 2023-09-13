@@ -1,5 +1,6 @@
 
 import React from "react";
+import PropTypes from 'prop-types';
 import {InputText} from "primereact/inputtext";
 import {classNames} from "primereact/utils";
 
@@ -18,5 +19,13 @@ const CustomInputText = (props) => {
         {props.submitted && !props.valid && <small className="p-error"> {props.error}</small>}
     </>);
 }
-
+CustomInputText.propType = {
+    name: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    error: PropTypes.string.isRequired,
+    object: PropTypes.string.isRequired,
+    submitted: PropTypes.bool.isRequired,
+    valid: PropTypes.bool.isRequired,
+    onInputTextChange: PropTypes.func.isRequired,
+}
 export default CustomInputText;

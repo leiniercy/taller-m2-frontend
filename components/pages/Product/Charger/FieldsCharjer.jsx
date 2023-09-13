@@ -1,10 +1,11 @@
 
 import React from "react";
+import PropTypes from 'prop-types';
 import {InputText} from "primereact/inputtext";
 import {classNames} from "primereact/utils";
 
 
-export default function FieldsCharjer(props) {
+const FieldsCharjer = (props) => {
 
     return(<>
         <div className="field">
@@ -29,3 +30,13 @@ export default function FieldsCharjer(props) {
         </div>
     </>);
 }
+
+FieldsCharjer.propType = {
+    object: PropTypes.object.isRequired,
+    submitted: PropTypes.bool.isRequired,
+    connectorTypeValid: PropTypes.bool.isRequired,
+    compatibleDeviceValid: PropTypes.bool.isRequired,
+    onInputTextChange: PropTypes.func.isRequired,
+}
+
+export default FieldsCharjer;
