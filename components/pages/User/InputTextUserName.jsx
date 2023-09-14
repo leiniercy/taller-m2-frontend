@@ -1,8 +1,9 @@
 
-
+import PropTypes from "prop-types";
 import {InputText} from "primereact/inputtext";
 import {classNames} from "primereact/utils";
 import React from "react";
+
 
 
 const InputTextUserName = (props) => {
@@ -21,6 +22,12 @@ const InputTextUserName = (props) => {
         </>
     );
 
+}
+InputTextUserName.propTypes = {
+    name: PropTypes.string.isRequired,
+    submitted: PropTypes.bool.isRequired,
+    nameValid: PropTypes.bool.isRequired,
+    onChangeName: PropTypes.func.isRequired,
 }
 
 export default InputTextUserName;

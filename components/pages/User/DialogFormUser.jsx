@@ -7,6 +7,7 @@ import InputTextUserName from "@components/pages/User/InputTextUserName";
 import PasswordUser from "@components/pages/User/PasswordUser";
 import InputTextEmail from "@components/pages/User/InputTextEmail";
 import SelectBoxRol from "@components/pages/User/SelectBoxRol";
+import PropTypes from "prop-types";
 
 
 const DialogFormUser = (props) => {
@@ -77,6 +78,26 @@ const DialogFormUser = (props) => {
             </div>
         </form>
     </Dialog>);
+}
+
+DialogFormUser.propType = {
+    hideDialog: PropTypes.func.isRequired,
+    save: PropTypes.func.isRequired,
+    onChangeName: PropTypes.func.isRequired,
+    onChangeEmail: PropTypes.func.isRequired,
+    onChangePassword: PropTypes.func.isRequired,
+    onChangeConfirmPassword: PropTypes.func.isRequired,
+    onChangeSelectedBoxTaller: PropTypes.func.isRequired,
+    onChangeSelectedBoxRol: PropTypes.func.isRequired,
+    submitted: PropTypes.bool.isRequired,
+    nameValid: PropTypes.bool.isRequired,
+    emailValid: PropTypes.bool.isRequired,
+    passwordValid: PropTypes.bool.isRequired,
+    confirmPasswordValid: PropTypes.bool.isRequired,
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    taller: PropTypes.object.isRequired,
+    rol: PropTypes.object.isRequired,
 }
 
 export default DialogFormUser;

@@ -1,6 +1,8 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {InputText} from "primereact/inputtext";
 import {classNames} from "primereact/utils";
+
 
 
 const InputTextEmail = (props) => {
@@ -20,5 +22,13 @@ const InputTextEmail = (props) => {
     </>)
 
 }
+
+InputTextEmail.propTypes = {
+    email: PropTypes.string.isRequired,
+    submitted: PropTypes.bool.isRequired,
+    emailValid: PropTypes.bool.isRequired,
+    onChangeEmail: PropTypes.func.isRequired,
+}
+
 
 export default InputTextEmail;

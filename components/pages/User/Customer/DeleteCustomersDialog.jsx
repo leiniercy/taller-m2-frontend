@@ -1,7 +1,6 @@
 "use client"
-
-
 import React from 'react';
+import PropTypes from "prop-types";
 import {Dialog} from "primereact/dialog";
 import {Button} from "primereact/button";
 
@@ -24,5 +23,12 @@ const DeleteCustomersDialog = (props) => {
             {props.object && <span>"¿Esta seguro que desea eliminar los clientes seleccionados?</span>}
         </div>
     </Dialog>);
+}
+
+DeleteCustomersDialog.propTypes = {
+    hideDialog: PropTypes.func.isRequired,
+    delete: PropTypes.func.isRequired,
+    visible: PropTypes.bool.isRequired,
+    object: PropTypes.object.isRequired,
 }
 export default DeleteCustomersDialog;

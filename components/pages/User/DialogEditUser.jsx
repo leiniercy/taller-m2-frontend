@@ -7,6 +7,7 @@ import SelectBoxTaller from "@components/pages/User/SelectBoxTaller";
 import InputTextUserName from "@components/pages/User/InputTextUserName";
 import InputTextEmail from "@components/pages/User/InputTextEmail";
 import SelectBoxRol from "@components/pages/User/SelectBoxRol";
+import PropTypes from "prop-types";
 
 
 const DialogEditUser = (props) => {
@@ -61,5 +62,20 @@ const DialogEditUser = (props) => {
     </Dialog>);
 
 }
-
+DialogEditUser.propTypes = {
+    hideDialog: PropTypes.func.isRequired,
+    onChangeName: PropTypes.func.isRequired,
+    onChangeEmail: PropTypes.func.isRequired,
+    onChangeSelectedBoxTaller: PropTypes.func.isRequired,
+    onChangeSelectedBoxRol: PropTypes.func.isRequired,
+    edit: PropTypes.func.isRequired,
+    visible: PropTypes.bool.isRequired,
+    submitted: PropTypes.bool.isRequired,
+    nameValid: PropTypes.bool.isRequired,
+    emailValid: PropTypes.bool.isRequired,
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    taller: PropTypes.object.isRequired,
+    rol: PropTypes.object.isRequired,
+}
 export default DialogEditUser;

@@ -1,12 +1,11 @@
 "use client"
-
-
+import PropTypes from "prop-types";
 import React from 'react';
 import {Dialog} from "primereact/dialog";
 import {Button} from "primereact/button";
 
-const DeleteUsersDialog = (props) => {
 
+const DeleteUsersDialog = (props) => {
 
     const footer = (
         <React.Fragment>
@@ -24,5 +23,12 @@ const DeleteUsersDialog = (props) => {
             {props.object && <span>"¿Esta seguro que desea eliminar los usuarios seleccionados?</span>}
         </div>
     </Dialog>);
+}
+
+DeleteUsersDialog.propTypes = {
+    visible: PropTypes.bool.isRequired,
+    object: PropTypes.object.isRequired,
+    hideDialog: PropTypes.func.isRequired,
+    delete: PropTypes.func.isRequired,
 }
 export default DeleteUsersDialog;

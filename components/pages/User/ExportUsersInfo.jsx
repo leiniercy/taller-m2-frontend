@@ -1,7 +1,7 @@
-
 import {Button} from 'primereact/button';
+import PropTypes from "prop-types";
 
-export default function ExportUsersInfo(props) {
+const ExportUsersInfo = (props) => {
 
     const columns = [
         {field: 'username', header: 'Nombre'},
@@ -54,23 +54,27 @@ export default function ExportUsersInfo(props) {
         props.dt.current.exportCSV();
     };  /*Exportar informacion*/
 
-    return (
-        <div className="flex flex-row gap-2 justify-content-around">
-            <Button type="button" icon="pi pi-file" severity="info"
-                    rounded
-                    onClick={exportCSV}
-                    data-pr-tooltip="CSV"/>
-            <Button type="button" icon="pi pi-file-excel"
-                    severity="success"
-                    rounded
-                    onClick={exportExcel}
-                    data-pr-tooltip="XLS"/>
-            <Button type="button" icon="pi pi-file-pdf"
-                    severity="warning"
-                    rounded
-                    onClick={exportPdf}
-                    data-pr-tooltip="PDF"/>
-        </div>
-    )
-
+    return (<div className="flex flex-row gap-2 justify-content-around">
+        <Button type="button" icon="pi pi-file" severity="info"
+                rounded
+                onClick={exportCSV}
+                data-pr-tooltip="CSV"/>
+        <Button type="button" icon="pi pi-file-excel"
+                severity="success"
+                rounded
+                onClick={exportExcel}
+                data-pr-tooltip="XLS"/>
+        <Button type="button" icon="pi pi-file-pdf"
+                severity="warning"
+                rounded
+                onClick={exportPdf}
+                data-pr-tooltip="PDF"/>
+    </div>);
 }
+
+ExportUsersInfo.propTypes = {
+    dt: PropTypes.any.isRequired,
+    objects: PropTypes.arrayOf(PropTypes.object).isRequired,
+    fileName: PropTypes.string.isRequired,
+}
+export default ExportUsersInfo;

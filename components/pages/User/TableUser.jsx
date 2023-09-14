@@ -1,10 +1,11 @@
 "use client"
-
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState} from 'react';
+import PropTypes from "prop-types";
 import {Column} from "primereact/column";
 import {DataTable} from "primereact/datatable";
 import {Button} from "primereact/button";
 import {InputText} from "primereact/inputtext";
+
 
 
 const TableUser = (props) => {
@@ -102,6 +103,13 @@ const TableUser = (props) => {
         <Column field="taller" header="Taller" sortable></Column>
         <Column body={actionBodyTemplate} exportable={false} style={{minWidth: '8rem'}}></Column>
     </DataTable>);
+}
+
+TableUser.propTypes = {
+    emptyFilters: PropTypes.object.isRequired,
+    globalFilterFields: PropTypes.arrayOf(PropTypes.string).isRequired,
+    selectedObjects: PropTypes.arrayOf(PropTypes.object).isRequired,
+    setSelectedObject: PropTypes.func.isRequired,
 }
 
 export default TableUser;

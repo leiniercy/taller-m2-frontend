@@ -1,8 +1,7 @@
 
-
-
 import React from "react";
 import {Dropdown} from "primereact/dropdown";
+import PropTypes from "prop-types";
 
 const tallerNames = [
     { name: 'Administrador', code: 'ROLE_ADMIN' },
@@ -26,6 +25,12 @@ const SelectBoxRol = (props) => {
         </>
     );
 
+}
+
+SelectBoxRol.propTypes = {
+    rol: PropTypes.object.isRequired,
+    onChangeSelectBoxRol: PropTypes.func.isRequired,
+    submitted: PropTypes.bool.isRequired,
 }
 
 export default SelectBoxRol;

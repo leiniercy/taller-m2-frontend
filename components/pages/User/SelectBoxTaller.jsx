@@ -1,6 +1,6 @@
 
-
 import React from "react";
+import PropTypes from "prop-types";
 import {Dropdown} from "primereact/dropdown";
 
 const tallerNames = [
@@ -20,10 +20,14 @@ const SelectBoxTaller = (props) => {
                   placeholder="Seleccione el taller"
                   showClear
                   className="w-full" />
-            {props.submitted && !props.taller && <small className="p-error">Campo obligatorio. </small>}
+            {props.submitted && !props.c && <small className="p-error">Campo obligatorio. </small>}
         </>
     );
 
 }
-
+SelectBoxTaller.propTypes = {
+    taller: PropTypes.object.isRequired,
+    onChangeSelectedBoxTaller: PropTypes.func.isRequired,
+    submitted: PropTypes.bool.isRequired,
+}
 export default SelectBoxTaller;

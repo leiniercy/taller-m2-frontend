@@ -1,9 +1,10 @@
 
 import {Toolbar} from "primereact/toolbar";
 import {Button} from "primereact/button";
+import PropTypes from "prop-types";
 
 
-export default function ToolsUser(props) {
+const ToolsUser = (props) => {
 
     const leftToolbarTemplate = () => {
         return (
@@ -19,11 +20,13 @@ export default function ToolsUser(props) {
         );
     };/*Barra de herramientas*/
 
-
-
-    return (
-        <Toolbar className="mb-4" left={leftToolbarTemplate}  ></Toolbar>
-    )
-
-
+    return (<Toolbar className="mb-4" left={leftToolbarTemplate}  ></Toolbar>);
 }
+
+ToolsUser.propTypes = {
+    openNew: PropTypes.func.isRequired,
+    confirmDeleteSelected: PropTypes.func.isRequired,
+    selectedObjects:PropTypes.arrayOf(PropTypes.object).isRequired,
+}
+
+export default ToolsUser;

@@ -1,6 +1,6 @@
 "use client"
-
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState} from 'react';
+import PropTypes from "prop-types";
 import {Column} from "primereact/column";
 import {DataTable} from "primereact/datatable";
 import {Button} from "primereact/button";
@@ -91,4 +91,14 @@ const TableCustomer = (props) => {
 
 }
 
+TableCustomer.propTypes = {
+    headerLabel: PropTypes.string.isRequired,
+    setSelectedObject: PropTypes.func.isRequired,
+    emptyFilters: PropTypes.object.isRequired,
+    objects: PropTypes.arrayOf(PropTypes.object).isRequired,
+    globalFilterFields: PropTypes.arrayOf(PropTypes.string).isRequired,
+    selectedObjects: PropTypes.arrayOf(PropTypes.object).isRequired,
+    edit: PropTypes.func.isRequired,
+    confirmDeleteUser: PropTypes.func.isRequired,
+}
 export default TableCustomer;

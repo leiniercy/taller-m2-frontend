@@ -1,6 +1,7 @@
 import React from "react";
 import {Password} from 'primereact/password';
 import {Divider} from 'primereact/divider';
+import PropTypes from "prop-types";
 
 
 const PasswordUser = (props) => {
@@ -39,6 +40,13 @@ const PasswordUser = (props) => {
             {props.submitted && !props.passwordValid && <small className="p-error">Contraseña incorrecta.</small>}
         </>
     )
+}
+
+PasswordUser.propTypes = {
+    password: PropTypes.string.isRequired,
+    submitted: PropTypes.bool.isRequired,
+    passwordValid: PropTypes.bool.isRequired,
+    onChangePassword: PropTypes.func.isRequired,
 }
 
 export default PasswordUser;
